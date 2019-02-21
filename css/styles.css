@@ -1,0 +1,52 @@
+@font-face {
+  src: url(me_quran.ttf);
+  font-family: QuranFont;
+}
+
+body {
+  /* background-image: url('https://source.unsplash.com/1600x900/?nature,mountains,landscape');
+  background-repeat: no-repeat;
+  background-size: cover; */
+  color: #fff;
+  position: relative;
+  margin: 0;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.background-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  z-index: -2;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, .6);
+  z-index: -1;
+}
+
+.verse {
+  font-size: 30px;
+  width: 70%;
+  text-align: center;
+  line-height: 210%;
+  font-family: QuranFont;
+  word-spacing: 15px;
+  opacity: 0;
+}
+
+.verse-details {
+  font-size: 20px;
+}

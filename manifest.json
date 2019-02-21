@@ -1,0 +1,12 @@
+{
+  "name": "Quran Extension",
+  "version": "1.0",
+  "description": "View Quran verses on your homepage.",
+  "permissions": [
+          "storage"
+  ],
+  "chrome_url_overrides" : {
+    "newtab": "newtab.html"
+  },
+  "manifest_version": 2
+}
