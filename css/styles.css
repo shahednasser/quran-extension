@@ -1,12 +1,9 @@
 @font-face {
-  src: url(me_quran.ttf);
+  src: url(UthmanTN1-Ver10.otf);
   font-family: QuranFont;
 }
 
 body {
-  /* background-image: url('https://source.unsplash.com/1600x900/?nature,mountains,landscape');
-  background-repeat: no-repeat;
-  background-size: cover; */
   color: #fff;
   position: relative;
   margin: 0;
@@ -15,6 +12,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-flow: column;
 }
 
 .background-image {
@@ -38,15 +36,30 @@ body {
 }
 
 .verse {
-  font-size: 30px;
+  font-size: 40px;
   width: 70%;
   text-align: center;
   line-height: 210%;
   font-family: QuranFont;
-  word-spacing: 15px;
   opacity: 0;
+  margin-bottom: 10px;
 }
 
 .verse-details {
-  font-size: 20px;
+  font-size: 30px;
+}
+
+.audio-player {
+  opacity: .5;
+  transition: opacity .2s;
+}
+
+.audio-player:hover {
+  opacity: 1;
+}
+
+.audio-player img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
 }
