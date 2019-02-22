@@ -1,3 +1,7 @@
+//
+// Copyright (c) 2019 by Shahed Nasser. All Rights Reserved.
+//
+
 $(document).ready(function(){
   let audio;
   chrome.storage.local.get(['image', 'verse'], function(result){

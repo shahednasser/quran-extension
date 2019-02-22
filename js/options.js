@@ -1,3 +1,6 @@
+//
+// Copyright (c) 2019 by Shahed Nasser. All Rights Reserved.
+//
 $(document).ready(function(){
 
   let translationLanguagesElement = $("select[name=translation_language]"),
