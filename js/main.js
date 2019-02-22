@@ -1,68 +1,127 @@
 $(document).ready(function(){
   let audio;
   chrome.storage.local.get(['image', 'verse'], function(result){
-    if(navigator.onLine){
-      let now = (new Date()).getTime();
-      if(result.hasOwnProperty('image') && now <= result.image.timeout){
-        setBackgroundImage(result.image.src);
-      }
-      else {
-        let xhr = new XMLHttpRequest();
+    chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
+                                'translation_identifier'], function(syncResult){
+      if(navigator.onLine){
+        if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
+            !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
+              $(".translation-container").remove();
+            }
+        let now = (new Date()).getTime();
+        if(result.hasOwnProperty('image') && result.image && now <= result.image.timeout){
+          setBackgroundImage(result.image.src);
+        }
+        else {
+          let xhr = new XMLHttpRequest();
 
-        $.ajax({
-          method: 'GET',
-          url: 'https://source.unsplash.com/1600x900/?nature,mountains,landscape',
-          headers: {
-            'Access-Control-Expose-Headers': 'ETag'
-          },
-          xhr: function() {
-           return xhr;
-          },
-          success: function(data){
-            setBackgroundImage(xhr.responseURL);
-            let timeout = calculateTimeout();
-            chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
-          },
-          error: function(){
-            setBackgroundImage('/assets/offline-image.jpg');
-          }
-        });
-      }
+          $.ajax({
+            method: 'GET',
+            url: 'https://source.unsplash.com/1600x900/?nature,mountains,landscape',
+            headers: {
+              'Access-Control-Expose-Headers': 'ETag'
+            },
+            xhr: function() {
+             return xhr;
+            },
+            success: function(data){
+              setBackgroundImage(xhr.responseURL);
+              let timeout = calculateTimeout();
+              chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
+            },
+            error: function(){
+              setBackgroundImage('/assets/offline-image.jpg');
+            }
+          });
+        }
 
-      if(result.hasOwnProperty('verse') && now <= result.verse.timeout){
-        setVerse(result.verse.data);
-      }
-      else {
-        let verseNumber = Math.floor(Math.random() * 6236) + 1
-        $.get('http://api.alquran.cloud/v1/ayah/' + verseNumber + '/ar.alafasy', function(data){
-          if(data.data.text){
-            setVerse(data.data);
-            let timeout = calculateTimeout();
-            chrome.storage.local.set({verse: {data: data.data, timeout}});
+        if(result.hasOwnProperty('verse') && result.verse && now <= result.verse.timeout){
+          setVerse(result.verse.data);
+          setTranslation(result.verse.translation);
+        }
+        else {
+          let verseNumber = Math.floor(Math.random() * 6236) + 1;
+          let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/';
+          if(syncResult.hasOwnProperty('recitation')){
+            url += syncResult.recitation;
+          } else {
+            url += 'ar.alafasy';
           }
-        });
+          if(syncResult.hasOwnProperty('show_translation') && syncResult.show_translation &&
+            syncResult.hasOwnProperty('translation_identifier') && syncResult.translation_identifier &&
+            syncResult.translation_identifier){
+            url += "," + syncResult.translation_identifier;
+          }
+          $.get(url, function(data){
+            if(data.data){
+              let verse = {};
+              for(let i = 0; i < data.data.length; i++){
+                if(data.data[i].edition.language === "ar"){
+                  setVerse(data.data[i]);
+                  verse.data = data.data[i];
+                } else {
+                  verse.translation = data.data[i];
+                  setTranslation(data.data[i]);
+                }
+              }
+              let timeout = calculateTimeout();
+              verse.timeout = timeout;
+              chrome.storage.local.set({verse});
+            }
+          }).fail(function(){
+            $(".translation-container").remove();
+            setVerse(getDefaultVerse());
+            $(".audio-player").remove();
+          });
+        }
       }
-    }
-    else{
-      setBackgroundImage('assets/offline-image.jpg');
-      setVerse(getDefaultVerse());
-    }
+      else{
+        $(".translation-container").remove();
+        setBackgroundImage('assets/offline-image.jpg');
+        setVerse(getDefaultVerse());
+        $(".audio-player").remove();
+      }
+    });
   });
 
   $(".audio-player").click(function(){
+    $(".audio-player .error").hide();
     if(!audio){
       chrome.storage.local.get(["verse"], function(result){
         if(result.hasOwnProperty("verse") && result.verse.data.hasOwnProperty("audio")){
           audio = new Audio(result.verse.data.audio);
-          audio.play().then(function(){
-            $(".audio-player img").attr('src', 'assets/pause.svg');
+          $(audio).on('loadstart', function(){
+            $(".audio-player .error").hide();
+            $(".audio-player img").hide();
+            $(".audio-player .loader").show();
+          });
+          $(audio).on('ended', function(){
+            $(".audio-player img").attr('src', 'assets/play.svg');
           })
+          audio.play().then(function(){
+            $(".audio-player .error").hide();
+            $(".audio-player img").attr('src', 'assets/pause.svg');
+            $(".audio-player img").show();
+            $(".audio-player .loader").hide();
+          }).catch(function(){
+            $(".audio-player img").attr('src', 'assets/alert-triangle.svg');
+            $(".audio-player .error").text("Can't connect.");
+            $(".audio-player .error").show();
+            $(".audio-player img").show();
+            $(".audio-player .loader").hide();
+          });
         }
       });
     } else {
       if(audio.paused){
         audio.play().then(function(){
           $(".audio-player img").attr('src', 'assets/pause.svg');
+        }).catch(function(){
+          $(".audio-player img").attr('src', 'assets/alert-triangle.svg');
+          $(".audio-player .error").text("Can't connect.");
+          $(".audio-player .error").show();
+          $(".audio-player img").show();
+          $(".audio-player .loader").hide();
         });
       } else {
         audio.pause();
@@ -70,6 +129,14 @@ $(document).ready(function(){
       }
     }
   });
+
+  $(".settings-link").click(function(){
+    if (chrome.runtime.openOptionsPage) {
+      chrome.runtime.openOptionsPage();
+    } else {
+      window.open(chrome.runtime.getURL('options.html'));
+    }
+  })
 
   function setBackgroundImage(url){
     $(".background-image").attr('src', url).on('load', function(){
@@ -116,5 +183,9 @@ $(document).ready(function(){
       },
       text: "إِنَّ الَّذِينَ قَالُوا رَبُّنَا اللَّهُ ثُمَّ اسْتَقَامُوا فَلَا خَوْفٌ عَلَيْهِمْ وَلَا هُمْ يَحْزَنُونَ"
     };
+  }
+
+  function setTranslation(translation){
+    $(".translation-container .body").text(translation.text);
   }
 });

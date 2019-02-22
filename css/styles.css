@@ -13,6 +13,7 @@ body {
   align-items: center;
   justify-content: center;
   flex-flow: column;
+  font-family: QuranFont;
 }
 
 .background-image {
@@ -40,13 +41,13 @@ body {
   width: 70%;
   text-align: center;
   line-height: 210%;
-  font-family: QuranFont;
   opacity: 0;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
-.verse-details {
-  font-size: 30px;
+.verse-details, .bismillah {
+  font-size: 25px;
 }
 
 .audio-player {
@@ -62,4 +63,59 @@ body {
   width: 50px;
   height: 50px;
   cursor: pointer;
+  display: block;
+  margin: 4px auto;
+}
+
+
+.translation-container {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  background: #fff;
+  color: #333;
+  border-radius: 25px 25px 0px 0px;
+  opacity: .5;
+  transition: all .2s;
+  width: 60%;
+}
+
+.translation-container .title {
+  font-size: 20px;
+  width: fit-content;
+  border-bottom: 1px solid #333;
+  margin: 10px auto;
+}
+
+.translation-container:hover {
+  opacity: 1;
+}
+
+.translation-container .body {
+  padding-left: 10px;
+  padding-right: 10px;
+  display: none;
+  font-size: 15px;
+}
+
+.translation-container:hover .body {
+  display: block;
+}
+
+.settings-link {
+  opacity: .5;
+  cursor: pointer;
+  transition: all .2s;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  height: 30px;
+}
+
+.settings-link:hover {
+  opacity: 1;
+}
+
+.audio-player .error {
+  display: none;
 }
