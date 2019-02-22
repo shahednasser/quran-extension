@@ -1,7 +1,7 @@
 {
-  "name": "Quran Extension",
+  "name": "Quran In New Tab Extension",
   "version": "0.1",
-  "description": "View Quran verses on your homepage.",
+  "description": "View Quran verses on the new tab page.",
   "permissions": [
           "storage"
   ],

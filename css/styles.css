@@ -3,7 +3,7 @@ Copyright (c) 2019 by Shahed Nasser. All Rights Reserved.
  */
 
 @font-face {
-  src: url(UthmanTN1-Ver10.otf);
+  src: url(me_quran.ttf);
   font-family: QuranFont;
 }
 
@@ -17,7 +17,6 @@ body {
   align-items: center;
   justify-content: center;
   flex-flow: column;
-  font-family: QuranFont;
 }
 
 .background-image {
@@ -40,18 +39,23 @@ body {
   z-index: -1;
 }
 
+.verse, .bismillah {
+  font-family: QuranFont;
+}
+
 .verse {
-  font-size: 40px;
+  font-size: 30px;
   width: 70%;
   text-align: center;
   line-height: 210%;
   opacity: 0;
   margin-bottom: 10px;
   margin-top: 10px;
+  word-spacing: 10px;
 }
 
 .verse-details, .bismillah {
-  font-size: 25px;
+  font-size: 20px;
 }
 
 .audio-player {
@@ -96,10 +100,9 @@ body {
 }
 
 .translation-container .body {
-  padding-left: 10px;
-  padding-right: 10px;
   display: none;
   font-size: 15px;
+  padding: 10px;
 }
 
 .translation-container:hover .body {

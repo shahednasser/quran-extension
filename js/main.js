@@ -45,7 +45,7 @@ $(document).ready(function(){
         }
         else {
           let verseNumber = Math.floor(Math.random() * 6236) + 1;
-          let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/';
+          let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani,';
           if(syncResult.hasOwnProperty('recitation')){
             url += syncResult.recitation;
           } else {
@@ -60,7 +60,9 @@ $(document).ready(function(){
             if(data.data){
               let verse = {};
               for(let i = 0; i < data.data.length; i++){
-                if(data.data[i].edition.language === "ar"){
+                if(data.data[i].hasOwnProperty('audio')){
+                  verse.audio = data.data[i].audio;
+                } else if(data.data[i].edition.language === "ar"){
                   setVerse(data.data[i]);
                   verse.data = data.data[i];
                 } else {
@@ -92,8 +94,8 @@ $(document).ready(function(){
     $(".audio-player .error").hide();
     if(!audio){
       chrome.storage.local.get(["verse"], function(result){
-        if(result.hasOwnProperty("verse") && result.verse.data.hasOwnProperty("audio")){
-          audio = new Audio(result.verse.data.audio);
+        if(result.hasOwnProperty("verse") && result.verse.hasOwnProperty("audio")){
+          audio = new Audio(result.verse.audio);
           $(audio).on('loadstart', function(){
             $(".audio-player .error").hide();
             $(".audio-player img").hide();

@@ -1,4 +1,4 @@
-# Quran Extension
+# Quran In New Tab Extension
 
 ![alt text](https://github.com/shahednasser/quran-extension/blob/master/assets/icon-128.png?raw=true "Quran Extension")
 
