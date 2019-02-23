@@ -118,7 +118,7 @@ $(document).ready(function(){
           }
           else {
             let verseNumber = Math.floor(Math.random() * 6236) + 1;
-            let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani,';
+            let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani-min,';
             if(syncResult.hasOwnProperty('recitation')){
               url += syncResult.recitation;
             } else {
