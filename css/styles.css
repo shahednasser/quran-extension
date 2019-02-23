@@ -109,17 +109,28 @@ body {
   display: block;
 }
 
-.settings-link {
+.settings-link, .reload {
   opacity: .5;
   cursor: pointer;
   transition: all .2s;
   position: absolute;
   top: 10px;
-  right: 10px;
   height: 30px;
 }
 
-.settings-link:hover {
+.settings-link {
+  right: 10px;
+}
+
+.reload {
+  left: 10px;
+}
+
+.reload .loader {
+  font-size: 20px !important;
+}
+
+.settings-link:hover, .reload:hover {
   opacity: 1;
 }
 
