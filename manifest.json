@@ -1,6 +1,6 @@
 {
   "name": "Quran In New Tab",
-  "version": "0.4",
+  "version": "0.5",
   "description": "View Quran verses on the new tab page.",
   "permissions": [
           "storage"
