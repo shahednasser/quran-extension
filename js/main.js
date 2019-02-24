@@ -65,6 +65,7 @@ $(document).ready(function(){
   })
 
   function load(reload){
+    audio = null;
     $(".reload img").hide();
     $(".reload .loader").show();
     chrome.storage.local.get(['image', 'verse'], function(result){
