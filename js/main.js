@@ -4,10 +4,10 @@
 
 $(document).ready(function(){
   let audio;
-  load(false);
+  load(false, true);
 
   $(".reload").click(function(){
-    load(true);
+    load(true, false);
   });
 
   $(".audio-player").click(function(){
@@ -64,13 +64,13 @@ $(document).ready(function(){
     }
   })
 
-  function load(reload){
+  function load(reload, withTopSites){
     audio = null;
     $(".reload img").hide();
     $(".reload .loader").show();
     chrome.storage.local.get(['image', 'verse'], function(result){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
-                                  'translation_identifier'], function(syncResult){
+                                  'translation_identifier', 'show_top_sites'], function(syncResult){
         if(navigator.onLine){
           if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
               !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
@@ -161,6 +161,9 @@ $(document).ready(function(){
           setVerse(getDefaultVerse());
           $(".audio-player").remove();
         }
+        if(withTopSites && syncResult.hasOwnProperty('show_top_sites') && syncResult.show_top_sites){
+          chrome.topSites.get(addTopSites);
+        }
       });
     });
   }
@@ -218,5 +221,17 @@ $(document).ready(function(){
 
   function setTranslation(translation){
     $(".translation-container .body").text(translation.text);
+  }
+
+  function addTopSites(topSites){
+    if(topSites.length){
+      let $container = $('<div class="content top-sites-container">');
+      $container.appendTo('.content-container');
+      console.log(topSites);
+      for(let i = 0; i < topSites.length; i++){
+        $container.append('<a href="' + topSites[i].url + '"><img src="https://plus.google.com/_/favicon?domain_url=' + topSites[i].url + '" />' +
+                          topSites[i].title + '</a>')
+      }
+    }
   }
 });
