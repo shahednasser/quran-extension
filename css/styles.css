@@ -49,9 +49,8 @@ body {
   text-align: center;
   line-height: 210%;
   opacity: 0;
-  margin-bottom: 10px;
-  margin-top: 10px;
   word-spacing: 10px;
+  margin: 10px auto;
 }
 
 .verse-details, .bismillah {
@@ -136,4 +135,51 @@ body {
 
 .audio-player .error {
   display: none;
+}
+
+.content-container {
+  display: flex;
+  width: 100%;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.content-container .content {
+  text-align: center;
+}
+
+.verse-container {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.top-sites-container {
+  flex-direction: column;
+  display: flex;
+  flex: 1;
+}
+
+.top-sites-container a {
+  text-align: left;
+  font-size: 17px;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+  padding: 7px;
+  width: 80%;
+  opacity: .8;
+  transition: all .2s;
+  margin-bottom: 5px;
+}
+
+.top-sites-container a:hover {
+  opacity: 1;
+}
+
+.top-sites-container a img {
+  width: 16px;
+  margin-right: 10px
 }
