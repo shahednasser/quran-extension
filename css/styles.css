@@ -11,12 +11,12 @@ body {
   color: #fff;
   position: relative;
   margin: 0;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-x: hidden;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
-  flex-flow: column;
+  align-items: center;
 }
 
 .background-image {
@@ -39,17 +39,20 @@ body {
   z-index: -1;
 }
 
-.verse, .bismillah {
+.verse, .bismillah, .athkar-container {
   font-family: QuranFont;
 }
 
-.verse {
+.verse, .athkar-container {
   font-size: 30px;
   width: 70%;
   text-align: center;
   line-height: 210%;
-  opacity: 0;
   word-spacing: 10px;
+}
+
+.verse {
+  opacity: 0;
   margin: 10px auto;
 }
 
@@ -76,15 +79,16 @@ body {
 
 
 .translation-container {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   text-align: center;
   background: #fff;
   color: #333;
   border-radius: 25px 25px 0px 0px;
-  opacity: .5;
+  opacity: .7;
   transition: all .2s;
   width: 60%;
+  left: 20%;
 }
 
 .translation-container .title {
@@ -142,6 +146,7 @@ body {
   width: 100%;
   padding-left: 1em;
   padding-right: 1em;
+  padding-top: 2em;
 }
 
 .content-container .content {
@@ -182,4 +187,18 @@ body {
 .top-sites-container a img {
   width: 16px;
   margin-right: 10px
+}
+
+.athkar-container {
+  margin: 0 auto;
+  padding-bottom: 60px;
+}
+
+.athkar-container .title {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  border-bottom: 1px solid;
+  padding-bottom: 3px;
+  margin-bottom: 15px;
 }

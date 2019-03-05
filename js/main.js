@@ -3,7 +3,8 @@
 //
 
 $(document).ready(function(){
-  let audio;
+  let audio,
+      athkar = [];
   load(false, true);
 
   $(".reload").click(function(){
@@ -70,7 +71,7 @@ $(document).ready(function(){
     $(".reload .loader").show();
     chrome.storage.local.get(['image', 'verse'], function(result){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
-                                  'translation_identifier', 'show_top_sites'], function(syncResult){
+                                  'translation_identifier', 'show_top_sites', 'show_athkar'], function(syncResult){
         if(navigator.onLine){
           if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
               !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
@@ -164,8 +165,27 @@ $(document).ready(function(){
         if(withTopSites && syncResult.hasOwnProperty('show_top_sites') && syncResult.show_top_sites){
           chrome.topSites.get(addTopSites);
         }
+        if(syncResult.hasOwnProperty('show_athkar') && syncResult.show_athkar){
+          if(athkar.length == 0){
+            $.getJSON('/js/json/athkar.json', function(json, textStatus) {
+              athkar = json.athkar;
+              showRandomThikr();
+            });
+          } else {
+            showRandomThikr();
+          }
+        } else {
+          $(".athkar-container").remove();
+          showRandomThikr();
+        }
       });
     });
+  }
+
+  function showRandomThikr(){
+    let thikr = getRandomThikr();
+    $(".athkar-container .thikr").text(thikr);
+    $(".athkar-container").show();
   }
 
   function setBackgroundImage(url){
@@ -221,6 +241,7 @@ $(document).ready(function(){
 
   function setTranslation(translation){
     $(".translation-container .body").text(translation.text);
+    $(".translation-container").show();
   }
 
   function addTopSites(topSites){
@@ -232,5 +253,9 @@ $(document).ready(function(){
                           topSites[i].title + '</a>')
       }
     }
+  }
+
+  function getRandomThikr(){
+    return athkar[Math.floor(Math.random() * athkar.length)];
   }
 });

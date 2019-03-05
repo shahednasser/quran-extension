@@ -6,8 +6,9 @@ $(document).ready(function(){
   let translationLanguagesElement = $("select[name=translation_language]"),
       showTranslationElement = $("input[name=show_translation]"),
       recitationElement = $("select[name=recitation]"),
-      showTopSitesElement = $("input[name=show_top_sites]");
-  chrome.storage.sync.get(["translation_language", "show_translation", "recitation", "show_top_sites"], function(result){
+      showTopSitesElement = $("input[name=show_top_sites]"),
+      showAthkarElement = $("input[name=show_athkar]");
+  chrome.storage.sync.get(["translation_language", "show_translation", "recitation", "show_top_sites", "show_athkar"], function(result){
     if(result.hasOwnProperty('show_translation') && result.show_translation){
       showTranslationElement.prop('checked', true);
       translationLanguagesElement.prop('disabled', false);
@@ -23,6 +24,10 @@ $(document).ready(function(){
     if(result.hasOwnProperty('show_top_sites')){
       showTopSitesElement.prop('checked', result.show_top_sites);
     }
+
+    if(result.hasOwnProperty('show_athkar')){
+      showAthkarElement.prop('checked', result.show_athkar);
+    }
   });
 
   $("#save").click(function(){
@@ -31,13 +36,14 @@ $(document).ready(function(){
         translation_identifier = getTranslationLanguageIdentifier(translationLanguagesElement.val()),
         show_translation = showTranslationElement.is(":checked"),
         recitation = recitationElement.val(),
-        show_top_sites = showTopSitesElement.is(":checked");
+        show_top_sites = showTopSitesElement.is(":checked"),
+        show_athkar = showAthkarElement.is(":checked");
     if(translation_identifier === null){
       $(".alerts").html('<div class="alert alert-danger">An error occured, please try again later.</div>')
     }
-    chrome.storage.sync.set({translation_language: translation_language, show_translation: show_translation ? true : false,
+    chrome.storage.sync.set({translation_language: translation_language, show_translation: show_translation,
                               recitation: recitation, translation_identifier: translation_identifier,
-                              show_top_sites: show_top_sites ? true : false}, function(){
+                              show_top_sites: show_top_sites, show_athkar: show_athkar}, function(){
                                 chrome.storage.local.set({image: null, verse: null}, function(){
                                   $(".alerts").html('<div class="alert alert-success">Saved.</div>');
                                 });
