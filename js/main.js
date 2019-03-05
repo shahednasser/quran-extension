@@ -227,7 +227,6 @@ $(document).ready(function(){
     if(topSites.length){
       let $container = $('<div class="content top-sites-container">');
       $container.appendTo('.content-container');
-      console.log(topSites);
       for(let i = 0; i < topSites.length; i++){
         $container.append('<a href="' + topSites[i].url + '"><img src="https://plus.google.com/_/favicon?domain_url=' + topSites[i].url + '" />' +
                           topSites[i].title + '</a>')
