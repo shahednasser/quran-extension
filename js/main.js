@@ -165,7 +165,7 @@ $(document).ready(function(){
         if(withTopSites && syncResult.hasOwnProperty('show_top_sites') && syncResult.show_top_sites){
           chrome.topSites.get(addTopSites);
         }
-        if(syncResult.hasOwnProperty('show_athkar') && syncResult.show_athkar){
+        if(!syncResult.hasOwnProperty('show_athkar') || syncResult.show_athkar){
           if(athkar.length == 0){
             $.getJSON('/js/json/athkar.json', function(json, textStatus) {
               athkar = json.athkar;
