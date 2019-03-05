@@ -4,13 +4,9 @@
 
 Replace the new tab page with Quran verses and beautiful nature pictures. The verses and pictures are randomly generated hourly. You can choose to show or hide your top sites.
 
-***
-
 ## Download
 
 Add the chrome extension [here](https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg?authuser=1).
-
-***
 
 ## Recitations
 
@@ -20,8 +16,6 @@ You can play an audio of the recitation of the verse shown. You can choose from 
 - Abdurrahmaan As-Sudais
 - Abdul Samad
 and many more.
-
-***
 
 ## Translations
 
@@ -33,7 +27,11 @@ You can turn on the translation for the verses. Some of the languages available 
 - Italian
 and many more.
 
-***
+
+## Athkar
+
+Starting from version 1.0, you can show randomly generated Athkar on your new tab as well.
+
 
 ## Credits:
 
@@ -41,13 +39,11 @@ and many more.
 - Icons from [Feather](https://feathericons.com/)
 - Logo from https://www.freeiconspng.com/img/8824
 
-***
 
 ## Issues
 
 If you find any issues or bugs, please create a Github issue.
 
-***
 
 ## License
 
