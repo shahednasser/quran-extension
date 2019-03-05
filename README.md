@@ -2,6 +2,8 @@
 
 ![Quran In New Tab](https://github.com/shahednasser/quran-extension/blob/master/assets/icon-128.png?raw=true "Quran In New Tab")
 
+Replace the new tab page with Quran verses and beautiful nature pictures. The verses and pictures are randomly generated hourly. You can choose to show or hide your top sites.
+
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Quran In New Tab](#quran-in-new-tab)
@@ -14,7 +16,6 @@
 	- [License](#license)
 
 <!-- /TOC -->
-Replace the new tab page with Quran verses and beautiful nature pictures. The verses and pictures are randomly generated hourly. You can choose to show or hide your top sites.
 
 ## Download
 
