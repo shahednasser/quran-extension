@@ -202,3 +202,7 @@ body {
   padding-bottom: 3px;
   margin-bottom: 15px;
 }
+
+.thikr {
+  direction: rtl;
+}
