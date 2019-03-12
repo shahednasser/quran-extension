@@ -6,6 +6,15 @@ $(document).ready(function(){
   let audio,
       athkar = [];
   load(false, true);
+  chrome.storage.local.get(["date"], function(result){
+    let currentDate = (new Date()).toLocaleDateString();
+    if(!result.hasOwnProperty("date") || result.date !== currentDate){
+      $.get('http://api.aladhan.com/v1/gToH', function(date){
+        $(".gregorian-date").text(currentDate);
+
+      });
+    }
+  })
 
   $(".reload").click(function(){
     load(true, false);

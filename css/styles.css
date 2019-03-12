@@ -206,3 +206,12 @@ body {
 .thikr {
   direction: rtl;
 }
+
+.gregorian-date, .holidays {
+  font-size: 20px;
+  opacity: .8;
+}
+
+.hijri-date {
+  font-size: 30px;
+}
