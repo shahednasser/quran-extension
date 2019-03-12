@@ -215,3 +215,10 @@ body {
 .hijri-date {
   font-size: 30px;
 }
+
+.date-container {
+  text-align: center;
+  font-family: QuranFont;
+  direction: rtl;
+  word-spacing: 10px;
+}

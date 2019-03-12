@@ -8,6 +8,7 @@ Replace the new tab page with Quran verses and beautiful nature pictures. The ve
 
 - [Quran In New Tab](#quran-in-new-tab)
 	- [Download](#download)
+	- [Hijri Dates](#hijri-dates)
 	- [Recitations](#recitations)
 	- [Translations](#translations)
 	- [Athkar](#athkar)
@@ -20,6 +21,10 @@ Replace the new tab page with Quran verses and beautiful nature pictures. The ve
 ## Download
 
 Add the chrome extension [here](https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg?authuser=1).
+
+## Hijri Dates
+
+You can show the today's Hijri date and holidays, if there are any.
 
 ## Recitations
 

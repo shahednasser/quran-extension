@@ -6,15 +6,20 @@ $(document).ready(function(){
   let audio,
       athkar = [];
   load(false, true);
-  chrome.storage.local.get(["date"], function(result){
-    let currentDate = (new Date()).toLocaleDateString();
-    if(!result.hasOwnProperty("date") || result.date !== currentDate){
-      $.get('http://api.aladhan.com/v1/gToH', function(date){
-        $(".gregorian-date").text(currentDate);
-
-      });
+  chrome.storage.sync.get(["show_date", "date"], function(result){
+    if(!result.hasOwnProperty("show_date") || result.show_date){
+      let currentDate = (new Date()).toLocaleDateString();
+      if(!result.hasOwnProperty("date") || result.date.gregorianDate !== currentDate){
+        $.get('http://api.aladhan.com/v1/gToH', function(data){
+          let hijriData = data.data.hijri;
+          chrome.storage.sync.set({date: {gregorianDate: currentDate, hijriData: hijriData}});
+          setDates(currentDate, hijriData);
+        });
+      } else {
+        setDates(currentDate, result.date.hijriData);
+      }
     }
-  })
+  });
 
   $(".reload").click(function(){
     load(true, false);
@@ -266,5 +271,20 @@ $(document).ready(function(){
 
   function getRandomThikr(){
     return athkar[Math.floor(Math.random() * athkar.length)];
+  }
+
+  function setDates(currentDate, hijriData){
+    $(".gregorian-date").text(hijriData.date);
+    $(".hijri-date").text(hijriData.day + " " + hijriData.month.ar + " " + hijriData.year)
+    if(hijriData.hasOwnProperty("holidays") && hijriData.holidays.length > 0){
+      let text = "";
+      for(let i = 0; i < hijriData.holidays.length; i++){
+        if(i !== 0){
+          text += "<br>"
+        }
+        text += hijriData.holidays[i];
+      }
+      $(".holidays").html(text);
+    }
   }
 });

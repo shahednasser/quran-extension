@@ -7,12 +7,14 @@ $(document).ready(function(){
       showTranslationElement = $("input[name=show_translation]"),
       recitationElement = $("select[name=recitation]"),
       showTopSitesElement = $("input[name=show_top_sites]"),
-      showAthkarElement = $("input[name=show_athkar]");
-  chrome.storage.sync.get(["translation_language", "show_translation", "recitation", "show_top_sites", "show_athkar"], function(result){
+      showAthkarElement = $("input[name=show_athkar]"),
+      showDateElement = $("input[name=show_date]");
+  chrome.storage.sync.get(["translation_language", "show_translation", "recitation", "show_top_sites", "show_athkar", "show_date"], function(result){
     if(result.hasOwnProperty('show_translation') && result.show_translation){
       showTranslationElement.prop('checked', true);
       translationLanguagesElement.prop('disabled', false);
     }
+
     if(result.hasOwnProperty('translation_language') && !translationLanguagesElement.prop('disabled')){
       translationLanguagesElement.val(result.translation_language);
     }
@@ -21,13 +23,11 @@ $(document).ready(function(){
       recitationElement.val(result.recitation);
     }
 
-    if(result.hasOwnProperty('show_top_sites')){
-      showTopSitesElement.prop('checked', result.show_top_sites);
-    }
+    showTopSitesElement.prop('checked', !result.hasOwnProperty('show_top_sites') || result.show_top_sites);
 
-    if(result.hasOwnProperty('show_athkar')){
-      showAthkarElement.prop('checked', result.show_athkar);
-    }
+    showAthkarElement.prop('checked', !result.hasOwnProperty('show_athkar') || result.show_athkar);
+
+    showDateElement.prop('checked', !result.hasOwnProperty('show_date') || result.show_date)
   });
 
   $("#save").click(function(){
@@ -37,13 +37,14 @@ $(document).ready(function(){
         show_translation = showTranslationElement.is(":checked"),
         recitation = recitationElement.val(),
         show_top_sites = showTopSitesElement.is(":checked"),
-        show_athkar = showAthkarElement.is(":checked");
+        show_athkar = showAthkarElement.is(":checked"),
+        show_date = showDateElement.is(":checked");
     if(translation_identifier === null){
       $(".alerts").html('<div class="alert alert-danger">An error occured, please try again later.</div>')
     }
     chrome.storage.sync.set({translation_language: translation_language, show_translation: show_translation,
                               recitation: recitation, translation_identifier: translation_identifier,
-                              show_top_sites: show_top_sites, show_athkar: show_athkar}, function(){
+                              show_top_sites: show_top_sites, show_athkar: show_athkar, show_date: show_date}, function(){
                                 chrome.storage.local.set({image: null, verse: null}, function(){
                                   $(".alerts").html('<div class="alert alert-success">Saved.</div>');
                                 });
