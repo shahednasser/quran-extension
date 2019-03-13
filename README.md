@@ -24,7 +24,7 @@ Add the chrome extension [here](https://chrome.google.com/webstore/detail/quran-
 
 ## Hijri Dates
 
-You can show the today's Hijri date and holidays, if there are any.
+You can show today's Hijri date and holidays, if there are any.
 
 ## Recitations
 
