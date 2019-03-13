@@ -66,3 +66,5 @@ If you find any issues or bugs, please create a Github issue.
 ## License
 
 Copyright © 2019 Shahed Nasser
+
+Licensed under the [MIT License](https://github.com/shahednasser/quran-extension/blob/master/LICENSE).
