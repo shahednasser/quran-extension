@@ -8,15 +8,16 @@ $(document).ready(function(){
   load(false, true);
   chrome.storage.sync.get(["show_date", "date"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
-      let currentDate = (new Date()).toLocaleDateString();
+      const date = new Date();
+      let currentDate = date.toLocaleDateString();
       if(!result.hasOwnProperty("date") || result.date.gregorianDate !== currentDate){
         $.get('http://api.aladhan.com/v1/gToH', function(data){
           let hijriData = data.data.hijri;
           chrome.storage.sync.set({date: {gregorianDate: currentDate, hijriData: hijriData}});
-          setDates(currentDate, hijriData);
+          setDates(date, currentDate, hijriData);
         });
       } else {
-        setDates(currentDate, result.date.hijriData);
+        setDates(date, currentDate, result.date.hijriData);
       }
     }
   });
@@ -176,7 +177,7 @@ $(document).ready(function(){
           setVerse(getDefaultVerse());
           $(".audio-player").remove();
         }
-        if(withTopSites && syncResult.hasOwnProperty('show_top_sites') && syncResult.show_top_sites){
+        if(withTopSites && (!syncResult.hasOwnProperty('show_top_sites') || syncResult.show_top_sites)){
           chrome.topSites.get(addTopSites);
         }
         if(!syncResult.hasOwnProperty('show_athkar') || syncResult.show_athkar){
@@ -273,8 +274,8 @@ $(document).ready(function(){
     return athkar[Math.floor(Math.random() * athkar.length)];
   }
 
-  function setDates(currentDate, hijriData){
-    $(".gregorian-date").text(hijriData.date);
+  function setDates(dateObj, currentDate, hijriData){
+    $(".gregorian-date").text(dateObj.getDate() + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear());
     $(".hijri-date").text(hijriData.day + " " + hijriData.month.ar + " " + hijriData.year)
     if(hijriData.hasOwnProperty("holidays") && hijriData.holidays.length > 0){
       let text = "";
