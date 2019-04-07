@@ -168,6 +168,8 @@ body {
 }
 
 .top-sites-container a {
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-align: left;
   font-size: 17px;
   background-color: #fff;
