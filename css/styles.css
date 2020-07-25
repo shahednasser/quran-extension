@@ -112,7 +112,7 @@ body {
   display: block;
 }
 
-.settings-link, .reload {
+.settings-link, .reload, .rate-link {
   opacity: .5;
   cursor: pointer;
   transition: all .2s;
@@ -125,6 +125,10 @@ body {
   right: 10px;
 }
 
+.rate-link {
+  right: 50px;
+}
+
 .reload {
   left: 10px;
 }
@@ -133,7 +137,7 @@ body {
   font-size: 20px !important;
 }
 
-.settings-link:hover, .reload:hover {
+.settings-link:hover, .reload:hover, .rate-link:hover {
   opacity: 1;
 }
 
@@ -223,4 +227,19 @@ body {
   font-family: QuranFont;
   direction: rtl;
   word-spacing: 10px;
+}
+
+@media screen and (max-width: 991px) {
+  .content-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .audio-player {
+    margin-bottom: 15px;
+  }
+
+  .top-sites-container {
+    align-items: center;
+  }
 }

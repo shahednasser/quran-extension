@@ -101,7 +101,7 @@ $(document).ready(function(){
 
             $.ajax({
               method: 'GET',
-              url: 'https://source.unsplash.com/1600x900/?nature,mountains,landscape',
+              url: 'https://source.unsplash.com/1600x900/?nature,mountains,landscape,animal,gradient',
               headers: {
                 'Access-Control-Expose-Headers': 'ETag'
               },
