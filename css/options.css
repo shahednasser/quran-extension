@@ -1,16 +1,6 @@
 /*
-Copyright (c) 2019 by Shahed Nasser. All Rights Reserved.
+Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
  */
-
-body {
-  height: 100vh;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-}
 
 /* The switch - the box around the slider */
 .switch {
@@ -70,7 +60,7 @@ input:checked + .slider:before {
 }
 
 .icon {
-  width: 200px;
+  width: 80px;
   margin: 0 auto;
   display: block;
 }
@@ -92,11 +82,4 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
-}
-
-@media screen and (min-width: 768px){
-  .form-container {
-    width: 70%;
-    margin: 0 auto;
-  }
 }
