@@ -121,6 +121,11 @@ body {
   height: 30px;
 }
 
+.hijri-date-en {
+  direction: ltr;
+  font-family: sans-serif;
+}
+
 .settings-link {
   right: 10px;
 }

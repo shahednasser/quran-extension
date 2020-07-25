@@ -292,6 +292,7 @@ $(document).ready(function(){
   function setDates(dateObj, currentDate, hijriData){
     $(".gregorian-date").text(dateObj.getDate() + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear());
     $(".hijri-date").text(hijriData.day + " " + hijriData.month.ar + " " + hijriData.year)
+    $(".hijri-date-en").text(hijriData.day + " " + hijriData.month.en + " " + hijriData.year)
     if(hijriData.hasOwnProperty("holidays") && hijriData.holidays.length > 0){
       let text = "";
       for(let i = 0; i < hijriData.holidays.length; i++){
