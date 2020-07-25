@@ -1,12 +1,12 @@
 //
-// Copyright (c) 2019 by Shahed Nasser. All Rights Reserved.
+// Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
 //
 
 $(document).ready(function(){
   let audio,
       athkar = [];
   load(false, true);
-  chrome.storage.sync.get(["show_date", "date"], function(result){
+  chrome.storage.sync.get(["show_date", "date", "showed_survey_popup"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
       let currentDate = date.toLocaleDateString();
@@ -19,6 +19,18 @@ $(document).ready(function(){
       } else {
         setDates(date, currentDate, result.date.hijriData);
       }
+    }
+    if (!result.hasOwnProperty("showed_survey_popup") || !result.showed_survey_popup) {
+      Swal.fire({
+        title: 'Give Us Your Feedback',
+        html: "<p class='lead'>Thank you for using our extension. We want to keep improving and making this extension better for you" +
+              '<br> Please give us your feedback by answering just few questions <b><a href="https://shahednasser.typeform.com/to/Maf5wATU" target="_blank">here</a></b></p>',
+        showConfirmButton: false,
+        showCloseButton: true,
+        onClose: function () {
+          chrome.storage.sync.set({showed_survey_popup: true});
+        }
+      })
     }
   });
 
@@ -264,7 +276,7 @@ $(document).ready(function(){
       let $container = $('<div class="content top-sites-container">');
       $container.appendTo('.content-container');
       for(let i = 0; i < topSites.length; i++){
-        $container.append('<a href="' + topSites[i].url + '"><img src="https://plus.google.com/_/favicon?domain_url=' + topSites[i].url + '" />' +
+        $container.append('<a href="' + topSites[i].url + '" class="shadow"><img src="https://plus.google.com/_/favicon?domain_url=' + topSites[i].url + '" />' +
                           topSites[i].title + '</a>')
       }
     }
