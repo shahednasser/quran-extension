@@ -108,16 +108,16 @@ body {
   padding: 10px;
 }
 
-.translation-container:hover .body {
-  display: block;
-}
-
 .settings-link, .reload, .rate-link {
   opacity: .5;
   cursor: pointer;
   transition: all .2s;
   position: absolute;
   top: 10px;
+  height: 30px;
+}
+
+.rate-link img {
   height: 30px;
 }
 

@@ -5,6 +5,9 @@
 $(document).ready(function(){
   let audio,
       athkar = [];
+  $(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+  })
   load(false, true);
   chrome.storage.sync.get(["show_date", "date", "showed_survey_popup"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
@@ -300,4 +303,10 @@ $(document).ready(function(){
       $(".holidays").html(text);
     }
   }
+
+  $(".translation-container").hover(function () {
+    $(this).children(".body").show('fast');
+  }, function () {
+    $(this).children(".body").hide('fast');
+  });
 });

@@ -10,16 +10,17 @@
   </head>
   <body>
     <img src='' class="background-image" />
-    <div class="reload">
+    <div class="reload" data-toggle="tooltip" title="Reload">
       <img src="assets/reload.svg" alt="Reload"  />
       <div class="loader"></div>
     </div>
     <div class="overlay">
     </div>
-    <a href="https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg">
-      <img src="assets/star.svg" alt="Rate This Extension" class="rate-link" />
+    <a href="https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"
+      data-toggle="tooltip" title="Rate This Extension" class="rate-link">
+      <img src="assets/star.svg" alt="Rate This Extension" />
     </a>
-    <img src="assets/settings.svg" alt="Settings" class="settings-link"  />
+    <img src="assets/settings.svg" alt="Settings" class="settings-link" data-toggle="tooltip" title="Settings"  />
     <div class="date-container">
       <div class="gregorian-date">
       </div>
@@ -58,6 +59,7 @@
       </div>
     </div>
     <script src="/js/jquery.js"></script>
+    <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/sweetalert2.all.min.js"></script>
     <script src="/js/main.js"></script>

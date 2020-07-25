@@ -46,7 +46,7 @@ $(document).ready(function(){
                               recitation: recitation, translation_identifier: translation_identifier,
                               show_top_sites: show_top_sites, show_athkar: show_athkar, show_date: show_date}, function(){
                                 chrome.storage.local.set({image: null, verse: null}, function(){
-                                  $(".alerts").html('<div class="alert alert-success">Saved.</div>');
+                                  $(".alerts").html('<div class="alert alert-success mt-3">Saved.</div>');
                                 });
                               });
   });
