@@ -108,7 +108,7 @@ body {
   padding: 10px;
 }
 
-.settings-link, .reload, .rate-link {
+.settings-link, .reload, .rate-link, .report {
   opacity: .5;
   cursor: pointer;
   transition: all .2s;
@@ -138,11 +138,16 @@ body {
   left: 10px;
 }
 
-.reload .loader {
+.report {
+  left: 45px;
+}
+
+.reload .loader,
+.report .loader {
   font-size: 20px !important;
 }
 
-.settings-link:hover, .reload:hover, .rate-link:hover {
+.settings-link:hover, .reload:hover, .rate-link:hover, .report:hover {
   opacity: 1;
 }
 

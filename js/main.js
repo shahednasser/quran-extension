@@ -9,7 +9,7 @@ $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip()
   })
   load(false, true);
-  chrome.storage.sync.get(["show_date", "date", "showed_survey_popup"], function(result){
+  chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", "showed_new_feature_report"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
       let currentDate = date.toLocaleDateString();
@@ -32,6 +32,19 @@ $(document).ready(function(){
         showCloseButton: true,
         onClose: function () {
           chrome.storage.sync.set({showed_survey_popup: true});
+        }
+      })
+    }
+
+    if (!result.hasOwnProperty("showed_new_feature_report") || !result.showed_new_feature_report) {
+      Swal.fire({
+        icon: 'info',
+        title: 'You can now report images!',
+        html: "If there are any images that you don't like or find inappropriate, press the <b>Report</b> icon on the top left to report these images and never show them again!",
+        showConfirmButton: false,
+        showCloseButton: true,
+        onClose: function () {
+          chrome.storage.sync.set({showed_new_feature_report: true});
         }
       })
     }
@@ -93,7 +106,42 @@ $(document).ready(function(){
     } else {
       window.open(chrome.runtime.getURL('options.html'));
     }
-  })
+  });
+
+  $(".report").click(function() {
+    Swal.fire({
+      title: 'Report Image',
+      html: "If you think the image is inappropriate or you don't like it, please report the image and you will not " + 
+        "see it anymore.",
+      showConfirmButton: true,
+      showCloseButton: true,
+      confirmButtonText: 'Report Image',
+      showCancelButton: true,
+      showLoaderOnConfirm: true,
+      preConfirm: function () {
+        const imageElm = $(".background-image");
+        if (imageElm.length) {
+          return $.ajax({
+            url: 'http://quran-extension-api.alwaysdata.net/blacklistImage',
+            type: 'PUT',
+            data: {image: imageElm.attr('src')},
+            success: function (result) {
+              return result;
+            }
+          });
+        }
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then (function () {
+      load(true, false);
+    })
+  });
+
+  $(".translation-container").hover(function () {
+    $(this).children(".body").show('fast');
+  }, function () {
+    $(this).children(".body").hide('fast');
+  });
 
   function load(reload, withTopSites){
     audio = null;
@@ -112,32 +160,7 @@ $(document).ready(function(){
             setBackgroundImage(result.image.src);
           }
           else {
-            let xhr = new XMLHttpRequest();
-
-            $.ajax({
-              method: 'GET',
-              url: 'https://source.unsplash.com/1600x900/?nature,mountains,landscape,animal,gradient',
-              headers: {
-                'Access-Control-Expose-Headers': 'ETag'
-              },
-              xhr: function() {
-               return xhr;
-              },
-              success: function(data){
-                setBackgroundImage(xhr.responseURL);
-                let timeout = calculateTimeout();
-                chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
-              },
-              error: function(){
-                setBackgroundImage('/assets/offline-image.jpg');
-              },
-              complete: function(){
-                if(reload){
-                  $(".reload img").show();
-                  $(".reload .loader").hide();
-                }
-              }
-            });
+            setNewImage(reload);
           }
 
           if(result.hasOwnProperty('verse') && result.verse && now <= result.verse.timeout && !reload){
@@ -305,9 +328,40 @@ $(document).ready(function(){
     }
   }
 
-  $(".translation-container").hover(function () {
-    $(this).children(".body").show('fast');
-  }, function () {
-    $(this).children(".body").hide('fast');
-  });
+  function setNewImage(reload) {
+    let xhr = new XMLHttpRequest();
+    $.ajax({
+      method: 'GET',
+      url: 'https://source.unsplash.com/1600x900/?nature,mountains,landscape,animal',
+      headers: {
+        'Access-Control-Expose-Headers': 'ETag'
+      },
+      xhr: function() {
+       return xhr;
+      },
+      success: function(data){
+        $.getJSON('http://quran-extension-api.alwaysdata.net/isImageBlacklisted?image=' + encodeURI(xhr.responseURL), 
+        function(json, textStatus) {
+          if (json.success) {
+            if (json.blacklisted) {
+              setNewImage(false);
+            } else {
+              setBackgroundImage(xhr.responseURL);
+              let timeout = calculateTimeout();
+              chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
+            }
+          }
+        });
+      },
+      error: function(){
+        setBackgroundImage('/assets/offline-image.jpg');
+      },
+      complete: function(){
+        if(reload){
+          $(".reload img").show();
+          $(".reload .loader").hide();
+        }
+      }
+    });
+  }
 });
