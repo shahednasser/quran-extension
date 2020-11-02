@@ -10,21 +10,22 @@
   </head>
   <body>
     <img src='' class="background-image" />
-    <div class="reload" data-toggle="tooltip" title="Reload">
+    <div class="reload toolbar-link" data-toggle="tooltip" title="Reload">
       <img src="assets/reload.svg" alt="Reload"  />
       <div class="loader"></div>
     </div>
-    <div class="report" data-toggle="tooltip" title="Report Image">
+    <div class="report toolbar-link" data-toggle="tooltip" title="Report Image">
       <img src="assets/alert-triangle.svg" alt="Report Image"  />
       <div class="loader"></div>
     </div>
     <div class="overlay">
     </div>
     <a href="https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"
-      data-toggle="tooltip" title="Rate This Extension" class="rate-link">
+      data-toggle="tooltip" title="Rate This Extension" class="rate-link toolbar-link">
       <img src="assets/star.svg" alt="Rate This Extension" />
     </a>
-    <img src="assets/settings.svg" alt="Settings" class="settings-link" data-toggle="tooltip" title="Settings"  />
+    <img src="assets/calendar.svg" alt="Calendar" class="calendar-btn toolbar-link" data-toggle="tooltip" title="Calendar"  />
+    <img src="assets/settings.svg" alt="Settings" class="settings-link toolbar-link" data-toggle="tooltip" title="Settings"  />
     <div class="date-container">
       <div class="gregorian-date">
       </div>
@@ -62,6 +63,27 @@
         Quran Translation
       </div>
       <div class="body">
+      </div>
+    </div>
+    <div class="calendar-container show">
+      <button type="button" class="close close-calendar" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="container mt-5">
+        <h1 class="text-center">Hijri Calendar</h1>
+        <div class="calendar-wrapper mt-5 mb-5">
+          <div class="calendar">
+            <div class="calendar__header">
+              <div>mon</div>
+              <div>tue</div>
+              <div>wed</div>
+              <div>thu</div>
+              <div>fri</div>
+              <div>sat</div>
+              <div>sun</div>
+            </div>
+          </div>
+        </div> 
       </div>
     </div>
     <script src="/js/jquery.js"></script>

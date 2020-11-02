@@ -108,7 +108,7 @@ body {
   padding: 10px;
 }
 
-.settings-link, .reload, .rate-link, .report {
+.toolbar-link {
   opacity: .5;
   cursor: pointer;
   transition: all .2s;
@@ -130,8 +130,12 @@ body {
   right: 10px;
 }
 
+.calendar-btn {
+  right: 55px;
+}
+
 .rate-link {
-  right: 50px;
+  right: 100px;
 }
 
 .reload {
@@ -147,7 +151,7 @@ body {
   font-size: 20px !important;
 }
 
-.settings-link:hover, .reload:hover, .rate-link:hover, .report:hover {
+.toolbar-link:hover {
   opacity: 1;
 }
 
@@ -237,6 +241,73 @@ body {
   font-family: QuranFont;
   direction: rtl;
   word-spacing: 10px;
+}
+
+.calendar-container {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  position: absolute;
+  left: 0;
+  top: -100%;
+  transition: top .2s;
+  color: #333;
+}
+
+.calendar-container.show {
+  top: 0;
+}
+
+.close-calendar {
+  padding-right: 10px !important;
+  font-size: 2.5rem;
+}
+
+.close-calendar:active,
+.close-calendar:focus {
+  outline: none;
+}
+
+.calendar {
+  background-color: white;
+  border: 1px solid #e1e1e1;
+}
+
+.calendar__week,
+.calendar__header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);  
+}
+.calendar__week {
+  grid-auto-rows: 100px;
+  text-align: right;
+}
+
+.calendar__header {
+  grid-auto-rows: 50px;
+  align-items: center;
+  text-align: center;
+  background-color: #025250;
+  color: #fff;
+}
+
+.calendar__day {
+  padding: 16px;
+}
+
+.calendar__header > div {
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: bold;
+}
+
+.calendar__day {
+  border-right: 1px solid #e1e1e1;
+  border-top: 1px solid #e1e1e1;
+}
+
+.calendar__day:last-child {
+  border-right: 0;
 }
 
 @media screen and (max-width: 991px) {
