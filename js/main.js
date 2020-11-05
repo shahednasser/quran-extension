@@ -390,7 +390,7 @@ $(document).ready(function(){
 
   function getNewCalendar () {
     const currentDate = new Date();
-    $.get('http://api.aladhan.com/v1/gToHCalendar/' + currentDate.getMonth() + '/' + currentDate.getFullYear(), function (data) {
+    $.get('http://api.aladhan.com/v1/gToHCalendar/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear(), function (data) {
       console.log(data);
       setCalendar(data.data);
       chrome.storage.local.set({calendar: {date: new Date(), data: data.data}});
@@ -400,42 +400,54 @@ $(document).ready(function(){
   function setCalendar (data) {
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     const nbDates = data.length;
-    let startedMonthDates = false;
     let startedDay = -1;
     let endedWeekday = 6;
     let today = new Date();
     let todayDate = null;
+    let i = 0;
+    let nbWeeks = 0;
     html = '';
-    for (let i = 0; i < nbDates; i++) {
-      if (!startedMonthDates && i <= 7) {
-        if (data[i].gregorian.weekday.en == weekdays[i - 1]) {
-          startedMonthDates = true;
-          startedDay = i;
+    while (i < nbDates) {
+      console.log(i);
+      for (let z = 0; z < weekdays.length; z++) {
+        //console.log(data[i].gregorian.weekday.en, weekdays[z]);
+        if (data[i].gregorian.weekday.en != weekdays[z]) {
+          continue;
+        }
+        if (startedDay == -1) {
+          if (data[i].gregorian.weekday.en == weekdays[z]) {
+            startedDay = i;
+          }
+        }
+  
+        if (i == nbDates - 1) {
+          if (data[i].gregorian.weekday.en !== weekdays[6]) {
+            endedWeekday = weekdays.indexOf(data[i].gregorian.weekday.en);
+          }
+        }
+  
+        if (todayDate == null && today.getDate() == data[i].gregorian.day) {
+          todayDate = i;
+        }
+        i++;
+        if (i >= nbDates) {
+          break;
         }
       }
+      console.log(i, nbWeeks);
 
-      if (i == nbDates - 1) {
-        if (data[i].gregorian.weekday.en !== weekdays[6]) {
-          endedWeekday = weekdays.indexOf(data[i].gregorian.weekday.en);
-        }
-      }
-
-      if (todayDate == null && today.getDate() == data[i].gregorian.day) {
-        todayDate = i;
-      }
-
-      if (i % 7 == 0 || i == nbDates) {
-        html += addWeek(i - 6, nbDates, startedDay, endedWeekday, todayDate);
-        startedDay = -1;
-      }
+      html += addWeek((nbWeeks > 4 && i > nbDates - 7 && i <= nbDates ? i : i - 6), nbDates, startedDay, endedWeekday, todayDate);
+      nbWeeks++;
     }
 
     $(".calendar__header").after(html);
   }
 
   function addWeek (fromDay, totalDays, startedDay, endedWeekday, todayDate) {
+    console.log(fromDay);
     str = '<div class="calendar__week">';
-    for (let i = fromDay + 1; i <= fromDay + 7; i++) {
+    let i = fromDay;
+    for (let j = 0; j < 7; j++) {
       if (i > totalDays) {
         i = i - totalDays;
       }
@@ -446,7 +458,7 @@ $(document).ready(function(){
       } else if (todayDate !== null && todayDate == i) {
         additionalClasses = 'today';
       }
-      str += '<div class="calendar__day day' + additionalClasses + '">' + i + '</div>';
+      str += '<div class="calendar__day day' + additionalClasses + '">' + (i++) + '</div>';
     }
     str += '</div>';
     return str;
