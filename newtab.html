@@ -65,25 +65,29 @@
       <div class="body">
       </div>
     </div>
-    <div class="calendar-container show">
+    <div class="calendar-container">
       <button type="button" class="close close-calendar" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <div class="container mt-5">
-        <h1 class="text-center">Hijri Calendar</h1>
-        <div class="calendar-wrapper mt-5 mb-5">
-          <div class="calendar">
-            <div class="calendar__header">
-              <div>mon</div>
-              <div>tue</div>
-              <div>wed</div>
-              <div>thu</div>
-              <div>fri</div>
-              <div>sat</div>
-              <div>sun</div>
+      <div class="container mt-5 calendar-table">
+        <h1 class="text-center">Calendar</h1>
+        <div class="loader"></div>
+        <div class="calendar-inner-container">
+          <h2 class="text-center"><span id="gregorianMonth"></span> - <span id="hijriMonth"></span></h2>
+          <div class="calendar-wrapper mt-5 mb-5">
+            <div class="calendar">
+              <div class="calendar__header">
+                <div>mon</div>
+                <div>tue</div>
+                <div>wed</div>
+                <div>thu</div>
+                <div>fri</div>
+                <div>sat</div>
+                <div>sun</div>
+              </div>
             </div>
-          </div>
-        </div> 
+          </div> 
+        </div>
       </div>
     </div>
     <script src="/js/jquery.js"></script>

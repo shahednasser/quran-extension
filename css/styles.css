@@ -250,12 +250,14 @@ body {
   position: absolute;
   left: 0;
   top: -100%;
-  transition: top .2s;
+  transition: top .6s ease-in, opacity .4s ease-in-out;
   color: #333;
+  opacity: 0;
 }
 
 .calendar-container.show {
   top: 0;
+  opacity: 1;
 }
 
 .close-calendar {
@@ -271,6 +273,7 @@ body {
 .calendar {
   background-color: white;
   border: 1px solid #e1e1e1;
+  box-shadow: 0px 0px 8px rgb(204 204 204 / 60%);
 }
 
 .calendar__week,
@@ -279,7 +282,7 @@ body {
   grid-template-columns: repeat(7, 1fr);  
 }
 .calendar__week {
-  grid-auto-rows: 100px;
+  grid-auto-rows: 90px;
   text-align: right;
 }
 
@@ -308,6 +311,34 @@ body {
 
 .calendar__day:last-child {
   border-right: 0;
+}
+
+.not-month-day {
+  background-color: #ebebeb;
+}
+
+.calendar__day.today {
+  background-color: #025250bd;
+  color: #fff;
+}
+
+.calendar-hijri-date {
+  display: block;
+}
+
+.calendar__day:not(.today) .calendar-hijri-date {
+  color: #999;
+}
+
+#hijriMonth {
+  color: #999;
+}
+
+@media screen and (min-width: 992px) {
+  .calendar {
+    width: 70%;
+    margin: 0 auto;
+  }
 }
 
 @media screen and (max-width: 991px) {

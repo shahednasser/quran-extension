@@ -155,9 +155,12 @@ $(document).ready(function(){
     audio = null;
     $(".reload img").hide();
     $(".reload .loader").show();
+    $(".calendar-inner-container").hide();
+    $(".calendar-table .loader").show();
     chrome.storage.local.get(['image', 'verse', 'calendar'], function(result){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
-                                  'translation_identifier', 'show_top_sites', 'show_athkar'], function(syncResult){
+                                  'translation_identifier', 'show_top_sites', 'show_athkar', 
+                                  'calendar_start_day'], function(syncResult){
         if(navigator.onLine){
           if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
               !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
@@ -217,18 +220,22 @@ $(document).ready(function(){
             });
           }
 
-          // if (result.hasOwnProperty('calendar')) {
-          //   if (result.calendar.date.getMonth() !== (new Date()).getMonth()) {
-          //     //get calendar for new month
-          //     getNewCalendar();
-          //   } else {
-          //     //print old calendar
-          //     setCalendar(result.calendar.data);
-          //   }
-          // } else {
+          if (result.hasOwnProperty('calendar') && result.calendar) {
+            console.log(result);
+            const calendarDate = new Date(result.calendar.date);
+            if (calendarDate.getMonth() !== (new Date()).getMonth()) {
+              //get calendar for new month
+              getNewCalendar(syncResult.calendar_start_day);
+            } else {
+              //print old calendar
+             setCalendar(result.calendar.data, syncResult.calendar_start_day);
+           }
+          } else {
             //get new calendar
-            getNewCalendar();
-          //}
+            getNewCalendar(syncResult.calendar_start_day);
+          }
+          $(".calendar-table .loader").hide();
+          $(".calendar-inner-container").show();
         }
         else{
           $(".translation-container").remove();
@@ -388,17 +395,25 @@ $(document).ready(function(){
     });
   }
 
-  function getNewCalendar () {
+  function getNewCalendar (calendar_start_day) {
     const currentDate = new Date();
     $.get('http://api.aladhan.com/v1/gToHCalendar/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear(), function (data) {
-      console.log(data);
-      setCalendar(data.data);
-      chrome.storage.local.set({calendar: {date: new Date(), data: data.data}});
+      setCalendar(data.data, calendar_start_day);
+      chrome.storage.local.set({calendar: {date: currentDate.toString(), data: data.data}});
     })
   }
 
-  function setCalendar (data) {
-    const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  function setCalendar (data, calendar_start_day) {
+    $(".calendar__header").nextAll().remove();
+    let weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    if (calendar_start_day === "Sunday") {
+      weekdays.unshift(...weekdays.splice(6));
+    }
+    //set headings
+    $(".calendar__header").children().each(function (index) {
+      $(this).text(weekdays[index]);
+    });
+    console.log(weekdays);
     const nbDates = data.length;
     let startedDay = -1;
     let endedWeekday = 6;
@@ -406,9 +421,9 @@ $(document).ready(function(){
     let todayDate = null;
     let i = 0;
     let nbWeeks = 0;
+    let lastValue = 0;
     html = '';
     while (i < nbDates) {
-      console.log(i);
       for (let z = 0; z < weekdays.length; z++) {
         //console.log(data[i].gregorian.weekday.en, weekdays[z]);
         if (data[i].gregorian.weekday.en != weekdays[z]) {
@@ -427,38 +442,38 @@ $(document).ready(function(){
         }
   
         if (todayDate == null && today.getDate() == data[i].gregorian.day) {
-          todayDate = i;
+          todayDate = i + 1;
         }
         i++;
         if (i >= nbDates) {
           break;
         }
       }
-      console.log(i, nbWeeks);
 
-      html += addWeek((nbWeeks > 4 && i > nbDates - 7 && i <= nbDates ? i : i - 6), nbDates, startedDay, endedWeekday, todayDate);
+      html += addWeek(i == nbDates ? i - (nbDates - lastValue - 1) : (nbWeeks > 4 && i > nbDates - 7 && i <= nbDates ? i : i - 6), nbDates, startedDay, endedWeekday, todayDate, data);
       nbWeeks++;
+      lastValue = i;
     }
 
     $(".calendar__header").after(html);
+    $("#gregorianMonth").text(data[0].gregorian.month.en);
+    $("#hijriMonth").text(data[0].hijri.month.en);
   }
 
-  function addWeek (fromDay, totalDays, startedDay, endedWeekday, todayDate) {
+  function addWeek (fromDay, totalDays, startedDay, endedWeekday, todayDate, calendarData) {
     console.log(fromDay);
     str = '<div class="calendar__week">';
     let i = fromDay;
     for (let j = 0; j < 7; j++) {
-      if (i > totalDays) {
-        i = i - totalDays;
-      }
 
       let additionalClasses = '';
-      if ((fromDay <= 7 && startedDay < i) || (fromDay == '29' && (i - fromDay) > endedWeekday)) {
+      if (i <= 0 || i > totalDays) {
         additionalClasses = 'not-month-day';
       } else if (todayDate !== null && todayDate == i) {
         additionalClasses = 'today';
       }
-      str += '<div class="calendar__day day' + additionalClasses + '">' + (i++) + '</div>';
+      str += '<div class="calendar__day day ' + additionalClasses + '">' + (i > totalDays || i <= 0 ? "" : i + '<small class="calendar-hijri-date">' + calendarData[i - 1].hijri.day + '</small>') + '</div>';
+      i++;
     }
     str += '</div>';
     return str;
