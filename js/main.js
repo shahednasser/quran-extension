@@ -4,7 +4,9 @@
 
 $(document).ready(function(){
   let audio,
-      athkar = [];
+      athkar = [],
+      originalWeekdays = weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
@@ -220,19 +222,24 @@ $(document).ready(function(){
             });
           }
 
+          if (syncResult.hasOwnProperty('calendar_start_day')) {
+            if (syncResult.calendar_start_day === "Sunday") {
+              weekdays.unshift(...weekdays.splice(6));
+            }
+          }
+
           if (result.hasOwnProperty('calendar') && result.calendar) {
-            console.log(result);
             const calendarDate = new Date(result.calendar.date);
             if (calendarDate.getMonth() !== (new Date()).getMonth()) {
               //get calendar for new month
-              getNewCalendar(syncResult.calendar_start_day);
+              getNewCalendar();
             } else {
               //print old calendar
-             setCalendar(result.calendar.data, syncResult.calendar_start_day);
+             setCalendar(result.calendar.data);
            }
           } else {
             //get new calendar
-            getNewCalendar(syncResult.calendar_start_day);
+            getNewCalendar();
           }
           $(".calendar-table .loader").hide();
           $(".calendar-inner-container").show();
@@ -395,28 +402,22 @@ $(document).ready(function(){
     });
   }
 
-  function getNewCalendar (calendar_start_day) {
+  function getNewCalendar () {
     const currentDate = new Date();
     $.get('http://api.aladhan.com/v1/gToHCalendar/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear(), function (data) {
-      setCalendar(data.data, calendar_start_day);
+      setCalendar(data.data);
       chrome.storage.local.set({calendar: {date: currentDate.toString(), data: data.data}});
     })
   }
 
-  function setCalendar (data, calendar_start_day) {
+  function setCalendar (data) {
     $(".calendar__header").nextAll().remove();
-    let weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    if (calendar_start_day === "Sunday") {
-      weekdays.unshift(...weekdays.splice(6));
-    }
     //set headings
     $(".calendar__header").children().each(function (index) {
       $(this).text(weekdays[index]);
     });
-    console.log(weekdays);
     const nbDates = data.length;
     let startedDay = -1;
-    let endedWeekday = 6;
     let today = new Date();
     let todayDate = null;
     let i = 0;
@@ -425,7 +426,6 @@ $(document).ready(function(){
     html = '';
     while (i < nbDates) {
       for (let z = 0; z < weekdays.length; z++) {
-        //console.log(data[i].gregorian.weekday.en, weekdays[z]);
         if (data[i].gregorian.weekday.en != weekdays[z]) {
           continue;
         }
@@ -450,7 +450,7 @@ $(document).ready(function(){
         }
       }
 
-      html += addWeek(i == nbDates ? i - (nbDates - lastValue - 1) : (nbWeeks > 4 && i > nbDates - 7 && i <= nbDates ? i : i - 6), nbDates, startedDay, endedWeekday, todayDate, data);
+      html += addWeek(i == nbDates ? i - (nbDates - lastValue - 1) : (nbWeeks > 4 && i > nbDates - 7 && i <= nbDates ? i : i - 6), nbDates, todayDate, data);
       nbWeeks++;
       lastValue = i;
     }
@@ -460,8 +460,7 @@ $(document).ready(function(){
     $("#hijriMonth").text(data[0].hijri.month.en);
   }
 
-  function addWeek (fromDay, totalDays, startedDay, endedWeekday, todayDate, calendarData) {
-    console.log(fromDay);
+  function addWeek (fromDay, totalDays, todayDate, calendarData) {
     str = '<div class="calendar__week">';
     let i = fromDay;
     for (let j = 0; j < 7; j++) {
@@ -472,10 +471,32 @@ $(document).ready(function(){
       } else if (todayDate !== null && todayDate == i) {
         additionalClasses = 'today';
       }
-      str += '<div class="calendar__day day ' + additionalClasses + '">' + (i > totalDays || i <= 0 ? "" : i + '<small class="calendar-hijri-date">' + calendarData[i - 1].hijri.day + '</small>') + '</div>';
+      let dayStr = '<div class="calendar__day day ' + additionalClasses + '">' + (i > totalDays || i <= 0 ? "" : i + '<small class="calendar-hijri-date">' + calendarData[i - 1].hijri.day + '</small>');
+      if (i <= totalDays && i > 0) {
+        if (calendarData[i- 1].hijri.holidays.length) {
+          for (let j = 0; j < calendarData[i- 1].hijri.holidays.length; j++) {
+            dayStr += '<span class="badge badge-success calendar-note">' + calendarData[i- 1].hijri.holidays[j] + '</span>';
+            hasAshura = calendarData[i- 1].hijri.holidays[j] == "Ashura";
+          }
+        }
+
+        if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], calendarData[i- 1].hijri.holidays, 
+              i > 1 ? calendarData[i - 2].hijri.holidays : [], i < totalDays ? calendarData[i].hijri.holidays : [])) {
+          dayStr += '<span class="badge badge-danger calendar-note">Fasting</span>';
+        }
+      }
+
+      
+      str += dayStr + '</div>';
       i++;
     }
     str += '</div>';
     return str;
+  }
+
+  function isFastingDay (day, dayOfWeek, holidays, dayBeforeHolidays, dayAfterHolidays) {
+    return day == 13 || day == 14 || day == 15 || dayOfWeek == "Monday" || dayOfWeek == "Thursday" || 
+      holidays.includes("Ashura") || holidays.includes("Arafa") || dayBeforeHolidays.includes("Ashura") || 
+      dayAfterHolidays.includes("Ashura");
   }
 });

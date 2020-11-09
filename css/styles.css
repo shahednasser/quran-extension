@@ -282,7 +282,7 @@ body {
   grid-template-columns: repeat(7, 1fr);  
 }
 .calendar__week {
-  grid-auto-rows: 90px;
+  grid-auto-rows: max-content;
   text-align: right;
 }
 
@@ -311,6 +311,12 @@ body {
 
 .calendar__day:last-child {
   border-right: 0;
+}
+
+.calendar__day .calendar-note {
+  display: block;
+  width: fit-content;
+  margin: 2px 0 0 auto;
 }
 
 .not-month-day {

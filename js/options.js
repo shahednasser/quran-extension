@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2019 by Shahed Nasser. All Rights Reserved.
+// Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
 //
 $(document).ready(function(){
 
@@ -9,7 +9,8 @@ $(document).ready(function(){
       showTopSitesElement = $("input[name=show_top_sites]"),
       showAthkarElement = $("input[name=show_athkar]"),
       showDateElement = $("input[name=show_date]"),
-      calendarStartDayElement = $("select[name=calendar_start_day]");
+      calendarStartDayElement = $("select[name=calendar_start_day]"),
+      sendFastingNotificationElement = $("input[name=send_fasting_notification]");
   chrome.storage.sync.get([
     "translation_language", 
     "show_translation", 
@@ -40,6 +41,9 @@ $(document).ready(function(){
     if (result.hasOwnProperty('calendar_start_day')) {
       calendarStartDayElement.val(result.calendar_start_day);
     }
+
+    sendFastingNotificationElement.prop('checked', result.hasOwnProperty('send_fasting_notification') && result.send_fasting_notification)
+
   });
 
   $("#save").click(function(){
@@ -51,16 +55,33 @@ $(document).ready(function(){
         show_top_sites = showTopSitesElement.is(":checked"),
         show_athkar = showAthkarElement.is(":checked"),
         show_date = showDateElement.is(":checked"),
-        calendar_start_day = calendarStartDayElement.val();
+        calendar_start_day = calendarStartDayElement.val(),
+        send_fasting_notification = sendFastingNotificationElement.is(":checked");
     if(translation_identifier === null){
       $(".alerts").html('<div class="alert alert-danger">An error occured, please try again later.</div>')
     }
     chrome.storage.sync.set({translation_language: translation_language, show_translation: show_translation,
                               recitation: recitation, translation_identifier: translation_identifier,
                               show_top_sites: show_top_sites, show_athkar: show_athkar, show_date: show_date,
-                              calendar_start_day: calendar_start_day}, function(){
+                              calendar_start_day: calendar_start_day, send_fasting_notification: send_fasting_notification}, function(){
                                 chrome.storage.local.set({image: null, verse: null}, function(){
                                   $(".alerts").html('<div class="alert alert-success mt-3">Saved.</div>');
+
+                                  if (send_fasting_notification) {
+                                    //check whether it exists or not
+                                    chrome.alarms.get('fastingNotification', function (alarm) {
+                                      if (!alarm || alarm.name != "fastingNotification") {
+                                        //create an alarm
+                                        chrome.alarms.create('fastingNotification', {
+                                          when: Date.now(),
+                                          delayInMinutes: 1,
+                                          periodInMinutes: 1440 //every day
+                                        });
+                                      }
+                                    });
+                                  } else {
+                                    chrome.alarms.clear('fastingNotification');
+                                  }
                                 });
                               });
   });

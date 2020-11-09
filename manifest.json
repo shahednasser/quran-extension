@@ -4,7 +4,9 @@
   "description": "View Quran verses on the new tab page.",
   "permissions": [
           "storage",
-          "topSites"
+          "topSites",
+          "alarms",
+          "notifications"
   ],
   "chrome_url_overrides" : {
     "newtab": "newtab.html"
