@@ -10,6 +10,7 @@ $(document).ready(function(){
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
+  localizeHtmlPage();
   load(false, true);
   chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", 
     "showed_new_feature_report", "showed_new_feature_calendar"], function(result){
@@ -28,9 +29,8 @@ $(document).ready(function(){
     }
     if (!result.hasOwnProperty("showed_survey_popup") || !result.showed_survey_popup) {
       Swal.fire({
-        title: 'Give Us Your Feedback',
-        html: "<p class='lead'>Thank you for using our extension. We want to keep improving and making this extension better for you" +
-              '<br> Please give us your feedback by answering just few questions <b><a href="https://shahednasser.typeform.com/to/Maf5wATU" target="_blank">here</a></b></p>',
+        title: chrome.i18n.getMessage('feedback_window_title'),
+        html: chrome.i18n.getMessage('feedback_window_content'),
         showConfirmButton: false,
         showCloseButton: true,
         onClose: function () {
@@ -42,8 +42,8 @@ $(document).ready(function(){
     if (!result.hasOwnProperty("showed_new_feature_report") || !result.showed_new_feature_report) {
       Swal.fire({
         icon: 'info',
-        title: 'You can now report images!',
-        html: "If there are any images that you don't like or find inappropriate, press the <b>Report</b> icon on the top left to report these images and never show them again!",
+        title: chrome.i18n.getMessage('reporting_window_message'),
+        html: chrome.i18n.getMessage('reporting_window_content'),
         showConfirmButton: false,
         showCloseButton: true,
         onClose: function () {
@@ -55,22 +55,8 @@ $(document).ready(function(){
     if (!result.hasOwnProperty("showed_new_feature_calendar") || !result.showed_new_feature_report) {
       Swal.fire({
         icon: 'info',
-        title: 'New Features!',
-        html: `
-          We have added the following new features:
-          <ul>
-            <li><b>Calendar:</b> You can now view each gregorian month's calendar with the hijri dates by clicking on the calendar icon at the top right</li>
-            <li><b>Fasting Days and Holidays:</b> In the calendar you can see which days have holidays and/or have Sunnah Fasting Days</li>
-            <li><b>Notifications for Sunnah Fasting Days:</b> You can receive a notification a day before a sunnah fasting day by enabling it <a href="#" class="notifications-reminder">in the settings</a></li>
-          </ul>
-          <b>Upcoming features:</b>
-          <ul>
-            <li>We are working on translating this extension into different languages including Arabic, French, Indonesian, and other languages as well. If you would like to help please go <a href="https://crowdin.com/project/quran-in-new-tab-extension">here</a>.</li>
-            <li>Reminders/Notifications for prayer times</li>
-          </ul>
-          If you have any other ideas you would like to see <a href="https://shahednasser.typeform.com/to/Maf5wATU">submit them in our survey.</a><b/>
-          Thank you for using Quran In New Tab extension!
-        `,
+        title: chrome.i18n.getMessage('new_features_title'),
+        html: chrome.i18n.getMessage('new_features_calendar_content'),
         showConfirmButton: false,
         showCloseButton: true,
         customClass: {
@@ -143,12 +129,11 @@ $(document).ready(function(){
 
   $(".report").click(function() {
     Swal.fire({
-      title: 'Report Image',
-      html: "If you think the image is inappropriate or you don't like it, please report the image and you will not " + 
-        "see it anymore.",
+      title: chrome.i18n.getMessage('report_image_window_title'),
+      html: chrome.i18n.getMessage('report_image_window_content'),
       showConfirmButton: true,
       showCloseButton: true,
-      confirmButtonText: 'Report Image',
+      confirmButtonText: chrome.i18n.getMessage('report_image_window_title'),
       showCancelButton: true,
       showLoaderOnConfirm: true,
       preConfirm: function () {
@@ -381,7 +366,7 @@ $(document).ready(function(){
   function setDates(dateObj, currentDate, hijriData){
     $(".gregorian-date").text(dateObj.getDate() + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear());
     $(".hijri-date").text(hijriData.day + " " + hijriData.month.ar + " " + hijriData.year)
-    $(".hijri-date-en").text(hijriData.day + " " + hijriData.month.en + " " + hijriData.year)
+    $(".hijri-date-en").text(hijriData.day + " " + chrome.i18n.getMessage(slugify(hijriData.month.en)) + " " + hijriData.year)
     if(hijriData.hasOwnProperty("holidays") && hijriData.holidays.length > 0){
       let text = "";
       for(let i = 0; i < hijriData.holidays.length; i++){
@@ -443,7 +428,7 @@ $(document).ready(function(){
     $(".calendar__header").nextAll().remove();
     //set headings
     $(".calendar__header").children().each(function (index) {
-      $(this).text(weekdays[index]);
+      $(this).text(chrome.i18n.getMessage(weekdays[index]));
     });
     const nbDates = data.length;
     let startedDay = -1;
@@ -485,8 +470,8 @@ $(document).ready(function(){
     }
 
     $(".calendar__header").after(html);
-    $("#gregorianMonth").text(data[0].gregorian.month.en);
-    $("#hijriMonth").text(data[0].hijri.month.en);
+    $("#gregorianMonth").text(chrome.i18n.getMessage(data[0].gregorian.month.en));
+    $("#hijriMonth").text(chrome.i18n.getMessage(slugify(data[0].hijri.month.en)));
     $(".calendar-table .loader").hide();
     $(".calendar-inner-container").show();
   }
@@ -513,7 +498,7 @@ $(document).ready(function(){
 
         if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], calendarData[i- 1].hijri.holidays, 
               i > 1 ? calendarData[i - 2].hijri.holidays : [], i < totalDays ? calendarData[i].hijri.holidays : [])) {
-          dayStr += '<span class="badge badge-danger calendar-note">Fasting</span>';
+          dayStr += '<span class="badge badge-danger calendar-note">' + chrome.i18n.getMessage('Fasting') + '</span>';
         }
       }
 
@@ -529,5 +514,48 @@ $(document).ready(function(){
     return day == 13 || day == 14 || day == 15 || dayOfWeek == "Monday" || dayOfWeek == "Thursday" || 
       holidays.includes("Ashura") || holidays.includes("Arafa") || dayBeforeHolidays.includes("Ashura") || 
       dayAfterHolidays.includes("Ashura");
+  }
+
+  function slugify (str) {
+    var map = {
+        '_' : ' |-|ʿ',
+        'a' : 'á|à|ã|â|ā|À|Á|Ã|Â',
+        'e' : 'é|è|ê|É|È|Ê',
+        'i' : 'í|ì|î|ī|Í|Ì|Î',
+        'o' : 'ó|ò|ô|õ|Ó|Ò|Ô|Õ',
+        'u' : 'ú|ù|û|ü|ū|Ú|Ù|Û|Ü',
+        'c' : 'ç|Ç',
+        'n' : 'ñ|Ñ',
+        'H' : 'Ḥ',
+        'h' : 'ḥ',
+        'S' : 'Ṣ'
+    };
+    
+    for (var pattern in map) {
+        str = str.replace(new RegExp(map[pattern], 'g'), pattern);
+    };
+
+    return str;
+  }
+
+  function localizeHtmlPage()
+  {
+      //Localize by replacing __MSG_***__ meta tags
+      var objects = document.getElementsByTagName('html');
+      for (var j = 0; j < objects.length; j++)
+      {
+          var obj = objects[j];
+
+          var valStrH = obj.innerHTML.toString();
+          var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function(match, v1)
+          {
+              return v1 ? chrome.i18n.getMessage(v1) : "";
+          });
+
+          if(valNewH != valStrH)
+          {
+              obj.innerHTML = valNewH;
+          }
+      }
   }
 });

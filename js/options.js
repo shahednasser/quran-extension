@@ -2,7 +2,7 @@
 // Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
 //
 $(document).ready(function(){
-
+  localizeHtmlPage();
   let translationLanguagesElement = $("select[name=translation_language]"),
       showTranslationElement = $("input[name=show_translation]"),
       recitationElement = $("select[name=recitation]"),
@@ -59,18 +59,17 @@ $(document).ready(function(){
         calendar_start_day = calendarStartDayElement.val(),
         send_fasting_notification = sendFastingNotificationElement.is(":checked");
     if(translation_identifier === null){
-      $(".alerts").html('<div class="alert alert-danger">An error occured, please try again later.</div>')
+      $(".alerts").html('<div class="alert alert-danger">' + chrome.i18n.getMessage('error') + '</div>')
     }
     chrome.storage.sync.set({translation_language: translation_language, show_translation: show_translation,
                               recitation: recitation, translation_identifier: translation_identifier,
                               show_top_sites: show_top_sites, show_athkar: show_athkar, show_date: show_date,
                               calendar_start_day: calendar_start_day, send_fasting_notification: send_fasting_notification}, function(){
                                 chrome.storage.local.set({image: null, verse: null}, function(){
-                                  $(".alerts").html('<div class="alert alert-success mt-3">Saved.</div>');
+                                  $(".alerts").html('<div class="alert alert-success mt-3">' + chrome.i18n.getMessage('saved') + '</div>');
 
                                   if (send_fasting_notification) {
                                     //check whether it exists or not
-                                    console.log("here");
                                     chrome.alarms.get('fastingNotification', function (alarm) {
                                       console.log(alarm);
                                       if (!alarm || alarm.name != "fastingNotification") {
@@ -82,7 +81,6 @@ $(document).ready(function(){
                                       }
                                     });
                                   } else {
-                                    console.log("jere2");
                                     chrome.alarms.clear('fastingNotification');
                                   }
                                 });
@@ -138,5 +136,26 @@ $(document).ready(function(){
       uz: 'uz.sodik'
     }
     return identifiers.hasOwnProperty(code) ? identifiers[code] : null;
+  }
+
+  function localizeHtmlPage()
+  {
+      //Localize by replacing __MSG_***__ meta tags
+      var objects = document.getElementsByTagName('html');
+      for (var j = 0; j < objects.length; j++)
+      {
+          var obj = objects[j];
+
+          var valStrH = obj.innerHTML.toString();
+          var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function(match, v1)
+          {
+              return v1 ? chrome.i18n.getMessage(v1) : "";
+          });
+
+          if(valNewH != valStrH)
+          {
+              obj.innerHTML = valNewH;
+          }
+      }
   }
 });

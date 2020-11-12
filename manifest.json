@@ -1,6 +1,6 @@
 {
   "name": "Quran In New Tab",
-  "version": "2.0.0",
+  "version": "1.9.0",
   "description": "View Quran verses on the new tab page.",
   "permissions": [
           "storage",
@@ -8,6 +8,7 @@
           "alarms",
           "notifications"
   ],
+  "default_locale": "en",
   "chrome_url_overrides" : {
     "newtab": "newtab.html"
   },

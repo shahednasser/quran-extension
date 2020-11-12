@@ -1,7 +1,6 @@
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
-    console.log(alarm);
     if (alarm.name == "fastingNotification") {
         chrome.storage.local.get(['calendar'], function (result) {
             if (result.hasOwnProperty('calendar') && result.calendar) {
@@ -11,7 +10,6 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
                   getNewCalendar();
                 } else {
                   //use old calendar
-                  console.log("checking");
                  checkNotification(result.calendar.data);
                }
               } else {
@@ -39,12 +37,11 @@ function checkNotification (data) {
             if (isFastingDay(parseInt(data[i].hijri.day), data[i].gregorian.weekday.en, data[i].hijri.holidays, 
                 i > 0 ? data[i - 1].hijri.holidays : [], i < data.length + 1 ? data[i + 1].hijri.holidays : [])) {
                     //send notification
-                    console.log("sending notification")
                     chrome.notifications.create('fastingReminder', {
                         type: 'basic',
                         iconUrl: 'assets/icon-128.png',
                         title: 'Fasting Reminder',
-                        message: 'Tomorrow is a Sunah Fasting Day'
+                        message: chrome.i18n.getMessage('fasting_notification')
                     });
                 }
 
