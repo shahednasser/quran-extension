@@ -1,6 +1,6 @@
 {
   "name": "Quran In New Tab",
-  "version": "1.8.1",
+  "version": "2.0.0",
   "description": "View Quran verses on the new tab page.",
   "permissions": [
           "storage",
@@ -15,6 +15,10 @@
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
+  },
+  "background": {
+    "scripts": ["js/background.js"],
+    "persistent": false
   },
   "icons": {
     "16": "/assets/icon-16.png",

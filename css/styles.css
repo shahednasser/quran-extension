@@ -340,6 +340,20 @@ body {
   color: #999;
 }
 
+.swal2-icon {
+  width: 2em !important;
+  height: 2em !important;
+  line-height: 2em !important;
+}
+
+.swal2-icon-content {
+  font-size: 1.9em !important;
+}
+
+.new-features-list {
+  text-align: left !important;
+}
+
 @media screen and (min-width: 992px) {
   .calendar {
     width: 70%;
@@ -359,5 +373,32 @@ body {
 
   .top-sites-container {
     align-items: center;
+  }
+}
+
+
+@media (prefers-color-scheme: dark) {
+  .calendar-container {
+    background-color: #202020;
+    color: #fffefe;
+  }
+
+  .calendar {
+    box-shadow: 0px 0px 5px #0e0e0e;
+    background-color: #383838;
+  }
+
+  .not-month-day {
+    background-color: #4d4d4d;
+  }
+
+  .calendar__day,
+  .calendar {
+    border-color: #636363;
+  }
+
+  .close-calendar,
+  .close-calendar:hover {
+    color: #fff;
   }
 }

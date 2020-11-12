@@ -5,13 +5,14 @@
 $(document).ready(function(){
   let audio,
       athkar = [],
-      originalWeekdays = weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
   load(false, true);
-  chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", "showed_new_feature_report"], function(result){
+  chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", 
+    "showed_new_feature_report", "showed_new_feature_calendar"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
       let currentDate = date.toLocaleDateString();
@@ -47,6 +48,36 @@ $(document).ready(function(){
         showCloseButton: true,
         onClose: function () {
           chrome.storage.sync.set({showed_new_feature_report: true});
+        }
+      })
+    }
+
+    if (!result.hasOwnProperty("showed_new_feature_calendar") || !result.showed_new_feature_report) {
+      Swal.fire({
+        icon: 'info',
+        title: 'New Features!',
+        html: `
+          We have added the following new features:
+          <ul>
+            <li><b>Calendar:</b> You can now view each gregorian month's calendar with the hijri dates by clicking on the calendar icon at the top right</li>
+            <li><b>Fasting Days and Holidays:</b> In the calendar you can see which days have holidays and/or have Sunnah Fasting Days</li>
+            <li><b>Notifications for Sunnah Fasting Days:</b> You can receive a notification a day before a sunnah fasting day by enabling it <a href="#" class="notifications-reminder">in the settings</a></li>
+          </ul>
+          <b>Upcoming features:</b>
+          <ul>
+            <li>We are working on translating this extension into different languages including Arabic, French, Indonesian, and other languages as well. If you would like to help please go <a href="https://crowdin.com/project/quran-in-new-tab-extension">here</a>.</li>
+            <li>Reminders/Notifications for prayer times</li>
+          </ul>
+          If you have any other ideas you would like to see <a href="https://shahednasser.typeform.com/to/Maf5wATU">submit them in our survey.</a><b/>
+          Thank you for using Quran In New Tab extension!
+        `,
+        showConfirmButton: false,
+        showCloseButton: true,
+        customClass: {
+          content: 'new-features-list'
+        },
+        onClose: function () {
+          chrome.storage.sync.set({showed_new_feature_calendar: true});
         }
       })
     }
@@ -102,7 +133,7 @@ $(document).ready(function(){
     }
   });
 
-  $(".settings-link").click(function(){
+  $("body").on('click', '.settings-link, .notifications-reminder', function(){
     if (chrome.runtime.openOptionsPage) {
       chrome.runtime.openOptionsPage();
     } else {
@@ -241,8 +272,6 @@ $(document).ready(function(){
             //get new calendar
             getNewCalendar();
           }
-          $(".calendar-table .loader").hide();
-          $(".calendar-inner-container").show();
         }
         else{
           $(".translation-container").remove();
@@ -458,6 +487,8 @@ $(document).ready(function(){
     $(".calendar__header").after(html);
     $("#gregorianMonth").text(data[0].gregorian.month.en);
     $("#hijriMonth").text(data[0].hijri.month.en);
+    $(".calendar-table .loader").hide();
+    $(".calendar-inner-container").show();
   }
 
   function addWeek (fromDay, totalDays, todayDate, calendarData) {

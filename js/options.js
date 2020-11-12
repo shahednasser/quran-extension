@@ -18,7 +18,8 @@ $(document).ready(function(){
     "show_top_sites", 
     "show_athkar", 
     "show_date",
-    "calendar_start_day"], function(result){
+    "calendar_start_day",
+    "send_fasting_notification"], function(result){
     if(result.hasOwnProperty('show_translation') && result.show_translation){
       showTranslationElement.prop('checked', true);
       translationLanguagesElement.prop('disabled', false);
@@ -69,17 +70,19 @@ $(document).ready(function(){
 
                                   if (send_fasting_notification) {
                                     //check whether it exists or not
+                                    console.log("here");
                                     chrome.alarms.get('fastingNotification', function (alarm) {
+                                      console.log(alarm);
                                       if (!alarm || alarm.name != "fastingNotification") {
                                         //create an alarm
                                         chrome.alarms.create('fastingNotification', {
                                           when: Date.now(),
-                                          delayInMinutes: 1,
                                           periodInMinutes: 1440 //every day
                                         });
                                       }
                                     });
                                   } else {
+                                    console.log("jere2");
                                     chrome.alarms.clear('fastingNotification');
                                   }
                                 });

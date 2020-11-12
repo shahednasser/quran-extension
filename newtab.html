@@ -65,16 +65,17 @@
       <div class="body">
       </div>
     </div>
-    <div class="calendar-container show">
+    <div class="calendar-container">
       <button type="button" class="close close-calendar" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
       <div class="container mt-5 calendar-table">
         <h1 class="text-center">Calendar</h1>
-        <div class="loader"></div>
-        <div class="calendar-inner-container">
-          <h2 class="text-center"><span id="gregorianMonth"></span> - <span id="hijriMonth"></span></h2>
-          <div class="calendar-wrapper mt-5 mb-5">
+        <div class="loader mt-5 text-dark"></div>
+        <div class="calendar-inner-container text-center">
+          <h2><span id="gregorianMonth"></span> - <span id="hijriMonth"></span></h2>
+          <a class="notifications-reminder" href="/options.html">Make sure to enable notifications for Sunnah Fasting days to receive a notification a day before!</a>
+          <div class="calendar-wrapper mt-3 mb-5">
             <div class="calendar">
               <div class="calendar__header">
                 <div>mon</div>

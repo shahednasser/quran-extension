@@ -1,6 +1,7 @@
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
 chrome.alarms.onAlarm.addListener(function (alarm) {
+    console.log(alarm);
     if (alarm.name == "fastingNotification") {
         chrome.storage.local.get(['calendar'], function (result) {
             if (result.hasOwnProperty('calendar') && result.calendar) {
@@ -9,7 +10,8 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
                   //get calendar for new month
                   getNewCalendar();
                 } else {
-                  //print old calendar
+                  //use old calendar
+                  console.log("checking");
                  checkNotification(result.calendar.data);
                }
               } else {
@@ -29,12 +31,15 @@ function getNewCalendar () {
 }
 
 function checkNotification (data) {
-    const currentDay = (new Date()).getDate() - 1;
+    const currentDay = (new Date()).getDate();
     for (let i = 0; i < data.length; i++) {
-        if (data[i].gregorian.day == currentDay) {
-            if (isFastingDay(parseInt(data[i].hijri.day), weekdays.indexOf(data[i].gregorian.weekday.en), data[i].hijri.holidays, 
+        console.log(data[i].gregorian.day, currentDay)
+        if (data[i].gregorian.day == currentDay + 1) {
+            console.log("equal", data[i], data[i - 1], data[i + 1]);
+            if (isFastingDay(parseInt(data[i].hijri.day), data[i].gregorian.weekday.en, data[i].hijri.holidays, 
                 i > 0 ? data[i - 1].hijri.holidays : [], i < data.length + 1 ? data[i + 1].hijri.holidays : [])) {
                     //send notification
+                    console.log("sending notification")
                     chrome.notifications.create('fastingReminder', {
                         type: 'basic',
                         iconUrl: 'assets/icon-128.png',
