@@ -41,7 +41,8 @@ function checkNotification (data) {
                         type: 'basic',
                         iconUrl: 'assets/icon-128.png',
                         title: 'Fasting Reminder',
-                        message: chrome.i18n.getMessage('fasting_notification')
+                        message: chrome.i18n.getMessage('fasting_notification'),
+                        priority: 2
                     });
                 }
 
