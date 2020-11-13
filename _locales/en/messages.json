@@ -305,5 +305,8 @@
     },
     "feedback": {
         "message": "Give us your feedback"
+    },
+    "translation_link": {
+        "message": "Help in translating this extension"
     }
 }
