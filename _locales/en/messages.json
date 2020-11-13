@@ -235,7 +235,7 @@
         "message": "Dutch"
     },
     "no": {
-        "message": "Norwegiwn"
+        "message": "Norwegian"
     },
     "pl": {
         "message": "Polish"
@@ -295,7 +295,7 @@
         "message": "Show Random Athkar"
     },
     "week_start_date": {
-        "message": "Week Start Date"
+        "message": "Week Start Day"
     },
     "notification_setting": {
         "message": "Send a Notification a Day before Sunnah Fasting"
