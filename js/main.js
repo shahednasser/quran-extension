@@ -7,10 +7,11 @@ $(document).ready(function(){
       athkar = [],
       originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const messageRegex = /__MSG_(\w+)__/g;
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   })
-  localizeHtmlPage();
+  localizeHtmlPage($("body"));
   load(false, true);
   chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", 
     "showed_new_feature_report", "showed_new_feature_calendar"], function(result){
@@ -538,24 +539,26 @@ $(document).ready(function(){
     return str;
   }
 
-  function localizeHtmlPage()
+  function localizeHtmlPage($elm)
   {
       //Localize by replacing __MSG_***__ meta tags
-      var objects = document.getElementsByTagName('html');
-      for (var j = 0; j < objects.length; j++)
-      {
-          var obj = objects[j];
+      //var objects = document.getElementsByTagName('html');
+      //console.log($elm);
+      $elm.children().each(function () {
+        localizeHtmlPage($(this));
+        $.each(this.attributes, function () {
+          //console.log(this.name, this.value);
+          this.name = this.name.replace(messageRegex, localizeString);
 
-          var valStrH = obj.innerHTML.toString();
-          var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function(match, v1)
-          {
-              return v1 ? chrome.i18n.getMessage(v1) : "";
-          });
+          this.value = this.value.replace(messageRegex, localizeString);
+          //console.log(this.name, this.value);
+        });
+        $(this).html($(this).html().replace(messageRegex, localizeString));
+        //console.log($(this).text());
+      });
+  }
 
-          if(valNewH != valStrH)
-          {
-              obj.innerHTML = valNewH;
-          }
-      }
+  function localizeString(_, str) {
+      return str ? chrome.i18n.getMessage(str) : "";
   }
 });

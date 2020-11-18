@@ -2,7 +2,8 @@
 // Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
 //
 $(document).ready(function(){
-  localizeHtmlPage();
+  const messageRegex = /__MSG_(\w+)__/g;
+  localizeHtmlPage($("body"));
   let translationLanguagesElement = $("select[name=translation_language]"),
       showTranslationElement = $("input[name=show_translation]"),
       recitationElement = $("select[name=recitation]"),
@@ -138,24 +139,26 @@ $(document).ready(function(){
     return identifiers.hasOwnProperty(code) ? identifiers[code] : null;
   }
 
-  function localizeHtmlPage()
+  function localizeHtmlPage($elm)
   {
       //Localize by replacing __MSG_***__ meta tags
-      var objects = document.getElementsByTagName('html');
-      for (var j = 0; j < objects.length; j++)
-      {
-          var obj = objects[j];
+      //var objects = document.getElementsByTagName('html');
+      //console.log($elm);
+      $elm.children().each(function () {
+        localizeHtmlPage($(this));
+        $.each(this.attributes, function () {
+          //console.log(this.name, this.value);
+          this.name = this.name.replace(messageRegex, localizeString);
 
-          var valStrH = obj.innerHTML.toString();
-          var valNewH = valStrH.replace(/__MSG_(\w+)__/g, function(match, v1)
-          {
-              return v1 ? chrome.i18n.getMessage(v1) : "";
-          });
+          this.value = this.value.replace(messageRegex, localizeString);
+          //console.log(this.name, this.value);
+        });
+        $(this).html($(this).html().replace(messageRegex, localizeString));
+        //console.log($(this).text());
+      });
+  }
 
-          if(valNewH != valStrH)
-          {
-              obj.innerHTML = valNewH;
-          }
-      }
+  function localizeString(_, str) {
+      return str ? chrome.i18n.getMessage(str) : "";
   }
 });
