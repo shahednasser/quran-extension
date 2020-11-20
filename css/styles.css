@@ -245,7 +245,7 @@ body {
 
 .calendar-container {
   width: 100%;
-  height: calc(100% + 60px);
+  min-height: calc(100% + 60px);
   background-color: #fff;
   position: absolute;
   left: 0;
