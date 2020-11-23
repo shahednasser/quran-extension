@@ -249,7 +249,7 @@ body {
   background-color: #fff;
   position: absolute;
   left: 0;
-  top: calc(-100% - 60px);
+  top: -200%;
   transition: top .6s ease-in, opacity .4s ease-in-out;
   color: #333;
   opacity: 0;

@@ -142,19 +142,14 @@ $(document).ready(function(){
   function localizeHtmlPage($elm)
   {
       //Localize by replacing __MSG_***__ meta tags
-      //var objects = document.getElementsByTagName('html');
-      //console.log($elm);
       $elm.children().each(function () {
         localizeHtmlPage($(this));
         $.each(this.attributes, function () {
-          //console.log(this.name, this.value);
           this.name = this.name.replace(messageRegex, localizeString);
 
           this.value = this.value.replace(messageRegex, localizeString);
-          //console.log(this.name, this.value);
         });
         $(this).html($(this).html().replace(messageRegex, localizeString));
-        //console.log($(this).text());
       });
   }
 
