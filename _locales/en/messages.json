@@ -308,5 +308,17 @@
     },
     "translation_link": {
         "message": "Help in translating this extension"
+    },
+    "remove_top_site_title": {
+        "message": "Remove Top Site"
+    },
+    "remove_top_site_content": {
+        "message": "Are you sure you want to remove the site?"
+    },
+    "remove": {
+        "message": "Remove"
+    },
+    "cancel": {
+        "message": "Cancel"
     }
 }

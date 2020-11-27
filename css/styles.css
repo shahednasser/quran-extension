@@ -7,6 +7,10 @@ Copyright (c) 2019 by Shahed Nasser. All Rights Reserved.
   font-family: QuranFont;
 }
 
+html {
+  direction: __MSG_@@bidi_dir__;
+}
+
 body {
   color: #fff;
   position: relative;
@@ -88,7 +92,7 @@ body {
   opacity: .7;
   transition: all .2s;
   width: 60%;
-  left: 20%;
+  __MSG_@@bidi_start_edge__: 20%;
 }
 
 .translation-container .title {
@@ -106,6 +110,7 @@ body {
   display: none;
   font-size: 15px;
   padding: 10px;
+  direction: ltr;
 }
 
 .toolbar-link {
@@ -127,23 +132,23 @@ body {
 }
 
 .settings-link {
-  right: 10px;
+  __MSG_@@bidi_end_edge__: 10px;
 }
 
 .calendar-btn {
-  right: 55px;
+  __MSG_@@bidi_end_edge__: 55px;
 }
 
 .rate-link {
-  right: 100px;
+  __MSG_@@bidi_end_edge__: 100px;
 }
 
 .reload {
-  left: 10px;
+  __MSG_@@bidi_start_edge__: 10px;
 }
 
 .report {
-  left: 45px;
+  __MSG_@@bidi_start_edge__: 45px;
 }
 
 .reload .loader,
@@ -186,9 +191,8 @@ body {
 }
 
 .top-sites-container a {
-  overflow: hidden;
   text-overflow: ellipsis;
-  text-align: left;
+  text-align: __MSG_@@bidi_start_edge__;
   font-size: 17px;
   background-color: #fff;
   color: #333;
@@ -198,15 +202,41 @@ body {
   opacity: .8;
   transition: all .2s;
   margin-bottom: 5px;
+  position: relative;
 }
 
 .top-sites-container a:hover {
   opacity: 1;
 }
 
+.top-sites-container a .remove {
+  position: absolute;
+  __MSG_@@bidi_end_edge__: -8px;
+  top: -10px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #000;
+  text-align: center;
+  color: #fff;
+  line-height: 1;
+  font-family: sans-serif;
+  display: none;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.top-sites-container a:hover .remove {
+  display: block;
+}
+
 .top-sites-container a img {
   width: 16px;
-  margin-right: 10px
+  margin-__MSG_@@bidi_end_edge__: 10px
+}
+
+.close {
+  float: __MSG_@@bidi_end_edge__ !important;
 }
 
 .athkar-container {
@@ -261,7 +291,7 @@ body {
 }
 
 .close-calendar {
-  padding-right: 10px !important;
+  padding-__MSG_@@bidi_end_edge__: 10px !important;
   font-size: 2.5rem;
 }
 
@@ -305,12 +335,12 @@ body {
 }
 
 .calendar__day {
-  border-right: 1px solid #e1e1e1;
+  border-__MSG_@@bidi_end_edge__: 1px solid #e1e1e1;
   border-top: 1px solid #e1e1e1;
 }
 
 .calendar__day:last-child {
-  border-right: 0;
+  border-__MSG_@@bidi_end_edge__: 0;
 }
 
 .calendar__day .calendar-note {
@@ -351,7 +381,7 @@ body {
 }
 
 .new-features-list {
-  text-align: left !important;
+  text-align: __MSG_@@bidi_start_edge__ !important;
 }
 
 @media screen and (min-width: 992px) {

@@ -6,11 +6,13 @@ $(document).ready(function(){
   let audio,
       athkar = [],
       originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      userTopSites = [];
   const messageRegex = /__MSG_(\w+)__/g;
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
-  })
+  });
+  $("html").attr('lang', chrome.i18n.getUILanguage());
   localizeHtmlPage($("body"));
   load(false, true);
   chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", 
@@ -34,6 +36,7 @@ $(document).ready(function(){
         html: chrome.i18n.getMessage('feedback_window_content'),
         showConfirmButton: false,
         showCloseButton: true,
+        cancelButtonText: chrome.i18n.getMessage('cancel'),
         onClose: function () {
           chrome.storage.sync.set({showed_survey_popup: true});
         }
@@ -47,19 +50,21 @@ $(document).ready(function(){
         html: chrome.i18n.getMessage('reporting_window_content'),
         showConfirmButton: false,
         showCloseButton: true,
+        cancelButtonText: chrome.i18n.getMessage('cancel'),
         onClose: function () {
           chrome.storage.sync.set({showed_new_feature_report: true});
         }
       })
     }
 
-    if (!result.hasOwnProperty("showed_new_feature_calendar") || !result.showed_new_feature_report) {
+    if (!result.hasOwnProperty("showed_new_feature_calendar") || !result.showed_new_feature_calendar) {
       Swal.fire({
         icon: 'info',
         title: chrome.i18n.getMessage('new_features_title'),
         html: chrome.i18n.getMessage('new_features_calendar_content'),
         showConfirmButton: false,
         showCloseButton: true,
+        cancelButtonText: chrome.i18n.getMessage('cancel'),
         customClass: {
           content: 'new-features-list'
         },
@@ -136,6 +141,7 @@ $(document).ready(function(){
       showCloseButton: true,
       confirmButtonText: chrome.i18n.getMessage('report_image_window_title'),
       showCancelButton: true,
+      cancelButtonText: chrome.i18n.getMessage('cancel'),
       showLoaderOnConfirm: true,
       preConfirm: function () {
         const imageElm = $(".background-image");
@@ -151,8 +157,10 @@ $(document).ready(function(){
         }
       },
       allowOutsideClick: () => !Swal.isLoading()
-    }).then (function () {
-      load(true, false);
+    }).then (function (result) {
+      if (result.isConfirm) {
+        load(true, false);
+      }
     })
   });
 
@@ -179,7 +187,7 @@ $(document).ready(function(){
     chrome.storage.local.get(['image', 'verse', 'calendar'], function(result){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
                                   'translation_identifier', 'show_top_sites', 'show_athkar', 
-                                  'calendar_start_day'], function(syncResult){
+                                  'calendar_start_day', 'removed_top_sites'], function(syncResult){
         if(navigator.onLine){
           if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
               !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
@@ -266,7 +274,12 @@ $(document).ready(function(){
           $(".audio-player").remove();
         }
         if(withTopSites && (!syncResult.hasOwnProperty('show_top_sites') || syncResult.show_top_sites)){
-          chrome.topSites.get(addTopSites);
+          chrome.topSites.get((topSites) => {
+            if (syncResult.hasOwnProperty('removed_top_sites')) {
+              topSites = filterTopSites(topSites, syncResult.removed_top_sites);
+            }
+            addTopSites(topSites);
+          });
         }
         if(!syncResult.hasOwnProperty('show_athkar') || syncResult.show_athkar){
           if(athkar.length == 0){
@@ -286,6 +299,40 @@ $(document).ready(function(){
     
     
   }
+
+  $("body").on("click", ".top-sites-container a .remove", function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    const parent = $(this).parent("a"),
+          removeUrl = parent.attr('href');
+    Swal.fire({
+      title: chrome.i18n.getMessage('remove_top_site_title'),
+      html: chrome.i18n.getMessage('remove_top_site_content'),
+      showConfirmButton: true,
+      confirmButtonText: chrome.i18n.getMessage('remove'),
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: chrome.i18n.getMessage('cancel'),
+      icon: 'warning',
+      showLoaderOnConfirm: true,
+      preConfirm: function () {
+        chrome.storage.sync.get(['removed_top_sites'], function (storageSync) {
+          removedTopSites = storageSync.hasOwnProperty('removed_top_sites') ? storageSync.removed_top_sites : [];
+          if (removedTopSites.indexOf(removeUrl) == -1) {
+            removedTopSites.push(removeUrl);
+            chrome.storage.sync.set({removed_top_sites: removedTopSites}, function () {
+              parent.slideUp();
+              setTimeout(function () {
+                parent.remove();
+              }, 2000);
+              Swal.hideLoading();
+              Swal.close();
+            });
+          }
+        })
+      }
+    });
+  });
 
   function showRandomThikr(){
     let thikr = getRandomThikr();
@@ -350,14 +397,29 @@ $(document).ready(function(){
   }
 
   function addTopSites(topSites){
+    userTopSites = topSites;
+    
     if(topSites.length){
       let $container = $('<div class="content top-sites-container">');
       $container.appendTo('.content-container');
       for(let i = 0; i < topSites.length; i++){
         $container.append('<a href="' + topSites[i].url + '" class="shadow"><img src="https://plus.google.com/_/favicon?domain_url=' + topSites[i].url + '" />' +
-                          topSites[i].title + '</a>')
+                          topSites[i].title + '<span class="remove">x</span></a>')
       }
     }
+  }
+
+  function filterTopSites (topSites, removedTopSites) {
+    for (let i = 0; i < removedTopSites.length; i++) {
+      let ind = topSites.findIndex((site) => {
+        return site.url == removedTopSites[i];
+      });
+      console.log(ind);
+      if (ind !== -1) {
+        topSites.splice(ind, 1);
+      }
+    }
+    return topSites;
   }
 
   function getRandomThikr(){
@@ -367,7 +429,11 @@ $(document).ready(function(){
   function setDates(dateObj, currentDate, hijriData){
     $(".gregorian-date").text(dateObj.getDate() + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear());
     $(".hijri-date").text(hijriData.day + " " + hijriData.month.ar + " " + hijriData.year)
-    $(".hijri-date-en").text(hijriData.day + " " + chrome.i18n.getMessage(slugify(hijriData.month.en)) + " " + hijriData.year)
+    if (chrome.i18n.getUILanguage() != "ar") {
+      $(".hijri-date-en").text(hijriData.day + " " + chrome.i18n.getMessage(slugify(hijriData.month.en)) + " " + hijriData.year)
+    } else {
+      $(".hijri-date-en").remove();
+    }
     if(hijriData.hasOwnProperty("holidays") && hijriData.holidays.length > 0){
       let text = "";
       for(let i = 0; i < hijriData.holidays.length; i++){
@@ -559,6 +625,6 @@ $(document).ready(function(){
   }
 
   function localizeString(_, str) {
-      return str ? chrome.i18n.getMessage(str) : "";
+    return str ? chrome.i18n.getMessage(str) : "";
   }
 });

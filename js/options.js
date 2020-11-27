@@ -3,6 +3,7 @@
 //
 $(document).ready(function(){
   const messageRegex = /__MSG_(\w+)__/g;
+  $("html").attr('lang', chrome.i18n.getUILanguage());
   localizeHtmlPage($("body"));
   let translationLanguagesElement = $("select[name=translation_language]"),
       showTranslationElement = $("input[name=show_translation]"),

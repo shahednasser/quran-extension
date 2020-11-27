@@ -2,6 +2,14 @@
 Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
  */
 
+html {
+  direction: __MSG_@@bidi_dir__;
+}
+
+body {
+  text-align: __MSG_@@bidi_start_edge__ !important;
+}
+
 /* The switch - the box around the slider */
 .switch {
   position: relative;
@@ -63,6 +71,7 @@ input:checked + .slider:before {
   width: 80px;
   margin: 0 auto;
   display: block;
+  float: __MSG_@@bidi_start_edge__;
 }
 
 .btn.btn-dark {

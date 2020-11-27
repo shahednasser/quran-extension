@@ -1,0 +1,324 @@
+{
+    "Monday": {
+        "message": "الإثنين"
+    },
+    "Tuesday": {
+        "message": "الثلاثاء"
+    },
+    "Wednesday": {
+        "message": "الأربعاء"
+    },
+    "Thursday": {
+        "message": "الخميس"
+    },
+    "Friday": {
+        "message": "الجمعة"
+    },
+    "Saturday": {
+        "message": "السبت"
+    },
+    "Sunday": {
+        "message": "الأحد"
+    },
+    "January": {
+        "message": "يناير"
+    },
+    "February": {
+        "message": "فبراير"
+    },
+    "March": {
+        "message": "مارس"
+    },
+    "April": {
+        "message": "أبريل"
+    },
+    "May": {
+        "message": "مايو"
+    },
+    "June": {
+        "message": "يونيو"
+    },
+    "July": {
+        "message": "يوليو"
+    },
+    "August": {
+        "message": "أغسطس"
+    },
+    "September": {
+        "message": "سبتمبر"
+    },
+    "October": {
+        "message": "أكتوبر"
+    },
+    "November": {
+        "message": "نوفمبر"
+    },
+    "December": {
+        "message": "ديسمبر"
+    },
+    "Muharram": {
+        "message": "محرم"
+    },
+    "Safar": {
+        "message": "صفر"
+    },
+    "Rabi__al_awwal": {
+        "message": "ربيع الأول"
+    },
+    "Rabi__al_thani": {
+        "message": "ربيع الثاني"
+    },
+    "Jumada_al_ula": {
+        "message": "جمادى الأولى"
+    },
+    "Jumada_al_akhirah": {
+        "message": "جمادى الآخرة"
+    },
+    "Rajab": {
+        "message": "رجب"
+    },
+    "Sha_ban": {
+        "message": "شعبان"
+    },
+    "Ramadan": {
+        "message": "رمضان"
+    },
+    "Shawwal": {
+        "message": "شوال"
+    },
+    "Dhu_al_Qa_dah": {
+        "message": "ذو القعدة"
+    },
+    "Dhu_al_Hijjah": {
+        "message": "ذو الحجة"
+    },
+    "fasting_notification": {
+        "message": "غدا هو يوم صيام سنّة",
+        "description": "Text of the notification that will be sent before a fasting day."
+    },
+    "feedback_window_title": {
+        "message": "أعطنا ملاحظاتك"
+    },
+    "feedback_window_content": {
+        "message": "<p class='lead'>شكرا لك على استخدام ملحقنا. نحن نريد الاستمرار في التحسين وجعل هذا الملحق أفضل لك <br> الرجاء إعطائنا ملاحظاتك عن طريق الإجابة على بعض الأسئلة <b><a href=\"https://shahednasser.typeform.com/to/Maf5wATU\" target=\"_blank\">هنا</a></b></p>"
+    },
+    "reporting_window_title": {
+        "message": "يمكنك الآن الإبلاغ عن الصور!"
+    },
+    "reporting_window_content": {
+        "message": "إذا كانت هناك أي صور لا تحبها أو تجدها غير ملائمة، اضغط على أيقونة <b>الإبلاغ</b> في الجزء العلوي الأيسر للإبلاغ عن هذه الصور وعدم عرضها مرة أخرى!"
+    },
+    "new_features_title": {
+        "message": "مميزات الجديدة!"
+    },
+    "new_features_calendar_content": {
+        "message": "لقد أضفنا الميزات الجديدة التالية:<ul><li><b>التقويم:</b> يمكنك الآن عرض تقويم كل شهر مع تواريخ الهجري من خلال النقر على أيقونة التقويم في أعلى اليمين</li><li><b>أيام الصوم والأعياد:</b> في التقويم يمكنك رؤية أيام الأعياد و/أو أيام الصوم السُنّة</li><li><b>إشعارات لأيام الصوم السُنّة:</b> يمكنك تلقي إشعار في قبل يوم فيه صيام سنّة <a href=\"#\" class=\"notifications-reminder\">في الإعدادات</a></li></ul><b>المميزات القادمة:</b><ul><li>نعمل على ترجمة هذا الملحق إلى لغات مختلفة بما في ذلك العربية والفرنسية والإندونيسية ولغات الأخرى أيضا. إذا كنت ترغب في المساعدة الرجاء النقر <a href=\"https://crowdin.com/project/quran-in-new-tab-extension\">هنا</a>.</li><li>تذكير/إشعارات لأوقات الصلاة</li></ul>إذا كان لديك أي أفكار أخرى ترغب في رؤيتها الرجاء <a href=\"https://shahednasser.typeform.com/to/Maf5wATU\">تقديمها في استطلاعنا.</a><b/>شكرا لك على استخدام Quran In New Tab!"
+    },
+    "report_image_window_title": {
+        "message": "إبلاغ عن الصورة"
+    },
+    "report_image_window_content": {
+        "message": "إذا كنت تعتقد أن الصورة غير مناسبة أو أنك لا تحبها، يرجى الإبلاغ عن الصورة ولن تراها بعد الآن."
+    },
+    "fasting": {
+        "message": "يوم صيام"
+    },
+    "error": {
+        "message": "لقد حدث خطأ، الرجاء أَعِد المحاولة لاحقاً."
+    },
+    "saved": {
+        "message": "تم حفظ الإعدادات بنجاح"
+    },
+    "enable_notification_notice": {
+        "message": "تأكد من تمكين الإشعارات لأيام الصيام السنّة لتلقي إشعار قبل بيوم!"
+    },
+    "calendar": {
+        "message": "الرزنامة"
+    },
+    "quran_translation": {
+        "message": "ترجمة القرآن"
+    },
+    "athkar": {
+        "message": "أذكار"
+    },
+    "settings": {
+        "message": "الاعدادات"
+    },
+    "rate_extension": {
+        "message": "قيّم هذا الملحق"
+    },
+    "report_image": {
+        "message": "إبلاغ عن الصورة"
+    },
+    "reload": {
+        "message": "إعادة التحميل"
+    },
+    "general": {
+        "message": "اعدادات عامة"
+    },
+    "show_top_sites": {
+        "message": "إظهار المواقع العليا"
+    },
+    "show_top_sites_description": {
+        "message": "إذا لم يكن لديك مواقع عليا، لن يظهر أي منها."
+    },
+    "show_hijri_date": {
+        "message": "أظهر التاريخ الهجري"
+    },
+    "show_hijri_date_description": {
+        "message": "التحقق من هذا سيظهر تاريخ الهجري مع تاريخ غريغوريان والأعياد (إذا كان هناك أي منها في هذا اليوم)."
+    },
+    "quran": {
+        "message": "القرآن"
+    },
+    "show_translation": {
+        "message": "عرض الترجمة"
+    },
+    "translation_language": {
+        "message": "لغة التّرجمة"
+    },
+    "none": {
+        "message": "لا شيء"
+    },
+    "en": {
+        "message": "الإنجليزية"
+    },
+    "az": {
+        "message": "الأذربيجانية"
+    },
+    "bn": {
+        "message": "البنغالية"
+    },
+    "cs": {
+        "message": "التشيكية"
+    },
+    "de": {
+        "message": "الألمانية"
+    },
+    "dv": {
+        "message": "المالديفية"
+    },
+    "es": {
+        "message": "الإسبانية"
+    },
+    "fa": {
+        "message": "الفارسية"
+    },
+    "fr": {
+        "message": "الفرنسية"
+    },
+    "ha": {
+        "message": "الهوسية"
+    },
+    "hi": {
+        "message": "الهندية"
+    },
+    "id": {
+        "message": "الأندونيسية"
+    },
+    "it": {
+        "message": "الإيطالية"
+    },
+    "ja": {
+        "message": "اليابانية"
+    },
+    "ko": {
+        "message": "الكورية"
+    },
+    "ku": {
+        "message": "الكردية"
+    },
+    "ml": {
+        "message": "المالايالامية"
+    },
+    "nl": {
+        "message": "الهولندية"
+    },
+    "no": {
+        "message": "النرويجية"
+    },
+    "pl": {
+        "message": "البولندية"
+    },
+    "pt": {
+        "message": "البرتغالية"
+    },
+    "ro": {
+        "message": "الرومانية"
+    },
+    "ru": {
+        "message": "الروسية"
+    },
+    "sd": {
+        "message": "السندية"
+    },
+    "so": {
+        "message": "الصومالية"
+    },
+    "sq": {
+        "message": "الألبانية"
+    },
+    "sv": {
+        "message": "السويدية"
+    },
+    "sw": {
+        "message": "السواحيلية"
+    },
+    "ta": {
+        "message": "التاميلية"
+    },
+    "tg": {
+        "message": "الطاجيكية"
+    },
+    "th": {
+        "message": "التايوانية"
+    },
+    "tr": {
+        "message": "التركية"
+    },
+    "tt": {
+        "message": "التتارية"
+    },
+    "ug": {
+        "message": "الأويغورية الصينية"
+    },
+    "ur": {
+        "message": "الأوردية"
+    },
+    "uz": {
+        "message": "الأوزباكية"
+    },
+    "recitation": {
+        "message": "القارئ"
+    },
+    "show_random_athkar": {
+        "message": "أظهر اذكار بشكل عشوائي"
+    },
+    "week_start_date": {
+        "message": "يوم بداية الأسبوع"
+    },
+    "notification_setting": {
+        "message": "إرسال إشعار قبل يوم من الصيام السنّة"
+    },
+    "save": {
+        "message": "حفظ"
+    },
+    "feedback": {
+        "message": "أعطنا ملاحظاتك"
+    },
+    "translation_link": {
+        "message": "ساعد في ترجمة هذا الملحق"
+    },
+    "remove_top_site_title": {
+        "message": "حذف الموقع"
+    },
+    "remove_top_site_content": {
+        "message": "هل أنت متأكد من أنك تريد حذف الموقع؟"
+    },
+    "remove": {
+        "message": "حذف"
+    },
+    "cancel": {
+        "message": "إلغاء"
+    }
+}
