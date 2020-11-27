@@ -16,7 +16,8 @@ $(document).ready(function(){
   localizeHtmlPage($("body"));
   load(false, true);
   chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", 
-    "showed_new_feature_report", "showed_new_feature_calendar"], function(result){
+    "showed_new_feature_report", "showed_new_feature_calendar",
+    "showed_new_top_sites"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
       let currentDate = date.toLocaleDateString();
@@ -70,6 +71,20 @@ $(document).ready(function(){
         },
         onClose: function () {
           chrome.storage.sync.set({showed_new_feature_calendar: true});
+        }
+      })
+    }
+
+    if (!result.hasOwnProperty("showed_new_top_sites") || !result.showed_new_top_sites) {
+      Swal.fire({
+        icon: 'info',
+        title: chrome.i18n.getMessage('new_features_title'),
+        html: chrome.i18n.getMessage('new_feature_top_sites'),
+        showConfirmButton: false,
+        showCloseButton: true,
+        cancelButtonText: chrome.i18n.getMessage('cancel'),
+        onClose: function () {
+          chrome.storage.sync.set({showed_new_top_sites: true});
         }
       })
     }
