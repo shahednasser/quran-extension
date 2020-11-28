@@ -7,8 +7,15 @@ $(document).ready(function(){
       athkar = [],
       originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      userTopSites = [];
-  const messageRegex = /__MSG_(\w+)__/g;
+      hijriHolidays = [];
+  const messageRegex = /__MSG_(\w+)__/g,
+        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
+          'October', 'November', 'December'],
+        hijriMonths = ['Muharram', 'Safar', 'Rabi__al_awwal', 'Rabi__al_thani', 'Jumada_al_ula', 'Jumada_al_akhirah',
+          'Rajab', 'Sha_ban', 'Ramadan', 'Shawwal', 'Dhu_al_Qa_dah', 'Dhu_al_Hijjah'],
+        calendarData = [],
+        currentHijriDate = new HijriDate(),
+        currentDate = new Date();
   $(function () {
     $('[data-toggle="tooltip"]').tooltip()
   });
@@ -20,16 +27,7 @@ $(document).ready(function(){
     "showed_new_top_sites"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
-      let currentDate = date.toLocaleDateString();
-      if(!result.hasOwnProperty("date") || result.date.gregorianDate !== currentDate){
-        $.get('http://api.aladhan.com/v1/gToH', function(data){
-          let hijriData = data.data.hijri;
-          chrome.storage.sync.set({date: {gregorianDate: currentDate, hijriData: hijriData}});
-          setDates(date, currentDate, hijriData);
-        });
-      } else {
-        setDates(date, currentDate, result.date.hijriData);
-      }
+      setDates(date, currentHijriDate);
     }
     if (!result.hasOwnProperty("showed_survey_popup") || !result.showed_survey_popup) {
       Swal.fire({
@@ -268,18 +266,19 @@ $(document).ready(function(){
             }
           }
 
-          if (result.hasOwnProperty('calendar') && result.calendar) {
+          if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays) {
             const calendarDate = new Date(result.calendar.date);
             if (calendarDate.getMonth() !== (new Date()).getMonth()) {
               //get calendar for new month
-              getNewCalendar();
+              assembleCalendarData();
             } else {
               //print old calendar
-             setCalendar(result.calendar.data);
+              hijriHolidays = result.calendar.hijriHolidays;
+              setCalendar(result.calendar.data);
            }
           } else {
             //get new calendar
-            getNewCalendar();
+            assembleCalendarData();
           }
         }
         else{
@@ -429,7 +428,6 @@ $(document).ready(function(){
       let ind = topSites.findIndex((site) => {
         return site.url == removedTopSites[i];
       });
-      console.log(ind);
       if (ind !== -1) {
         topSites.splice(ind, 1);
       }
@@ -441,24 +439,9 @@ $(document).ready(function(){
     return athkar[Math.floor(Math.random() * athkar.length)];
   }
 
-  function setDates(dateObj, currentDate, hijriData){
+  function setDates(dateObj, hijriData){
     $(".gregorian-date").text(dateObj.getDate() + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear());
-    $(".hijri-date").text(hijriData.day + " " + hijriData.month.ar + " " + hijriData.year)
-    if (chrome.i18n.getUILanguage() != "ar") {
-      $(".hijri-date-en").text(hijriData.day + " " + chrome.i18n.getMessage(slugify(hijriData.month.en)) + " " + hijriData.year)
-    } else {
-      $(".hijri-date-en").remove();
-    }
-    if(hijriData.hasOwnProperty("holidays") && hijriData.holidays.length > 0){
-      let text = "";
-      for(let i = 0; i < hijriData.holidays.length; i++){
-        if(i !== 0){
-          text += "<br>"
-        }
-        text += hijriData.holidays[i];
-      }
-      $(".holidays").html(text);
-    }
+    $(".hijri-date").text(hijriData.getDate() + " " + chrome.i18n.getMessage(hijriMonths[hijriData.getMonth() - 1]) + " " + hijriData.getFullYear());
   }
 
   function setNewImage(reload) {
@@ -499,11 +482,8 @@ $(document).ready(function(){
   }
 
   function getNewCalendar () {
-    const currentDate = new Date();
-    $.get('http://api.aladhan.com/v1/gToHCalendar/' + (currentDate.getMonth() + 1) + '/' + currentDate.getFullYear(), function (data) {
-      setCalendar(data.data);
-      chrome.storage.local.set({calendar: {date: currentDate.toString(), data: data.data}});
-    })
+    setCalendar(calendarData);
+    chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData}});
   }
 
   function setCalendar (data) {
@@ -553,7 +533,7 @@ $(document).ready(function(){
 
     $(".calendar__header").after(html);
     $("#gregorianMonth").text(chrome.i18n.getMessage(data[0].gregorian.month.en));
-    $("#hijriMonth").text(chrome.i18n.getMessage(slugify(data[0].hijri.month.en)));
+    $("#hijriMonth").text(chrome.i18n.getMessage(data[0].hijri.month.en));
     $(".calendar-table .loader").hide();
     $(".calendar-inner-container").show();
   }
@@ -571,15 +551,15 @@ $(document).ready(function(){
       }
       let dayStr = '<div class="calendar__day day ' + additionalClasses + '">' + (i > totalDays || i <= 0 ? "" : i + '<small class="calendar-hijri-date">' + calendarData[i - 1].hijri.day + '</small>');
       if (i <= totalDays && i > 0) {
-        if (calendarData[i- 1].hijri.holidays.length) {
-          for (let j = 0; j < calendarData[i- 1].hijri.holidays.length; j++) {
-            dayStr += '<span class="badge badge-success calendar-note">' + calendarData[i- 1].hijri.holidays[j] + '</span>';
-            hasAshura = calendarData[i- 1].hijri.holidays[j] == "Ashura";
+        if (hijriHolidays[i - 1].length) {
+          for (let j = 0; j < hijriHolidays[i - 1].length; j++) {
+            dayStr += '<span class="badge badge-success calendar-note">' + hijriHolidays[i - 1][j] + '</span>';
+            hasAshura = hijriHolidays[i - 1][j] == "Ashura";
           }
         }
 
-        if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], calendarData[i- 1].hijri.holidays, 
-              i > 1 ? calendarData[i - 2].hijri.holidays : [], i < totalDays ? calendarData[i].hijri.holidays : [])) {
+        if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], hijriHolidays, 
+              i > 1 ? hijriHolidays[i - 2] : [], i < totalDays ? hijriHolidays[i] : [])) {
           dayStr += '<span class="badge badge-danger calendar-note">' + chrome.i18n.getMessage('Fasting') + '</span>';
         }
       }
@@ -598,48 +578,84 @@ $(document).ready(function(){
       dayAfterHolidays.includes("Ashura");
   }
 
-  function slugify (str) {
-    var map = {
-        '_' : ' |-|ʿ',
-        'a' : 'á|à|ã|â|ā|À|Á|Ã|Â',
-        'e' : 'é|è|ê|É|È|Ê',
-        'i' : 'í|ì|î|ī|Í|Ì|Î',
-        'o' : 'ó|ò|ô|õ|Ó|Ò|Ô|Õ',
-        'u' : 'ú|ù|û|ü|ū|Ú|Ù|Û|Ü',
-        'c' : 'ç|Ç',
-        'n' : 'ñ|Ñ',
-        'H' : 'Ḥ',
-        'h' : 'ḥ',
-        'S' : 'Ṣ'
-    };
-    
-    for (var pattern in map) {
-        str = str.replace(new RegExp(map[pattern], 'g'), pattern);
-    };
-
-    return str;
-  }
-
   function localizeHtmlPage($elm)
   {
       //Localize by replacing __MSG_***__ meta tags
-      //var objects = document.getElementsByTagName('html');
-      //console.log($elm);
       $elm.children().each(function () {
         localizeHtmlPage($(this));
         $.each(this.attributes, function () {
-          //console.log(this.name, this.value);
           this.name = this.name.replace(messageRegex, localizeString);
 
           this.value = this.value.replace(messageRegex, localizeString);
-          //console.log(this.name, this.value);
         });
         $(this).html($(this).html().replace(messageRegex, localizeString));
-        //console.log($(this).text());
       });
   }
 
   function localizeString(_, str) {
     return str ? chrome.i18n.getMessage(str) : "";
+  }
+
+  function getMonthDays(year, monthIndex) {
+    //const monthIndex = month - 1; // 0..11 instead of 1..12
+    const date = new Date(year, monthIndex, 1);
+    let nbDays = 0;
+    while (date.getMonth() == monthIndex) {
+      nbDays++;
+      date.setDate(date.getDate() + 1);
+    }
+    return nbDays;
+  }
+
+  function assembleCalendarData () {
+    const currentYear = currentDate.getFullYear(),
+          currentMonth = currentDate.getMonth();
+    const nbDays = getMonthDays(currentYear, currentMonth);
+    hijriHolidays.splice = function (){
+      const result = Array.prototype.splice.apply(this,arguments);
+      if (this.length == nbDays) {
+        getNewCalendar(calendarData);
+      }
+      return result;
+    }
+    for (let i = 0; i < nbDays; i++) {
+      const gregorianDate = new Date(currentYear, currentMonth, i + 1),
+            hijriDate = gregorianDate.toHijri();
+      calendarData.push({
+        "gregorian": {
+          "weekday": {
+            "en": gregorianDate.getDay() === 0 ? originalWeekdays[6] : originalWeekdays[gregorianDate.getDay() - 1]
+          },
+          "day": gregorianDate.getDate(),
+          "month": {
+            "en": months[gregorianDate.getMonth()]
+          }
+        },
+        "hijri": {
+          "month": {
+            "en": hijriMonths[hijriDate.getMonth()]
+          },
+          "day": hijriDate.getDate()
+        }
+      });
+      $.get('http://api.aladhan.com/v1/hToG?date=' + hijriDate.getDate() + "-" + hijriDate.getMonth() + "-" + hijriDate.getFullYear(),
+          function (data) {
+            hijriHolidays.splice(this.i, 0, data.data.hijri.holidays);
+            if(currentHijriDate.getDate() == data.data.hijri.day && data.data.hijri.holidays.length){
+              let text = "";
+              for(let i = 0; i < data.data.hijri.holidays.length; i++){
+                if(i !== 0){
+                  text += "<br>"
+                }
+                text += data.data.hijri.holidays[i];
+              }
+              $(".holidays").html(text);
+            }
+            //console.log(hijriHolidays.length, this.nbDays, i);
+            // if (hijriHolidays.length == this.nbDays || this.i == (this.nbDays - 1)) {
+            //   getNewCalendar(calendarData);
+            // }
+          }.bind({i, nbDays}))
+    }
   }
 });

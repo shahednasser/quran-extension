@@ -323,5 +323,8 @@
     },
     "new_feature_top_sites": {
         "message": "You can now remove sites from the \"Top Sites\" list! Just hover the site and then click on the \"X\" icon that will appear. "
+    },
+    "fasting_reminder_title": {
+        "message": "Fasting Reminder"
     }
 }
