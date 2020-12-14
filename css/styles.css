@@ -203,6 +203,7 @@ body {
   transition: all .2s;
   margin-bottom: 5px;
   position: relative;
+  border-radius: 5px;
 }
 
 .top-sites-container a:hover {
