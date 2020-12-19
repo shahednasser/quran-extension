@@ -18,7 +18,8 @@ let hijriHolidays = [],
 chrome.alarms.onAlarm.addListener(function (alarm) {
     if (alarm.name == "fastingNotification") {
         chrome.storage.local.get(['calendar'], function (result) {
-            if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays) {
+            if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays && 
+            result.calendar.data && result.calendar.data.length == result.calendar.hijriHolidays.length) {
                 const calendarDate = new Date(result.calendar.date);
                 if (calendarDate.getMonth() !== (new Date()).getMonth()) {
                   //get calendar for new month
@@ -44,7 +45,8 @@ function getNewCalendar () {
     hijriHolidays.splice = function (){
         const result = Array.prototype.splice.apply(this,arguments);
         if (this.length == nbDays) {
-            getNewCalendar(calendarData);
+          chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData, hijriHolidays: hijriHolidays}});
+          checkNotification();
         }
         return result;
     }
@@ -71,10 +73,10 @@ function getNewCalendar () {
       $.get('http://api.aladhan.com/v1/hToG?date=' + hijriDate.getDate() + "-" + hijriDate.getMonth() + "-" + hijriDate.getFullYear(),
           function (data) {
             hijriHolidays.splice(this.i, 0, data.data.hijri.holidays);
-            if (hijriHolidays.length == this.nbDays || this.i == (this.nbDays - 1)) {
-                chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData, hijriHolidays}});
-                checkNotification(calendarData);
-            }
+            // if (hijriHolidays.length == this.nbDays || this.i == (this.nbDays - 1)) {
+            //     chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData, hijriHolidays}});
+            //     checkNotification(calendarData);
+            // }
           }.bind({i, nbDays}))
     }
 }

@@ -266,7 +266,8 @@ $(document).ready(function(){
             }
           }
 
-          if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays) {
+          if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays && 
+            result.calendar.data && result.calendar.data.length == result.calendar.hijriHolidays.length) {
             const calendarDate = new Date(result.calendar.date);
             if (calendarDate.getMonth() !== (new Date()).getMonth()) {
               //get calendar for new month
@@ -483,7 +484,7 @@ $(document).ready(function(){
 
   function getNewCalendar () {
     setCalendar(calendarData);
-    chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData}});
+    chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData, hijriHolidays: hijriHolidays}});
   }
 
   function setCalendar (data) {
@@ -559,7 +560,7 @@ $(document).ready(function(){
         }
 
         if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], hijriHolidays, 
-              i > 1 ? hijriHolidays[i - 2] : [], i < totalDays ? hijriHolidays[i] : [])) {
+              i > 1 ? hijriHolidays[i - 2] : [], i < totalDays && hijriHolidays.length > i ? hijriHolidays[i] : [])) {
           dayStr += '<span class="badge badge-danger calendar-note">' + chrome.i18n.getMessage('Fasting') + '</span>';
         }
       }
@@ -614,7 +615,7 @@ $(document).ready(function(){
     hijriHolidays.splice = function (){
       const result = Array.prototype.splice.apply(this,arguments);
       if (this.length == nbDays) {
-        getNewCalendar(calendarData);
+        getNewCalendar();
       }
       return result;
     }
@@ -651,10 +652,6 @@ $(document).ready(function(){
               }
               $(".holidays").html(text);
             }
-            //console.log(hijriHolidays.length, this.nbDays, i);
-            // if (hijriHolidays.length == this.nbDays || this.i == (this.nbDays - 1)) {
-            //   getNewCalendar(calendarData);
-            // }
           }.bind({i, nbDays}))
     }
   }
