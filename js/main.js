@@ -24,7 +24,7 @@ $(document).ready(function(){
   load(false, true);
   chrome.storage.sync.get(["show_date", "date", "showed_survey_popup", 
     "showed_new_feature_report", "showed_new_feature_calendar",
-    "showed_new_top_sites"], function(result){
+    "showed_new_top_sites", "showed_languages"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
       setDates(date, currentHijriDate);
@@ -85,6 +85,34 @@ $(document).ready(function(){
           chrome.storage.sync.set({showed_new_top_sites: true});
         }
       })
+    }
+
+    if (!result.hasOwnProperty('showed_languages') || !result.showed_languages) {
+      let currentLocale = chrome.i18n.getUILanguage(),
+          html = '';
+          console.log(currentLocale);
+      if (currentLocale.indexOf('id') !== -1) {
+          html = 'This extension is now available in Indonesian!<br /> Our countributors did their best to translate this extension, but if you find any problems or missing translations and you would like to help, please click <a href="https://crowdin.com/project/quran-in-new-tab-extension">here</a>.';
+      } else if (currentLocale.indexOf('tr') !== -1) {
+        html = 'This extension has now been translated 30% to Turkish!<br /> Our countributors did their best to translate some parts of this extension, but if you find any problems or missing translations and you would like to help, please click <a href="https://crowdin.com/project/quran-in-new-tab-extension">here</a>.';
+      } else if (currentLocale.indexOf('en') === -1 && currentLocale.indexOf('ar') === -1) {
+        html = 'This extension is now fully available in English and Arabic, and partly in Indonesian and Turkish.<br /><b>If you would like to see this extension translated to your language as well, you can help out by going <a href="https://crowdin.com/project/quran-in-new-tab-extension">here</a>.</b>'
+      }
+      if (html.length) {
+        Swal.fire({
+          icon: 'info',
+          title: chrome.i18n.getMessage('new_features_title'),
+          html, 
+          showConfirmButton: false,
+          showCloseButton: true,
+          cancelButtonText: chrome.i18n.getMessage('cancel'),
+          onClose: function () {
+            chrome.storage.sync.set({showed_languages: true});
+          }
+        });
+      } else {
+        chrome.storage.sync.set({showed_languages: true});
+      }
     }
   });
 
@@ -447,9 +475,12 @@ $(document).ready(function(){
 
   function setNewImage(reload) {
     let xhr = new XMLHttpRequest();
+    //get height and width of screen
+    const width = $(window).width(),
+          height = $(window).height();
     $.ajax({
       method: 'GET',
-      url: 'https://source.unsplash.com/1600x900/?nature,mountains,landscape,animal',
+      url: 'https://source.unsplash.com/' + width + 'x' + height + '/?nature,mountains,landscape,animal',
       headers: {
         'Access-Control-Expose-Headers': 'ETag'
       },
