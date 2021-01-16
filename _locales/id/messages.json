@@ -1,0 +1,330 @@
+{
+    "Monday": {
+        "message": "Senin"
+    },
+    "Tuesday": {
+        "message": "Selasa"
+    },
+    "Wednesday": {
+        "message": "Rabu"
+    },
+    "Thursday": {
+        "message": "Kamis"
+    },
+    "Friday": {
+        "message": "Jumat"
+    },
+    "Saturday": {
+        "message": "Sabtu"
+    },
+    "Sunday": {
+        "message": "Minggu"
+    },
+    "January": {
+        "message": "Januari"
+    },
+    "February": {
+        "message": "Februari"
+    },
+    "March": {
+        "message": "Maret"
+    },
+    "April": {
+        "message": "April"
+    },
+    "May": {
+        "message": "Mei"
+    },
+    "June": {
+        "message": "Juni"
+    },
+    "July": {
+        "message": "Juli"
+    },
+    "August": {
+        "message": "Agustus"
+    },
+    "September": {
+        "message": "September"
+    },
+    "October": {
+        "message": "Oktober"
+    },
+    "November": {
+        "message": "November"
+    },
+    "December": {
+        "message": "Desember"
+    },
+    "Muharram": {
+        "message": "Muharam"
+    },
+    "Safar": {
+        "message": "Safar"
+    },
+    "Rabi__al_awwal": {
+        "message": "Rabiul Awal"
+    },
+    "Rabi__al_thani": {
+        "message": "Rabiul Akhir"
+    },
+    "Jumada_al_ula": {
+        "message": "Jumadil Awal"
+    },
+    "Jumada_al_akhirah": {
+        "message": "Jumadil Akhir"
+    },
+    "Rajab": {
+        "message": "Rajab"
+    },
+    "Sha_ban": {
+        "message": "Syaban"
+    },
+    "Ramadan": {
+        "message": "Ramadhan"
+    },
+    "Shawwal": {
+        "message": "Syawal"
+    },
+    "Dhu_al_Qa_dah": {
+        "message": "Zulkaidah"
+    },
+    "Dhu_al_Hijjah": {
+        "message": "Zulhijjah"
+    },
+    "fasting_notification": {
+        "message": "Besok adalah Hari Puasa Sunnah",
+        "description": "Text of the notification that will be sent before a fasting day."
+    },
+    "feedback_window_title": {
+        "message": "Tinggalkan Tanggapan Anda"
+    },
+    "feedback_window_content": {
+        "message": "<p class='lead'> Terima kasih telah menggunakan ekstensi kami. Kami ingin terus meningkatkan dan membuat ekstensi ini lebih baik untuk Anda <br> Berikan masukan anda dengan menjawab beberapa pertanyaan <b> <a href=\"https://shahednasser.typeform.com/to/Maf5wATU\" target=\"_blank\"> di sini </a> </b> </p>"
+    },
+    "reporting_window_title": {
+        "message": "Sekarang anda bisa melaporkan gambar!"
+    },
+    "reporting_window_content": {
+        "message": "Jika ada gambar yang tidak anda sukai atau tidak sesuai, tekan ikon <b> Laporkan </b> di kiri atas untuk melaporkan gambar ini dan tidak menampilkannya lagi!"
+    },
+    "new_features_title": {
+        "message": "Fitur Baru!"
+    },
+    "new_features_calendar_content": {
+        "message": "Kami telah menambahkan fitur baru seperti berikut: <ul> <li> <b> Kalender: </b> Sekarang anda dapat melihat kalender setiap bulan masehi dengan tanggal hijriah dengan mengklik ikon kalender di kanan atas </li> <li> <b> Hari Puasa dan Hari Libur: </b> Di kalender anda bisa melihat Hari Libur dan/atau Hari Puasa Sunnah </li> <li> <b> Notifikasi untuk Hari Puasa Sunnah: </b> Anda dapat menerima pemberitahuan sehari sebelum Hari Puasa Sunnah dengan mengaktifkannya <a href=\"#\" class=\"notifications-reminder\"> di pengaturan </a> </li></ul> <b> Fitur mendatang: </b> <ul> <li> Kami sedang menerjemahkan ekstensi ini ke dalam berbagai bahasa termasuk bahasa Arab, Prancis, Indonesia, dan bahasa lainnya juga. Jika Anda ingin membantu, silakan buka <a href=\"https://crowdin.com/project/quran-in-new-tab-extension\"> di sini </a>. </li> <li> Pengingat / Pemberitahuan untuk waktu sholat </li> </ul> Jika anda memiliki ide lain yang anda ingin lihat <a href=\"https://shahednasser.typeform.com/to/Maf5wATU\"> kirim ke survei kami. </a> <b/> Terima kasih telah menggunakan ekstensi Quran Di Tab Baru!"
+    },
+    "report_image_window_title": {
+        "message": "Laporkan Gambar"
+    },
+    "report_image_window_content": {
+        "message": "Jika menurut anda gambar tersebut tidak pantas atau anda tidak menyukainya, laporkan gambar tersebut dan anda tidak akan melihatnya lagi."
+    },
+    "fasting": {
+        "message": "Puasa"
+    },
+    "error": {
+        "message": "Terjadi kesalahan, silakan coba kembali beberapa saat lagi."
+    },
+    "saved": {
+        "message": "Pengaturan telah berhasil diperbarui"
+    },
+    "enable_notification_notice": {
+        "message": "Pastikan untuk mengaktifkan notifikasi Hari Puasa Sunnah untuk menerima notifikasi sehari sebelumnya!"
+    },
+    "calendar": {
+        "message": "Kalender"
+    },
+    "quran_translation": {
+        "message": "Terjemahan Quran"
+    },
+    "athkar": {
+        "message": "Zikir"
+    },
+    "settings": {
+        "message": "Pengaturan"
+    },
+    "rate_extension": {
+        "message": "Nilai Ekstensi Ini"
+    },
+    "report_image": {
+        "message": "Laporkan Gambar"
+    },
+    "reload": {
+        "message": "Muat Ulang"
+    },
+    "general": {
+        "message": "Umum"
+    },
+    "show_top_sites": {
+        "message": "Tampilkan Situs Teratas"
+    },
+    "show_top_sites_description": {
+        "message": "Jika anda tidak memiliki situs teratas, tidak ada yang akan ditampilkan."
+    },
+    "show_hijri_date": {
+        "message": "Tunjukkan Tanggal Hijri"
+    },
+    "show_hijri_date_description": {
+        "message": "Memeriksa ini akan menunjukkan tanggal Hijriah dengan tanggal Masehi dan hari libur (jika ada pada hari itu)."
+    },
+    "quran": {
+        "message": "Quran"
+    },
+    "show_translation": {
+        "message": "Tampilkan Terjemahan"
+    },
+    "translation_language": {
+        "message": "Bahasa Terjemahan"
+    },
+    "none": {
+        "message": "Tidak ada"
+    },
+    "en": {
+        "message": "Bahasa Inggris"
+    },
+    "az": {
+        "message": "Bahasa Azeri"
+    },
+    "bn": {
+        "message": "Bahasa Benggala"
+    },
+    "cs": {
+        "message": "Bahasa Ceko"
+    },
+    "de": {
+        "message": "Bahasa Jerman"
+    },
+    "dv": {
+        "message": "Divehi"
+    },
+    "es": {
+        "message": "Bahasa Spanyol"
+    },
+    "fa": {
+        "message": "Farsi"
+    },
+    "fr": {
+        "message": "Bahasa Perancis"
+    },
+    "ha": {
+        "message": "Bahasa Hausa"
+    },
+    "hi": {
+        "message": "Bahasa Hindi"
+    },
+    "id": {
+        "message": "Bahasa Indonesia"
+    },
+    "it": {
+        "message": "Bahasa Itali"
+    },
+    "ja": {
+        "message": "Bahasa Jepang"
+    },
+    "ko": {
+        "message": "Bahasa Korea"
+    },
+    "ku": {
+        "message": "Bahasa Kurdi"
+    },
+    "ml": {
+        "message": "Bahasa Malayalam"
+    },
+    "nl": {
+        "message": "Bahasa Belanda"
+    },
+    "no": {
+        "message": "Bahasa Norwegia"
+    },
+    "pl": {
+        "message": "Bahasa Polandia"
+    },
+    "pt": {
+        "message": "Bahasa Portugis"
+    },
+    "ro": {
+        "message": "Bahasa Romania"
+    },
+    "ru": {
+        "message": "Bahasa Rusia"
+    },
+    "sd": {
+        "message": "Bahasa Sindhi"
+    },
+    "so": {
+        "message": "Bahasa Somalia"
+    },
+    "sq": {
+        "message": "Bahasa Albania"
+    },
+    "sv": {
+        "message": "Bahasa Swedia"
+    },
+    "sw": {
+        "message": "Swahili"
+    },
+    "ta": {
+        "message": "Bahasa Tamil"
+    },
+    "tg": {
+        "message": "Tajik"
+    },
+    "th": {
+        "message": "Thau"
+    },
+    "tr": {
+        "message": "Bahasa Turki"
+    },
+    "tt": {
+        "message": "Tatar"
+    },
+    "ug": {
+        "message": "Bahasa Uighur"
+    },
+    "ur": {
+        "message": "Bahasa Urdu"
+    },
+    "uz": {
+        "message": "Bahasa Uzbek"
+    },
+    "recitation": {
+        "message": "Pembacaan"
+    },
+    "show_random_athkar": {
+        "message": "Tunjukkan zikir secara acak"
+    },
+    "week_start_date": {
+        "message": "Hari Awal Minggu"
+    },
+    "notification_setting": {
+        "message": "Kirim pemberitahuan sehari sebelum Puasa Sunnah"
+    },
+    "save": {
+        "message": "Simpan"
+    },
+    "feedback": {
+        "message": "Tinggalkan tanggapan anda"
+    },
+    "translation_link": {
+        "message": "Bantu menerjemahkan ekstensi ini"
+    },
+    "remove_top_site_title": {
+        "message": "Hapus Situs Teratas"
+    },
+    "remove_top_site_content": {
+        "message": "Apakah anda yakin ingin keluar dari situs?"
+    },
+    "remove": {
+        "message": "Hapus"
+    },
+    "cancel": {
+        "message": "Batal"
+    },
+    "new_feature_top_sites": {
+        "message": "Sekarang anda dapat menghapus situs dari daftar \"Situs Teratas\"! Arahkan kursor ke situs dan klik ikon \"X\" yang akan muncul. "
+    },
+    "fasting_reminder_title": {
+        "message": "Peringatan Puasa"
+    }
+}
