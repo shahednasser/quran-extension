@@ -21,6 +21,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #2d2d2d;
 }
 
 .background-image {

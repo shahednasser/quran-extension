@@ -171,8 +171,8 @@ $(document).ready(function(){
       },
       allowOutsideClick: () => !Swal.isLoading()
     }).then (function (result) {
-      if (result.isConfirm) {
-        load(true, false);
+      if (result.isConfirmed) {
+        load(true, false, true);
       }
     })
   });
@@ -191,7 +191,7 @@ $(document).ready(function(){
     $(".calendar-container").removeClass("show");
   });
 
-  function load(reload, withTopSites){
+  function load(reload, withTopSites, isReport = false){
     audio = null;
     $(".reload img").hide();
     $(".reload .loader").show();
@@ -207,7 +207,7 @@ $(document).ready(function(){
                 $(".translation-container").remove();
               }
           let now = (new Date()).getTime();
-          if(result.hasOwnProperty('image') && result.image && now <= result.image.timeout && !reload){
+          if(result.hasOwnProperty('image') && result.image && now <= result.image.timeout && !reload && !isReport){
             setBackgroundImage(result.image.src);
           }
           else {
