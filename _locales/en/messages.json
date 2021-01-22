@@ -326,5 +326,11 @@
     },
     "fasting_reminder_title": {
         "message": "Fasting Reminder"
+    },
+    "report_bug": {
+        "message": "Report a bug"
+    },
+    "contact_developer": {
+        "message": "Contact developer"
     }
 }

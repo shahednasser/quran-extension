@@ -4,6 +4,8 @@
 
 Replace the new tab page with Quran verses and beautiful nature pictures. The verses and pictures are randomly generated hourly. You can choose to show or hide your top sites.
 
+**You can find the firefox extension [here](https://github.com/shahednasser/quran-extension-firefox)**
+
 <!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
 
 - [Quran In New Tab](#quran-in-new-tab)
@@ -65,6 +67,6 @@ If you find any issues or bugs, please create a Github issue.
 
 ## License
 
-Copyright © 2019 Shahed Nasser
+Copyright © 2021 Shahed Nasser
 
 Licensed under the [MIT License](https://github.com/shahednasser/quran-extension/blob/master/LICENSE).
