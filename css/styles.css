@@ -36,15 +36,48 @@ body {
 }
 
 .verse, .bismillah, .athkar-container {
-  font-family: QuranFont;
+  font-family: QuranFont, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
-.verse, .athkar-container {
+.verse {
   font-size: 30px;
   width: 70%;
   text-align: center;
   line-height: 210%;
   word-spacing: 10px;
+}
+
+.athkar-container {
+  width: 70%;
+  text-align: center;
+  background-color: rgba(255, 255, 255, .7);
+  color: #333;
+  padding: 5px 15px 5px 15px;
+  border-radius: 10px;
+  margin: 30px auto 60px;
+}
+
+.athkar-container .thikr-arabic {
+  font-size: 25px;
+  word-spacing: 10px;
+  line-height: 210%;
+  direction: rtl;
+  text-align: right;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.athkar-container .thikr-english,
+.athkar-container .thikr-ar-en {
+  text-align: left;
+  display: block;
+  font-size: 17px;
+  word-spacing: 4px;
+}
+
+.athkar-container .thikr-ar-en {
+  color: #585858;
+  margin-top: 10px;
 }
 
 .verse {
@@ -78,24 +111,18 @@ body {
   position: fixed;
   bottom: 0;
   text-align: center;
-  background: #fff;
   color: #333;
-  border-radius: 25px 25px 0px 0px;
-  opacity: .7;
   transition: all .2s;
-  width: 60%;
-  __MSG_@@bidi_start_edge__: 20%;
+  __MSG_@@bidi_start_edge__: 0;
 }
 
 .translation-container .title {
   font-size: 20px;
+  background-color: #ccc;
   width: fit-content;
-  border-bottom: 1px solid #333;
-  margin: 10px auto;
-}
-
-.translation-container:hover {
-  opacity: 1;
+  border-radius: 10px 10px 0px 0px;
+  padding: 5px 15px;
+  font-weight: 600;
 }
 
 .translation-container .body {
@@ -103,6 +130,8 @@ body {
   font-size: 15px;
   padding: 10px;
   direction: ltr;
+  background-color: #ccc;
+  border-top-__MSG_@@bidi_end_edge__-radius: 10px;
 }
 
 .toolbar-link {
@@ -158,10 +187,11 @@ body {
 
 .content-container {
   display: flex;
-  width: 100%;
+  width: 70%;
   padding-left: 1em;
   padding-right: 1em;
   padding-top: 2em;
+  flex-direction: column;
 }
 
 .content-container .content {
@@ -169,7 +199,6 @@ body {
 }
 
 .verse-container {
-  flex: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -178,24 +207,25 @@ body {
 
 .top-sites-container {
   flex-direction: column;
-  display: flex;
-  flex: 1;
+  margin-top: 10px;
 }
 
 .top-sites-container a {
   text-overflow: ellipsis;
   text-align: __MSG_@@bidi_start_edge__;
-  font-size: 17px;
+  font-size: 13px;
   background-color: #fff;
   color: #333;
   text-decoration: none;
   padding: 7px;
-  width: 80%;
+  width: fit-content;
   opacity: .8;
   transition: all .2s;
   margin-bottom: 5px;
   position: relative;
-  border-radius: 5px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-__MSG_@@bidi_start_edge__: 10px;
 }
 
 .top-sites-container a:hover {
@@ -212,7 +242,7 @@ body {
   background-color: #000;
   text-align: center;
   color: #fff;
-  line-height: 1;
+  line-height: 1.4;
   font-family: sans-serif;
   display: none;
   cursor: pointer;
@@ -225,16 +255,12 @@ body {
 
 .top-sites-container a img {
   width: 16px;
-  margin-__MSG_@@bidi_end_edge__: 10px
+  margin-__MSG_@@bidi_end_edge__: 6px;
+  margin-bottom: 2px;
 }
 
 .close {
   float: __MSG_@@bidi_end_edge__ !important;
-}
-
-.athkar-container {
-  margin: 0 auto;
-  padding-bottom: 60px;
 }
 
 .athkar-container .title {
@@ -244,10 +270,6 @@ body {
   border-bottom: 1px solid;
   padding-bottom: 3px;
   margin-bottom: 15px;
-}
-
-.thikr {
-  direction: rtl;
 }
 
 .gregorian-date, .holidays {
