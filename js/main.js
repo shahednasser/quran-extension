@@ -242,51 +242,41 @@ $(document).ready(function(){
             setNewImage(reload);
           }
 
-          if(result.hasOwnProperty('verse') && result.verse && now <= result.verse.timeout && !reload){
-            setVerse(result.verse.data);
-            if(syncResult.hasOwnProperty('show_translation') && syncResult.show_translation &&
-              syncResult.hasOwnProperty('translation_identifier') && syncResult.translation_identifier &&
-              syncResult.translation_identifier){
-              setTranslation(result.verse.translation);
-            }
+          let verseNumber = Math.floor(Math.random() * 6236) + 1;
+          let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani-min,';
+          if(syncResult.hasOwnProperty('recitation')){
+            url += syncResult.recitation;
+          } else {
+            url += 'ar.alafasy';
           }
-          else {
-            let verseNumber = Math.floor(Math.random() * 6236) + 1;
-            let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani-min,';
-            if(syncResult.hasOwnProperty('recitation')){
-              url += syncResult.recitation;
-            } else {
-              url += 'ar.alafasy';
-            }
-            if(syncResult.hasOwnProperty('show_translation') && syncResult.show_translation &&
-              syncResult.hasOwnProperty('translation_identifier') && syncResult.translation_identifier &&
-              syncResult.translation_identifier){
-              url += "," + syncResult.translation_identifier;
-            }
-            $.get(url, function(data){
-              if(data.data){
-                let verse = {};
-                for(let i = 0; i < data.data.length; i++){
-                  if(data.data[i].hasOwnProperty('audio')){
-                    verse.audio = data.data[i].audio;
-                  } else if(data.data[i].edition.language === "ar"){
-                    setVerse(data.data[i]);
-                    verse.data = data.data[i];
-                  } else {
-                    verse.translation = data.data[i];
-                    setTranslation(data.data[i]);
-                  }
+          if(syncResult.hasOwnProperty('show_translation') && syncResult.show_translation &&
+            syncResult.hasOwnProperty('translation_identifier') && syncResult.translation_identifier &&
+            syncResult.translation_identifier){
+            url += "," + syncResult.translation_identifier;
+          }
+          $.get(url, function(data){
+            if(data.data){
+              let verse = {};
+              for(let i = 0; i < data.data.length; i++){
+                if(data.data[i].hasOwnProperty('audio')){
+                  verse.audio = data.data[i].audio;
+                } else if(data.data[i].edition.language === "ar"){
+                  setVerse(data.data[i]);
+                  verse.data = data.data[i];
+                } else {
+                  verse.translation = data.data[i];
+                  setTranslation(data.data[i]);
                 }
-                let timeout = calculateTimeout();
-                verse.timeout = timeout;
-                chrome.storage.local.set({verse});
               }
-            }).fail(function(){
-              $(".translation-container").remove();
-              setVerse(getDefaultVerse());
-              $(".audio-player").remove();
-            });
-          }
+              let timeout = calculateTimeout();
+              verse.timeout = timeout;
+              chrome.storage.local.set({verse});
+            }
+          }).fail(function(){
+            $(".translation-container").remove();
+            setVerse(getDefaultVerse());
+            $(".audio-player").remove();
+          });
 
           if (syncResult.hasOwnProperty('calendar_start_day')) {
             if (syncResult.calendar_start_day === "Sunday") {
