@@ -1,0 +1,336 @@
+{
+    "Monday": {
+        "message": "Montag"
+    },
+    "Tuesday": {
+        "message": "Dienstag"
+    },
+    "Wednesday": {
+        "message": "Mittwoch"
+    },
+    "Thursday": {
+        "message": "Donnerstag"
+    },
+    "Friday": {
+        "message": "Freitag"
+    },
+    "Saturday": {
+        "message": "Samstag"
+    },
+    "Sunday": {
+        "message": "Sonntag"
+    },
+    "January": {
+        "message": "Januar"
+    },
+    "February": {
+        "message": "Februar"
+    },
+    "March": {
+        "message": "März"
+    },
+    "April": {
+        "message": "April"
+    },
+    "May": {
+        "message": "Mai"
+    },
+    "June": {
+        "message": "Juni"
+    },
+    "July": {
+        "message": "Juli"
+    },
+    "August": {
+        "message": "August"
+    },
+    "September": {
+        "message": "September"
+    },
+    "October": {
+        "message": "Oktober"
+    },
+    "November": {
+        "message": "November"
+    },
+    "December": {
+        "message": "Dezember"
+    },
+    "Muharram": {
+        "message": "Muḥarram"
+    },
+    "Safar": {
+        "message": "Ṣafar"
+    },
+    "Rabi__al_awwal": {
+        "message": "Rabīʿ al-awwal"
+    },
+    "Rabi__al_thani": {
+        "message": "Rabīʿ al-thānī"
+    },
+    "Jumada_al_ula": {
+        "message": "Jumādá al-ūlá"
+    },
+    "Jumada_al_akhirah": {
+        "message": "Jumādá-al-ākhirah"
+    },
+    "Rajab": {
+        "message": "Rajab"
+    },
+    "Sha_ban": {
+        "message": "Shaʿbān"
+    },
+    "Ramadan": {
+        "message": "Ramadan"
+    },
+    "Shawwal": {
+        "message": "Shawwāl"
+    },
+    "Dhu_al_Qa_dah": {
+        "message": "Dhū al-Qaʿdah"
+    },
+    "Dhu_al_Hijjah": {
+        "message": "Dhū al-Ḥijjah"
+    },
+    "fasting_notification": {
+        "message": "Morgen ist eine Sunnah Fastentag",
+        "description": "Text of the notification that will be sent before a fasting day."
+    },
+    "feedback_window_title": {
+        "message": "Geben Sie uns Feedback"
+    },
+    "feedback_window_content": {
+        "message": "<p class='lead'>Danke, dass Sie unsere Erweiterung benutzen. Wir möchten uns ständig verbessern und machen diese Erweiterung besser für Sie<br> Bitte geben Sie uns durch Beantworten einiger Fragen Feedback <b><a href=\"https://shahednasser.typeform.com/to/Maf5wATU\" target=\"_blank\">hier</a></b></p>"
+    },
+    "reporting_window_title": {
+        "message": "Jetzt kannst du Bilder melden!"
+    },
+    "reporting_window_content": {
+        "message": "Wenn irgendwelche Bilder da sind, die Sie nicht mögen oder unangemessen finden, drücken Sie das <b>Report</b> Symbol oben links, um diese Bilder zu melden und nie wieder zu zeigen!"
+    },
+    "new_features_title": {
+        "message": "Neue Funktionen!"
+    },
+    "new_features_calendar_content": {
+        "message": "Wir haben folgende neue Funktionen hinzugefügt:<ul><li><b>Kalendar:</b>Sie können jetzt jeden Gregorianischen Kalender mit dem Hijri Datum ansehen durch Klicken auf das Kalender Symbol oben rechts</li><li><b>Fasten- und Feiertage</b> Im Kalender können Sie die Feier- und/oder die Sunnah Fastentage sehen</li><li><b>Benachrichtigungen für die Sunnah Fastentage</b> Sie können jetzt ein Tag vor den Sunnah Fastentagen eine Benachrichtigung bekommen durch Aktivieren <a href=\"#\" class=\"notifications-reminder\">in den Einstellungen</a></li></ul><b>Kommende Funktionen:</b><ul><li>Wir arbeiten gerade daran diese Erweiterung in verschiedenen Sprachen zu übersetzen einschließlich Arabisch, Französisch, Indonesisch und viele weitere. Wenn Sie helfen möchten gehen Sie bitte <a href=\"https://crowdin.com/project/quran-in-new-tab-extension\">hier</a>.</li><li>Erinnerung/Benachrichtigung zu Gebetszeiten</li></ul>Wenn Sie weitere Ideen haben, die Sie gerne sehen möchten <a href=\"https://shahednasser.typeform.com/to/Maf5wATU\">teilen Sie es uns in diesem Formular mit.</a><b/>Danke, dass Sie die Quran In New Tab Erweiterung benutzen!"
+    },
+    "report_image_window_title": {
+        "message": "Bild melden"
+    },
+    "report_image_window_content": {
+        "message": "Wenn Sie denken, dass das Bild unangemessen ist oder es Ihnen nicht gefällt, melden Sie bitte das Bild und Sie werden es nicht mehr sehen."
+    },
+    "fasting": {
+        "message": "Fasten"
+    },
+    "error": {
+        "message": "Ein Fehler ist erschienen, bitte versuchen Sie es später wieder."
+    },
+    "saved": {
+        "message": "Die Einstellungen wurden erfolgreich gespeichert"
+    },
+    "enable_notification_notice": {
+        "message": "Achten Sie darauf die Benachrichtigungen für die Sunnah Fastentage zu aktivieren, um eine Benachrichtigung ein Tag vorher zu erhalten!"
+    },
+    "calendar": {
+        "message": "Kalender"
+    },
+    "quran_translation": {
+        "message": "Koran Übersetzung"
+    },
+    "athkar": {
+        "message": "Athkar"
+    },
+    "settings": {
+        "message": "Einstellungen"
+    },
+    "rate_extension": {
+        "message": "Bewerte diese Erweiterung"
+    },
+    "report_image": {
+        "message": "Bild melden"
+    },
+    "reload": {
+        "message": "Neu laden"
+    },
+    "general": {
+        "message": "Allgemein"
+    },
+    "show_top_sites": {
+        "message": "Zeige die Top Seiten"
+    },
+    "show_top_sites_description": {
+        "message": "Wenn du keine Top Seiten hast, wird keine angezeigt."
+    },
+    "show_hijri_date": {
+        "message": "Zeige Hijri Datum"
+    },
+    "show_hijri_date_description": {
+        "message": "Wenn Sie das aktivieren wird das Hijri Datum mit dem Gregorianischem Datum und die Feiertage (falls verfügbar) angezeigt."
+    },
+    "quran": {
+        "message": "Koran"
+    },
+    "show_translation": {
+        "message": "Zeige die Übersetzung"
+    },
+    "translation_language": {
+        "message": "Übersetzungssprache"
+    },
+    "none": {
+        "message": "Nichts"
+    },
+    "en": {
+        "message": "Englisch"
+    },
+    "az": {
+        "message": "Aserbaidschanisch"
+    },
+    "bn": {
+        "message": "Bengalisch"
+    },
+    "cs": {
+        "message": "Tschechisch"
+    },
+    "de": {
+        "message": "Deutsch"
+    },
+    "dv": {
+        "message": "Dhivehi"
+    },
+    "es": {
+        "message": "Spanisch"
+    },
+    "fa": {
+        "message": "Farsi"
+    },
+    "fr": {
+        "message": "Französisch"
+    },
+    "ha": {
+        "message": "Hausa"
+    },
+    "hi": {
+        "message": "Indisch"
+    },
+    "id": {
+        "message": "Indonesisch"
+    },
+    "it": {
+        "message": "Italienisch"
+    },
+    "ja": {
+        "message": "Japanisch"
+    },
+    "ko": {
+        "message": "Koreanisch"
+    },
+    "ku": {
+        "message": "Kurdisch"
+    },
+    "ml": {
+        "message": "Malaysisch"
+    },
+    "nl": {
+        "message": "Niederländisch"
+    },
+    "no": {
+        "message": "Norwegisch"
+    },
+    "pl": {
+        "message": "Polnisch"
+    },
+    "pt": {
+        "message": "Portugiesisch"
+    },
+    "ro": {
+        "message": "Rumänisch"
+    },
+    "ru": {
+        "message": "Russisch"
+    },
+    "sd": {
+        "message": "Sindhi"
+    },
+    "so": {
+        "message": "Somalisch"
+    },
+    "sq": {
+        "message": "Albanisch"
+    },
+    "sv": {
+        "message": "Schwedisch"
+    },
+    "sw": {
+        "message": "Suahelisch"
+    },
+    "ta": {
+        "message": "Tamilisch"
+    },
+    "tg": {
+        "message": "Tadschikisch"
+    },
+    "th": {
+        "message": "Thau"
+    },
+    "tr": {
+        "message": "Türkisch"
+    },
+    "tt": {
+        "message": "Tatarisch"
+    },
+    "ug": {
+        "message": "Uigurisch"
+    },
+    "ur": {
+        "message": "Urdu"
+    },
+    "uz": {
+        "message": "Usbekisch"
+    },
+    "recitation": {
+        "message": "Rezitation"
+    },
+    "show_random_athkar": {
+        "message": "Zufälligen Athkar zeigen"
+    },
+    "week_start_date": {
+        "message": "Wochenanfang"
+    },
+    "notification_setting": {
+        "message": "Sende eine Benachrichtigung ein Tag vor den Sunnah Fastentagen"
+    },
+    "save": {
+        "message": "Speichern"
+    },
+    "feedback": {
+        "message": "Geben Sie uns Ihr Feedback"
+    },
+    "translation_link": {
+        "message": "Helfen Sie uns diese Erweiterung zu übersetzen"
+    },
+    "remove_top_site_title": {
+        "message": "Top Site entfernen"
+    },
+    "remove_top_site_content": {
+        "message": "Wollen Sie wirklich diese Seite entfernen?"
+    },
+    "remove": {
+        "message": "Entfernen"
+    },
+    "cancel": {
+        "message": "Abbrechen"
+    },
+    "new_feature_top_sites": {
+        "message": "Sie können jetzt die Seiten von der \"Top Sites\" Liste entfernen! Einfach die Maus über die gewünschte Seite halten und auf das \"X\" Symbol klicken. "
+    },
+    "fasting_reminder_title": {
+        "message": "Fasten Erinnerung"
+    },
+    "report_bug": {
+        "message": "Ein Bug melden"
+    },
+    "contact_developer": {
+        "message": "Entwickler kontaktieren"
+    }
+}
