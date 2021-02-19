@@ -89,12 +89,14 @@ body {
   font-size: 20px;
 }
 
-.audio-player {
+.audio-player img,
+.verse-social-links a {
   opacity: .5;
   transition: opacity .2s;
 }
 
-.audio-player:hover {
+.audio-player img:hover,
+.verse-social-links a:hover {
   opacity: 1;
 }
 
@@ -123,6 +125,8 @@ body {
   border-radius: 10px 10px 0px 0px;
   padding: 5px 15px;
   font-weight: 600;
+  z-index: 10;
+  position: relative;
 }
 
 .translation-container .body {
@@ -132,6 +136,7 @@ body {
   direction: ltr;
   background-color: #ccc;
   border-top-__MSG_@@bidi_end_edge__-radius: 10px;
+  box-shadow: 1px 1px 4px rgb(74 74 74 / 52%);
 }
 
 .toolbar-link {
@@ -397,6 +402,20 @@ body {
 
 .new-features-list {
   text-align: __MSG_@@bidi_start_edge__ !important;
+}
+
+.verse-social-links {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.verse-social-links img {
+  height: 24px;
+  width: 24px;
+}
+
+.verse-social-links a:hover {
+  text-decoration: none;
 }
 
 @media screen and (min-width: 992px) {

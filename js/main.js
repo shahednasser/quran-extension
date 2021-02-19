@@ -7,7 +7,8 @@ $(document).ready(function(){
       athkar = [],
       originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      hijriHolidays = [];
+      hijriHolidays = [],
+      extensionURL = encodeURI("https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg");
   const messageRegex = /__MSG_(\w+)__/g,
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
           'October', 'November', 'December'],
@@ -402,8 +403,33 @@ $(document).ready(function(){
   }
 
   function setVerse(data){
-        $(".verse").html('<div class="verse-text">' + data.text + '</div><div class="verse-details">' + data.surah.name +
-                            " - " + data.numberInSurah + '</div>').animate({opacity: 1}, 500);
+    $(".verse-text").text(data.text);
+    $(".verse-details").text(data.surah.name + " - " + data.numberInSurah);
+    $(".verse").animate({opacity: 1}, 500);
+
+    //add social links
+    const text = encodeURI(data.text + '\n\n' + data.surah.name + ' - ' + data.numberInSurah);
+    //twitter
+    let twitterElm = $(".twitter-share-button");
+    if (twitterElm.length) {
+      twitterElm.attr('href', 'https://twitter.com/intent/tweet?text=' + text + '&url=' +
+        extensionURL);
+    }
+    //facebook
+    let facebookElm = $(".facebook-share-button");
+    if (facebookElm.length) {
+      facebookElm.attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + extensionURL + '&quote=' + text)
+    }
+    //whatsapp
+    let whatsappElm = $(".whatsapp-share-button");
+    if (whatsappElm.length) {
+      whatsappElm.attr('href', 'https://wa.me/?text=' + text + encodeURI("\n") + extensionURL);
+    }
+    //telegram
+    let telegramElm = $(".telegram-share-button");
+    if (telegramElm.length) {
+      telegramElm.attr('href', 'https://t.me/share/url?url=' + extensionURL + '&text=' + text);
+    }
   }
 
   function calculateTimeout(){
@@ -486,7 +512,7 @@ $(document).ready(function(){
           height = $(window).height();
     $.ajax({
       method: 'GET',
-      url: 'https://source.unsplash.com/' + width + 'x' + height + '/?nature,mountains,landscape,animal',
+      url: 'https://source.unsplash.com/' + width + 'x' + height + '/?nature,mountains,landscape,animal,quran,islam',
       headers: {
         'Access-Control-Expose-Headers': 'ETag'
       },
