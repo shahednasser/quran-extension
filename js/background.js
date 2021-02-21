@@ -1,7 +1,12 @@
-//add hijri-date script
-const hijriDateScript = document.createElement('script');
-hijriDateScript.src = '/js/hijri-date.js';
-document.body.prepend(hijriDateScript);
+//add moment and moment-hijri scripts
+const momentScript = document.createElement('script');
+momentScript.src = '/js/moment.js';
+document.body.prepend(momentScript);
+setTimeout(function() {
+  const hijriDateScript = document.createElement('script');
+  hijriDateScript.src = '/js/moment-hijri.js';
+  document.body.prepend(hijriDateScript);
+}, 500);
 const jqueryScript = document.createElement('script');
 jqueryScript.src = '/js/jquery.js';
 document.body.prepend(jqueryScript);
@@ -52,7 +57,7 @@ function getNewCalendar () {
     }
     for (let i = 0; i < nbDays; i++) {
       const gregorianDate = new Date(currentYear, currentMonth, i + 1),
-            hijriDate = gregorianDate.toHijri();
+            hijriDate = moment(currentYear + '-' + (currentMonth + 1) + '-' + (i+1), 'YYYY-M-D');
       calendarData.push({
         "gregorian": {
           "weekday": {
@@ -65,18 +70,14 @@ function getNewCalendar () {
         },
         "hijri": {
           "month": {
-            "en": hijriMonths[hijriDate.getMonth()]
+            "en": hijriMonths[hijriDate.iMonth()]
           },
-          "day": hijriDate.getDate()
+          "day": hijriDate.iDate()
         }
       });
-      $.get('http://api.aladhan.com/v1/hToG?date=' + hijriDate.getDate() + "-" + hijriDate.getMonth() + "-" + hijriDate.getFullYear(),
+      $.get('http://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear(),
           function (data) {
             hijriHolidays.splice(this.i, 0, data.data.hijri.holidays);
-            // if (hijriHolidays.length == this.nbDays || this.i == (this.nbDays - 1)) {
-            //     chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData, hijriHolidays}});
-            //     checkNotification(calendarData);
-            // }
           }.bind({i, nbDays}))
     }
 }
