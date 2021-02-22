@@ -245,6 +245,7 @@ $(document).ready(function(){
 
           if(result.hasOwnProperty('verse') && result.verse && now <= result.verse.timeout && !reload){
             setVerse(result.verse.data);
+            audio = new Audio(result.verse.audio);
             if(syncResult.hasOwnProperty('show_translation') && syncResult.show_translation &&
               syncResult.hasOwnProperty('translation_identifier') && syncResult.translation_identifier &&
               syncResult.translation_identifier){
