@@ -297,7 +297,8 @@ $(document).ready(function(){
           }
 
           if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays && 
-            result.calendar.data && result.calendar.data.length == result.calendar.hijriHolidays.length) {
+            result.calendar.data && result.calendar.data.length == result.calendar.hijriHolidays.length &&
+            result.calendar.hijriMonths) {
             const calendarDate = new Date(result.calendar.date);
             if (calendarDate.getMonth() !== (new Date()).getMonth()) {
               //get calendar for new month
