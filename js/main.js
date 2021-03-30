@@ -24,11 +24,17 @@ $(document).ready(function(){
   $("html").attr('lang', chrome.i18n.getUILanguage());
   localizeHtmlPage($("body"));
   load(false, true);
+
   chrome.storage.sync.get(["show_date"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
       setDates(date, currentHijriDate);
     }
+  });
+
+  //check if a new update is available
+  chrome.runtime.onUpdateAvailable.addListener(function (details) {
+    showUpdateToast();
   });
 
   $(".reload").click(function(){
@@ -293,6 +299,10 @@ $(document).ready(function(){
         })
       }
     });
+  });
+
+  $("body").on('click', '#updateExtension', function () {
+    chrome.runtime.reload();
   });
 
   function showRandomThikr(){
@@ -647,5 +657,27 @@ $(document).ready(function(){
             }
           }.bind({i, nbDays}))
     }
+  }
+
+
+  function showUpdateToast () {
+    $("body").append(`
+      <div class="toast bg-white text-dark" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+          <p class="fw-bold">A new update is available. You can update now or wait until your browser reloads</p>
+          <div class="mt-2 pt-2 border-top">
+            <button type="button" class="btn btn-success btn-sm" id="updateExtension">Update now</button>
+            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+          </div>
+        </div>
+      </div>
+    `)
+
+    var toastElList = [].slice.call(document.querySelectorAll('.toast:not(.hide)'))
+    var toastList = toastElList.map(function (toastEl) {
+      return new bootstrap.Toast(toastEl, {
+        autohide: false
+      }).show()
+    })
   }
 });
