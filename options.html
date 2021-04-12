@@ -14,29 +14,29 @@
       </header>
       <div class="form-container">
         <h2 class="mb-4">__MSG_general__</h2>
-        <div class="form-group">
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="show_top_sites" name="show_top_sites">
-            <label class="custom-control-label" for="show_top_sites">__MSG_show_top_sites__</label>
+        <div class="form-group mb-4">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="show_top_sites" name="show_top_sites">
+            <label class="form-check-label" for="show_top_sites">__MSG_show_top_sites__</label>
           </div>
           <small class="text-secondary">__MSG_show_top_sites_description__</small>
         </div>
-        <div class="form-group">
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="show_date" name="show_date">
-            <label class="custom-control-label" for="show_date">__MSG_show_hijri_date__</label>
+        <div class="form-group mb-4">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="show_date" name="show_date">
+            <label class="form-check-label" for="show_date">__MSG_show_hijri_date__</label>
           </div>
           <small class="text-secondary">__MSG_show_hijri_date_description__</small>
         </div>
         <hr />
         <h2 class="mb-4">__MSG_quran__</h2>
-        <div class="form-group">
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="show_translation" name="show_translation">
-            <label class="custom-control-label" for="show_translation">__MSG_show_translation__</label>
+        <div class="form-group mb-4">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="show_translation" name="show_translation">
+            <label class="form-check-label" for="show_translation">__MSG_show_translation__</label>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-4">
           <label>__MSG_translation_language__:</label>
           <select name="translation_language" class="form-control" disabled>
             <option value="none" selected>
@@ -152,7 +152,7 @@
             </option>
           </select>
         </div>
-        <div class="form-group">
+        <div class="form-group mb-4">
           <label>__MSG_recitation__</label>
           <select name="recitation" class="form-control">
             <option value="ar.alafasy" selected>
@@ -207,27 +207,57 @@
         </div>
         <hr />
         <h2 class="mb-4">__MSG_athkar__</h2>
-        <div class="form-group">
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="show_athkar" name="show_athkar">
-            <label class="custom-control-label" for="show_athkar">__MSG_show_random_athkar__</label>
+        <div class="form-group mb-4">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="show_athkar" name="show_athkar">
+            <label class="form-check-label" for="show_athkar">__MSG_show_random_athkar__</label>
           </div>
         </div>
+        <hr />
         <h2 class="mb-4">__MSG_calendar__</h2>
-        <div class="form-group">
-          <label>__MSG_week_start_date__</label>
+        <div class="form-group mb-4">
+          <label class="mb-2">__MSG_week_start_date__</label>
           <select class="form-control" id="calendar_start_day" name="calendar_start_day">
             <option value="Monday">__MSG_Monday__</option>
             <option value="Sunday">__MSG_Sunday__</option>
           </select>
         </div>
-        <div class="form-group">
-          <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="send_fasting_notification" name="send_fasting_notification">
-            <label class="custom-control-label" for="send_fasting_notification">__MSG_notification_setting__</label>
+        <div class="form-group mb-4">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="send_fasting_notification" name="send_fasting_notification">
+            <label class="form-check-label" for="send_fasting_notification">__MSG_notification_setting__</label>
           </div>
         </div>
         <div>
+          <hr />
+          <h2 class="mb-4">__MSG_prayer_times__</h2>
+          <div class="form-group mb-4">
+            <div class="form-check form-switch">
+              <input type="checkbox" class="form-check-input" id="show_prayer_times" name="show_prayer_times">
+              <label class="form-check-label" for="show_prayer_times">__MSG_show_prayer_times__</label>
+            </div>
+            <small class="text-secondary">__MSG_show_prayer_times_description__</small>
+          </div>
+          <div class="form-group mb-4">
+            <label class="mb-2">__MSG_prayer_times_method__</label>
+            <select class="form-control" id="prayer_times_method" name="prayer_times_method">
+              <option value="0">Shia Ithna-Ansari</option>
+              <option value="1">University of Islamic Sciences, Karachi</option>
+              <option value="2">Islamic Society of North America</option>
+              <option value="3">Muslim World League</option>
+              <option value="4">Umm Al-Qura University, Makkah</option>
+              <option value="5">Egyptian General Authority of Survey</option>
+              <option value="7">Institute of Geophysics, University of Tehran</option>
+              <option value="8">Gulf Region</option>
+              <option value="9">Kuwait</option>
+              <option value="10">Qatar</option>
+              <option value="11">Majlis Ugama Islam Singapura, Singapore</option>
+              <option value="12">Union Organization islamic de France</option>
+              <option value="13">Diyanet İşleri Başkanlığı, Turkey</option>
+              <option value="14">Spiritual Administration of Muslims of Russia</option>
+            </select>
+            <small class="text-secondary">__MSG_prayer_times_method_description__</small>
+          </div>
           <button type="button" class="btn btn-dark" id="save">
             __MSG_save__
           </button>

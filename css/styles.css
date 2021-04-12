@@ -35,7 +35,7 @@ body {
   filter: brightness(50%);
 }
 
-.verse, .bismillah, .athkar-container {
+.verse, .bismillah, .athkar-container, .prayer-times-container {
   font-family: QuranFont, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
@@ -418,6 +418,55 @@ body {
 
 .verse-social-links a:hover {
   text-decoration: none;
+}
+
+.prayer-times-container {
+  position: absolute;
+  left: 10px;
+  top: 35%;
+  background-color: rgba(255, 255, 255, .7);
+  padding: 10px;
+  border-radius: 10px;
+  color: #333;
+}
+
+.prayer-time {
+  padding-__MSG_@@bidi_start_edge__: 30px;
+  position: relative;
+}
+
+.prayer-time:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.prayer-time:before {
+  content: '';
+  height: 24px;
+  width: 24px;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.prayer-time.fajr:before {
+  background-image: url(../assets/fajr.svg);
+}
+
+.prayer-time.dhuhr:before {
+  background-image: url(../assets/dhuhr.svg);
+}
+
+.prayer-time.asr:before {
+  background-image: url(../assets/asr.svg);
+}
+
+.prayer-time.maghrib:before {
+  background-image: url(../assets/maghrib.svg);
+}
+
+.prayer-time.isha:before {
+  background-image: url(../assets/isha.svg);
 }
 
 @media screen and (min-width: 992px) {

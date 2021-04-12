@@ -261,6 +261,14 @@ $(document).ready(function(){
           $(".athkar-container").remove();
           showRandomThikr();
         }
+        
+        // if (!result.hasOwnProperty('prayerTimesCalendar') || !result.prayerTimesCalendar || !result.prayerTimesCalendar.hasOwnProperty('month') || 
+        //   !result.prayerTimesCalendar.hasOwnProperty('calendar') || result.prayerTimesCalendar.month != (new Date()).getMonth()) {
+            getPrayerTimesCalendar();
+        //}
+
+        //getPrayerTimes();
+        
       });
     });
     
@@ -679,5 +687,43 @@ $(document).ready(function(){
         autohide: false
       }).show()
     })
+  }
+
+  function getPrayerTimesCalendar () {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const date = new Date();
+      $.get('http://api.aladhan.com/v1/calendar?longitude=' + position.coords.longitude + '&latitude=' + position.coords.latitude + 
+        '&month=' + (date.getMonth() + 1) + '&year=' + date.getFullYear() + '&method=2', function (data) {
+          //store it in storage for the entire month
+          chrome.storage.local.set({prayerTimesCalendar: {month: date.getMonth(), calendar: data.data}}, function () {
+            getPrayerTimes();
+          });
+        });
+    });
+  }
+
+  function getPrayerTimes() {
+    chrome.storage.local.get(['prayerTimesCalendar'], function(result) {
+      console.log(result)
+      if (result.hasOwnProperty('prayerTimesCalendar') && result.prayerTimesCalendar.hasOwnProperty('calendar')) {
+        //get today's prayer times
+        const today = new Date();
+        result.prayerTimesCalendar.calendar.forEach((dateData) => {
+          if (parseInt(dateData.date.gregorian.day) == today.getDate()) {
+            //show prayer times
+            const prayerTimesContainer = $(".prayer-times-container");
+            prayerTimesContainer.append(`<div class="prayer-time fajr">${formatTime(dateData.timings.Fajr)}</div>`);
+            prayerTimesContainer.append(`<div class="prayer-time dhuhr">${formatTime(dateData.timings.Dhuhr)}</div>`);
+            prayerTimesContainer.append(`<div class="prayer-time asr">${formatTime(dateData.timings.Asr)}</div>`);
+            prayerTimesContainer.append(`<div class="prayer-time maghrib">${formatTime(dateData.timings.Maghrib)}</div>`);
+            prayerTimesContainer.append(`<div class="prayer-time isha">${formatTime(dateData.timings.Isha)}</div>`);
+          }
+        });
+      }
+    })
+  }
+
+  function formatTime (time) {
+    return time.split(" ")[0];
   }
 });

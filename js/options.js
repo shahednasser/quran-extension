@@ -21,7 +21,8 @@ $(document).ready(function(){
     "show_athkar", 
     "show_date",
     "calendar_start_day",
-    "send_fasting_notification"], function(result){
+    "send_fasting_notification",
+    "show_prayer_times"], function(result){
     if(result.hasOwnProperty('show_translation') && result.show_translation){
       showTranslationElement.prop('checked', true);
       translationLanguagesElement.prop('disabled', false);
