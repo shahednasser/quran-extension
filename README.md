@@ -14,6 +14,7 @@ Replace the new tab page with Quran verses and beautiful nature pictures. The ve
 	- [Recitations](#recitations)
 	- [Translations](#translations)
 	- [Athkar](#athkar)
+	- [Prayer Times](#prayer-times)
 	- [Credits](#credits)
 	- [Issues](#issues)
 	- [License](#license)
@@ -53,10 +54,14 @@ and many more.
 Starting from version 1.0, you can show randomly generated Athkar on your new tab as well.
 
 
+## Prayer Times
+
+Starting from version 2.1.2, you can now see prayer times and change their calculation method from the settings
+
 ## Credits
 
-- All Quran verses, audios and translations use the API of [Al Quran Cloud](https://alquran.cloud/)
-- Icons from [Feather](https://feathericons.com/)
+- All Quran verses, audios, translations, calendar and prayer times use the API of [Al Quran Cloud](https://alquran.cloud/)
+- Icons from [Feather](https://feathericons.com/) and [Icon Scout](https://iconscout.com/)
 - Logo from https://www.freeiconspng.com/img/8824
 
 
