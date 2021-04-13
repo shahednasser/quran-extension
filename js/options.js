@@ -12,7 +12,9 @@ $(document).ready(function(){
       showAthkarElement = $("input[name=show_athkar]"),
       showDateElement = $("input[name=show_date]"),
       calendarStartDayElement = $("select[name=calendar_start_day]"),
-      sendFastingNotificationElement = $("input[name=send_fasting_notification]");
+      sendFastingNotificationElement = $("input[name=send_fasting_notification]"),
+      showPrayerTimesElement = $("#show_prayer_times"),
+      prayerTimesMethodElement = $("#prayer_times_method");
   chrome.storage.sync.get([
     "translation_language", 
     "show_translation", 
@@ -47,7 +49,10 @@ $(document).ready(function(){
     }
 
     sendFastingNotificationElement.prop('checked', result.hasOwnProperty('send_fasting_notification') && result.send_fasting_notification)
-
+    if (!result.hasOwnProperty('show_prayer_times') || result.show_prayer_times) {
+      showPrayerTimesElement.prop('checked', true);
+      prayerTimesMethodElement.prop('disabled', false);
+    }
   });
 
   $("#save").click(function(){
@@ -60,15 +65,18 @@ $(document).ready(function(){
         show_athkar = showAthkarElement.is(":checked"),
         show_date = showDateElement.is(":checked"),
         calendar_start_day = calendarStartDayElement.val(),
-        send_fasting_notification = sendFastingNotificationElement.is(":checked");
+        send_fasting_notification = sendFastingNotificationElement.is(":checked"),
+        show_prayer_times = showPrayerTimesElement.is(":checked"),
+        prayer_times_method = prayerTimesMethodElement.val();
     if(translation_identifier === null){
       $(".alerts").html('<div class="alert alert-danger">' + chrome.i18n.getMessage('error') + '</div>')
     }
     chrome.storage.sync.set({translation_language: translation_language, show_translation: show_translation,
                               recitation: recitation, translation_identifier: translation_identifier,
                               show_top_sites: show_top_sites, show_athkar: show_athkar, show_date: show_date,
-                              calendar_start_day: calendar_start_day, send_fasting_notification: send_fasting_notification}, function(){
-                                chrome.storage.local.set({image: null, verse: null}, function(){
+                              calendar_start_day: calendar_start_day, send_fasting_notification: send_fasting_notification,
+                              show_prayer_times: show_prayer_times, prayer_times_method: prayer_times_method}, function(){
+                                chrome.storage.local.set({image: null, verse: null, prayerTimesCalendar: null}, function(){
                                   $(".alerts").html('<div class="alert alert-success mt-3">' + chrome.i18n.getMessage('saved') + '</div>');
 
                                   if (send_fasting_notification) {
@@ -97,6 +105,10 @@ $(document).ready(function(){
       translationLanguagesElement.prop('disabled', true);
     }
   });
+
+  showPrayerTimesElement.change(function () {
+    prayerTimesMethodElement.prop('disabled', !$(this).is(":checked"));
+  })
 
   function getTranslationLanguageIdentifier(code){
     let identifiers = {

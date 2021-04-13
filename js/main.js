@@ -95,37 +95,6 @@ $(document).ready(function(){
     }
   });
 
-  $(".report").click(function() {
-    Swal.fire({
-      title: chrome.i18n.getMessage('report_image_window_title'),
-      html: chrome.i18n.getMessage('report_image_window_content'),
-      showConfirmButton: true,
-      showCloseButton: true,
-      confirmButtonText: chrome.i18n.getMessage('report_image_window_title'),
-      showCancelButton: true,
-      cancelButtonText: chrome.i18n.getMessage('cancel'),
-      showLoaderOnConfirm: true,
-      preConfirm: function () {
-        const imageElm = $(".background-image");
-        if (imageElm.length) {
-          return $.ajax({
-            url: 'http://quran-extension-api.alwaysdata.net/blacklistImage',
-            type: 'PUT',
-            data: {image: imageElm.attr('src')},
-            success: function (result) {
-              return result;
-            }
-          });
-        }
-      },
-      allowOutsideClick: () => !Swal.isLoading()
-    }).then (function (result) {
-      if (result.isConfirmed) {
-        load(true, false, true);
-      }
-    })
-  });
-
   $(".translation-container").hover(function () {
     $(this).children(".body").show('fast');
   }, function () {
@@ -146,10 +115,10 @@ $(document).ready(function(){
     $(".reload .loader").show();
     $(".calendar-inner-container").hide();
     $(".calendar-table .loader").show();
-    chrome.storage.local.get(['image', 'verse', 'calendar'], function(result){
+    chrome.storage.local.get(['image', 'verse', 'calendar', 'prayerTimesCalendar'], function(result){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
                                   'translation_identifier', 'show_top_sites', 'show_athkar', 
-                                  'calendar_start_day', 'removed_top_sites'], function(syncResult){
+                                  'calendar_start_day', 'removed_top_sites', 'show_prayer_times'], function(syncResult){
         if(navigator.onLine){
           if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
               !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
@@ -233,6 +202,15 @@ $(document).ready(function(){
             //get new calendar
             assembleCalendarData();
           }
+
+          if (!syncResult.hasOwnProperty('show_prayer_times') || syncResult.show_prayer_times) {
+            if (!result.hasOwnProperty('prayerTimesCalendar') || !result.prayerTimesCalendar || !result.prayerTimesCalendar.hasOwnProperty('month') || 
+            !result.prayerTimesCalendar.hasOwnProperty('calendar') || result.prayerTimesCalendar.month != (new Date()).getMonth()) {
+              getPrayerTimesCalendar();
+            } else {
+              getPrayerTimes();
+            }
+          }
         }
         else{
           $(".translation-container").remove();
@@ -261,13 +239,6 @@ $(document).ready(function(){
           $(".athkar-container").remove();
           showRandomThikr();
         }
-        
-        // if (!result.hasOwnProperty('prayerTimesCalendar') || !result.prayerTimesCalendar || !result.prayerTimesCalendar.hasOwnProperty('month') || 
-        //   !result.prayerTimesCalendar.hasOwnProperty('calendar') || result.prayerTimesCalendar.month != (new Date()).getMonth()) {
-            getPrayerTimesCalendar();
-        //}
-
-        //getPrayerTimes();
         
       });
     });
@@ -455,18 +426,9 @@ $(document).ready(function(){
        return xhr;
       },
       success: function(data){
-        $.getJSON('http://quran-extension-api.alwaysdata.net/isImageBlacklisted?image=' + encodeURI(xhr.responseURL), 
-        function(json, textStatus) {
-          if (json.success) {
-            if (json.blacklisted) {
-              setNewImage(false);
-            } else {
-              setBackgroundImage(xhr.responseURL);
-              let timeout = calculateTimeout();
-              chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
-            }
-          }
-        });
+        setBackgroundImage(xhr.responseURL);
+        let timeout = calculateTimeout();
+        chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
       },
       error: function(){
         setBackgroundImage('/assets/offline-image.jpg');
@@ -692,13 +654,16 @@ $(document).ready(function(){
   function getPrayerTimesCalendar () {
     navigator.geolocation.getCurrentPosition((position) => {
       const date = new Date();
-      $.get('http://api.aladhan.com/v1/calendar?longitude=' + position.coords.longitude + '&latitude=' + position.coords.latitude + 
-        '&month=' + (date.getMonth() + 1) + '&year=' + date.getFullYear() + '&method=2', function (data) {
+      chrome.storage.sync.get(['prayer_times_method'], function (result) {
+        $.get('http://api.aladhan.com/v1/calendar?longitude=' + position.coords.longitude + '&latitude=' + position.coords.latitude + 
+        '&month=' + (date.getMonth() + 1) + '&year=' + date.getFullYear() + '&method=' + (result.hasOwnProperty('prayer_times_method') ? result.prayer_times_method : 0), 
+          function (data) {
           //store it in storage for the entire month
           chrome.storage.local.set({prayerTimesCalendar: {month: date.getMonth(), calendar: data.data}}, function () {
             getPrayerTimes();
           });
         });
+      })
     });
   }
 
@@ -708,16 +673,22 @@ $(document).ready(function(){
       if (result.hasOwnProperty('prayerTimesCalendar') && result.prayerTimesCalendar.hasOwnProperty('calendar')) {
         //get today's prayer times
         const today = new Date();
-        result.prayerTimesCalendar.calendar.forEach((dateData) => {
+        const prayerTimesContainer = $(".prayer-times-container"),
+              prayerTimesWrapper = prayerTimesContainer.find(".prayer-times-wrapper");
+        prayerTimesContainer.addClass('d-none');
+        prayerTimesWrapper.empty();
+        result.prayerTimesCalendar.calendar.some((dateData) => {
           if (parseInt(dateData.date.gregorian.day) == today.getDate()) {
             //show prayer times
-            const prayerTimesContainer = $(".prayer-times-container");
-            prayerTimesContainer.append(`<div class="prayer-time fajr">${formatTime(dateData.timings.Fajr)}</div>`);
-            prayerTimesContainer.append(`<div class="prayer-time dhuhr">${formatTime(dateData.timings.Dhuhr)}</div>`);
-            prayerTimesContainer.append(`<div class="prayer-time asr">${formatTime(dateData.timings.Asr)}</div>`);
-            prayerTimesContainer.append(`<div class="prayer-time maghrib">${formatTime(dateData.timings.Maghrib)}</div>`);
-            prayerTimesContainer.append(`<div class="prayer-time isha">${formatTime(dateData.timings.Isha)}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time fajr">${formatTime(dateData.timings.Fajr)}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time dhuhr">${formatTime(dateData.timings.Dhuhr)}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time asr">${formatTime(dateData.timings.Asr)}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time maghrib">${formatTime(dateData.timings.Maghrib)}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time isha">${formatTime(dateData.timings.Isha)}</div>`);
+            prayerTimesContainer.removeClass('d-none');
+            return true; //break the loop
           }
+          return false;
         });
       }
     })
