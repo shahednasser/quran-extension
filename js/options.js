@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
+// Copyright (c) 2021 by Shahed Nasser. All Rights Reserved.
 //
 $(document).ready(function(){
   const messageRegex = /__MSG_(\w+)__/g;
@@ -24,7 +24,8 @@ $(document).ready(function(){
     "show_date",
     "calendar_start_day",
     "send_fasting_notification",
-    "show_prayer_times"], function(result){
+    "show_prayer_times",
+    "prayer_times_method"], function(result){
     if(result.hasOwnProperty('show_translation') && result.show_translation){
       showTranslationElement.prop('checked', true);
       translationLanguagesElement.prop('disabled', false);
@@ -52,6 +53,10 @@ $(document).ready(function(){
     if (!result.hasOwnProperty('show_prayer_times') || result.show_prayer_times) {
       showPrayerTimesElement.prop('checked', true);
       prayerTimesMethodElement.prop('disabled', false);
+    }
+
+    if (result.hasOwnProperty('prayer_times_method')) {
+      prayerTimesMethodElement.val(result.prayer_times_method)
     }
   });
 

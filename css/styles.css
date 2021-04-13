@@ -416,6 +416,7 @@ body {
   width: 24px;
 }
 
+.verse-social-links a,
 .verse-social-links a:hover {
   text-decoration: none;
 }
