@@ -523,7 +523,7 @@ $(document).ready(function(){
       if (i <= totalDays && i > 0) {
         if (hijriHolidays[i - 1].length) {
           for (let j = 0; j < hijriHolidays[i - 1].length; j++) {
-            dayStr += '<span class="badge badge-success calendar-note">' + hijriHolidays[i - 1][j] + '</span>';
+            dayStr += '<span class="badge bg-success calendar-note">' + hijriHolidays[i - 1][j] + '</span>';
             hasAshura = hijriHolidays[i - 1][j] == "Ashura";
           }
         }
@@ -531,7 +531,7 @@ $(document).ready(function(){
         if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], hijriHolidays, 
               i > 1 ? hijriHolidays[i - 2] : [], i < totalDays && hijriHolidays.length > i ? hijriHolidays[i] : [],
               calendarData[i - 1].hijri.month.en)) {
-          dayStr += '<span class="badge badge-danger calendar-note">' + chrome.i18n.getMessage('Fasting') + '</span>';
+          dayStr += '<span class="badge bg-danger calendar-note">' + chrome.i18n.getMessage('Fasting') + '</span>';
         }
       }
 

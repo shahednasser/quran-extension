@@ -264,8 +264,10 @@ body {
   margin-bottom: 2px;
 }
 
-.close {
+.btn-close {
   float: __MSG_@@bidi_end_edge__ !important;
+  height: 1px;
+  width: 1px;
 }
 
 .athkar-container .title {
@@ -527,5 +529,9 @@ body {
   .close-calendar,
   .close-calendar:hover {
     color: #fff;
+  }
+
+  .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
   }
 }
