@@ -326,5 +326,11 @@
     },
     "fasting_reminder_title": {
         "message": "Peringatan Puasa"
+    },
+    "report_bug": {
+        "message": "Laporkan bug"
+    },
+    "contact_developer": {
+        "message": "Kontak pengembang"
     }
 }
