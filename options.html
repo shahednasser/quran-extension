@@ -28,6 +28,12 @@
           </div>
           <small class="text-secondary">__MSG_show_hijri_date_description__</small>
         </div>
+        <div class="form-group mb-4">
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" id="should_refresh" name="should_refresh">
+            <label class="form-check-label" for="should_refresh">__MSG_refresh_every_tab__</label>
+          </div>
+        </div>
         <hr />
         <h2 class="mb-4">__MSG_quran__</h2>
         <div class="form-group mb-4">
@@ -236,6 +242,13 @@
             <label class="form-check-label" for="show_prayer_times">__MSG_show_prayer_times__</label>
           </div>
           <small class="text-secondary">__MSG_show_prayer_times_description__</small>
+        </div>
+        <div class="form-group mb-4">
+          <label class="mb-2">__MSG_prayer_times_format__</label>
+          <select class="form-control" id="prayer_times_format" name="prayer_times_format" disabled>
+            <option value="24">24h Format</option>
+            <option value="12">12h Format</option>
+          </select>
         </div>
         <div class="form-group mb-4">
           <label class="mb-2">__MSG_prayer_times_method__</label>

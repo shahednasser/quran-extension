@@ -1,5 +1,5 @@
 //
-// Copyright (c) 2020 by Shahed Nasser. All Rights Reserved.
+// Copyright (c) 2021 by Shahed Nasser. All Rights Reserved.
 //
 
 $(document).ready(function(){
@@ -9,7 +9,9 @@ $(document).ready(function(){
       weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       hijriHolidays = [],
       currentHijriMonths = [],
-      extensionURL = encodeURI("https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg");
+      extensionURL = encodeURI("https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"),
+      prayerTimeFormat = 24,
+      shouldRefresh = false;
   const messageRegex = /__MSG_(\w+)__/g,
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
           'October', 'November', 'December'],
@@ -109,7 +111,7 @@ $(document).ready(function(){
     $(".calendar-container").removeClass("show");
   });
 
-  function load(reload, withTopSites, isReport = false){
+  function load(reload, withTopSites){
     audio = null;
     $(".reload img").hide();
     $(".reload .loader").show();
@@ -118,21 +120,32 @@ $(document).ready(function(){
     chrome.storage.local.get(['image', 'verse', 'calendar', 'prayerTimesCalendar'], function(result){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
                                   'translation_identifier', 'show_top_sites', 'show_athkar', 
-                                  'calendar_start_day', 'removed_top_sites', 'show_prayer_times'], function(syncResult){
+                                  'calendar_start_day', 'removed_top_sites', 'show_prayer_times',
+                                  'prayer_times_format', 'should_refresh', 'last_update'], function(syncResult){
+        if (syncResult.should_refresh) {
+          shouldRefresh = true;
+        }
+        if (syncResult.last_update && !syncResult.last_update.shown) {
+          Swal.fire({
+            html: syncResult.last_update.message
+          });
+          syncResult.last_update.shown = true;
+          chrome.storage.sync.set({last_update: syncResult.last_update});
+        }
         if(navigator.onLine){
           if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
               !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
                 $(".translation-container").remove();
               }
           let now = (new Date()).getTime();
-          if(result.hasOwnProperty('image') && result.image && now <= result.image.timeout && !reload && !isReport){
+          if(result.hasOwnProperty('image') && result.image && !shouldRefresh && now <= result.image.timeout && !reload){
             setBackgroundImage(result.image.src);
           }
           else {
             setNewImage(reload);
           }
 
-          if(result.hasOwnProperty('verse') && result.verse && now <= result.verse.timeout && !reload){
+          if(result.hasOwnProperty('verse') && result.verse && !shouldRefresh && now <= result.verse.timeout && !reload){
             setVerse(result.verse.data);
             audio = new Audio(result.verse.audio);
             if(syncResult.hasOwnProperty('show_translation') && syncResult.show_translation &&
@@ -204,12 +217,17 @@ $(document).ready(function(){
           }
 
           if (!syncResult.hasOwnProperty('show_prayer_times') || syncResult.show_prayer_times) {
+            if (syncResult.prayer_times_format) {
+              prayerTimeFormat = syncResult.prayer_times_format;
+            }
             if (!result.hasOwnProperty('prayerTimesCalendar') || !result.prayerTimesCalendar || !result.prayerTimesCalendar.hasOwnProperty('month') || 
             !result.prayerTimesCalendar.hasOwnProperty('calendar') || result.prayerTimesCalendar.month != (new Date()).getMonth()) {
               getPrayerTimesCalendar();
             } else {
               getPrayerTimes();
             }
+          } else {
+            $(".next-prayer").remove();
           }
         }
         else{
@@ -644,7 +662,7 @@ $(document).ready(function(){
     `)
 
     var toastElList = [].slice.call(document.querySelectorAll('.toast:not(.hide)'))
-    var toastList = toastElList.map(function (toastEl) {
+    toastElList.map(function (toastEl) {
       return new bootstrap.Toast(toastEl, {
         autohide: false
       }).show()
@@ -669,32 +687,80 @@ $(document).ready(function(){
 
   function getPrayerTimes() {
     chrome.storage.local.get(['prayerTimesCalendar'], function(result) {
-      console.log(result)
       if (result.hasOwnProperty('prayerTimesCalendar') && result.prayerTimesCalendar.hasOwnProperty('calendar')) {
         //get today's prayer times
-        const today = new Date();
+        const today = new Date(),
+          todayMoment = moment();
         const prayerTimesContainer = $(".prayer-times-container"),
               prayerTimesWrapper = prayerTimesContainer.find(".prayer-times-wrapper");
         prayerTimesContainer.addClass('d-none');
         prayerTimesWrapper.empty();
+        let nextPrayerTime = 0, nextPrayerName = "";
         result.prayerTimesCalendar.calendar.some((dateData) => {
           if (parseInt(dateData.date.gregorian.day) == today.getDate()) {
+            const fajr = formatTime(dateData.timings.Fajr),
+              dhuhr = formatTime(dateData.timings.Dhuhr),
+              asr = formatTime(dateData.timings.Asr),
+              maghrib = formatTime(dateData.timings.Maghrib),
+              isha = formatTime(dateData.timings.Isha),
+              momentFajr = moment(fajr, getTimeFormat()).year(todayMoment.year()).month(todayMoment.month()).date(todayMoment.date()),
+              momentDhuhr = moment(dhuhr, getTimeFormat()).year(todayMoment.year()).month(todayMoment.month()).date(todayMoment.date()),
+              momentAsr = moment(asr, getTimeFormat()).year(todayMoment.year()).month(todayMoment.month()).date(todayMoment.date()),
+              momentMaghrib = moment(maghrib, getTimeFormat()).year(todayMoment.year()).month(todayMoment.month()).date(todayMoment.date()),
+              momentIsha = moment(isha, getTimeFormat()).year(todayMoment.year()).month(todayMoment.month()).date(todayMoment.date());
+
+            switch (false) {
+              case todayMoment.isAfter(momentFajr):
+                nextPrayerTime = todayMoment.to(momentFajr);
+                nextPrayerName = chrome.i18n.getMessage('fajr');
+                break;
+              case todayMoment.isAfter(momentDhuhr):
+                nextPrayerTime = todayMoment.to(momentDhuhr);
+                nextPrayerName = chrome.i18n.getMessage('dhuhr');
+                break;
+              case todayMoment.isAfter(momentAsr):
+                nextPrayerTime = todayMoment.to(momentAsr);
+                nextPrayerName = chrome.i18n.getMessage('asr');
+                break;
+              case todayMoment.isAfter(momentMaghrib):
+                nextPrayerTime = todayMoment.to(momentMaghrib);
+                nextPrayerName = chrome.i18n.getMessage('maghrib');
+                break;
+              case todayMoment.isAfter(momentIsha):
+                nextPrayerTime = todayMoment.to(momentIsha);
+                nextPrayerName = chrome.i18n.getMessage('isha');
+                break;
+            }
+
             //show prayer times
-            prayerTimesWrapper.append(`<div class="prayer-time fajr">${formatTime(dateData.timings.Fajr)}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time dhuhr">${formatTime(dateData.timings.Dhuhr)}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time asr">${formatTime(dateData.timings.Asr)}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time maghrib">${formatTime(dateData.timings.Maghrib)}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time isha">${formatTime(dateData.timings.Isha)}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time fajr">${fajr}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time dhuhr">${dhuhr}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time asr">${asr}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time maghrib">${maghrib}</div>`);
+            prayerTimesWrapper.append(`<div class="prayer-time isha">${isha}</div>`);
             prayerTimesContainer.removeClass('d-none');
             return true; //break the loop
           }
           return false;
         });
+
+        console.log(nextPrayerTime, nextPrayerName);
+        if (nextPrayerTime) {
+          $(".next-prayer").text(nextPrayerName + " " + nextPrayerTime);
+        }
       }
     })
   }
 
   function formatTime (time) {
-    return time.split(" ")[0];
+    let formattedTime = time.split(" ")[0];
+    const momentTime = moment(formattedTime, 'HH:mm');
+    formattedTime = momentTime.format(getTimeFormat())
+
+    return formattedTime;
+  }
+
+  function getTimeFormat () {
+    return prayerTimeFormat == 12 ? "hh:mm A" : 'HH:mm';
   }
 });

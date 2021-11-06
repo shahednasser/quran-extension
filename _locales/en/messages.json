@@ -350,5 +350,29 @@
     },
     "prayer_times_hint": {
         "message": "These might not be accurate. Please check the settings to change the method of calculation for a better result."
+    },
+    "prayer_times_format": {
+        "message": "Prayer Times Format"
+    },
+    "refresh_every_tab": {
+        "message": "Should Refresh on Every New Tab"
+    },
+    "until": {
+        "message": "Until"
+    },
+    "fajr": {
+        "message": "Fajr"
+    },
+    "dhuhr": {
+        "message": "Dhuhr"
+    },
+    "asr": {
+        "message": "Asr"
+    },
+    "maghrib": {
+        "message": "Maghrib"
+    },
+    "isha": {
+        "message": "Isha"
     }
 }

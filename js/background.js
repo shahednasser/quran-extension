@@ -118,3 +118,20 @@ function isFastingDay (day, dayOfWeek, holidays, dayBeforeHolidays, dayAfterHoli
       holidays.includes("Ashura") || holidays.includes("Arafa") || dayBeforeHolidays.includes("Ashura") || 
       dayAfterHolidays.includes("Ashura");
 }
+
+chrome.runtime.onInstalled.addListener(() => {
+  const manifest = chrome.runtime.getManifest();
+  chrome.storage.sync.get(['last_update'], (result) => {
+    if (!result.hasOwnProperty('last_update') || result.last_update.version != manifest.version) {
+      //send request to server to get message
+      $.get('https://quran-extension-api.alwaysdata.net/updates/' + manifest.version, (data) => {
+        let message;
+        if (data.success) {
+          message = data.message;
+        }
+
+        chrome.storage.sync.set({last_update: {version: manifest.version, message, shown: message.length === 0}});
+      });
+    }
+  })
+})
