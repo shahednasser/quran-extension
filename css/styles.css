@@ -50,11 +50,17 @@ body {
 .athkar-container {
   width: 70%;
   text-align: center;
-  background-color: rgba(255, 255, 255, .7);
-  color: #333;
   padding: 5px 15px 5px 15px;
+  border: 2px solid gray;
   border-radius: 10px;
   margin: 30px auto 60px;
+}
+@supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
+  .athkar-container {
+    -webkit-backdrop-filter: blur(1.2rem);
+    backdrop-filter: blur(1.2rem);
+    background-color: rgba(255, 255, 255, 0.2);  
+  }
 }
 
 .athkar-container .thikr-arabic {
@@ -62,24 +68,25 @@ body {
   word-spacing: 10px;
   line-height: 210%;
   direction: rtl;
-  text-align: right;
   display: block;
   margin-bottom: 5px;
 }
 
 .athkar-container .thikr-english,
 .athkar-container .thikr-ar-en {
-  text-align: left;
   display: block;
   font-size: 17px;
   word-spacing: 4px;
+  margin-bottom: 15px;
+}
+.thikr-translation-title, .thikr-transliteration-title{
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
-.athkar-container .thikr-ar-en {
-  color: #585858;
-  margin-top: 10px;
+.thikr-ar-en{
+  font-style: italic;
 }
-
 .verse {
   opacity: 0;
   margin: 10px auto;
@@ -110,33 +117,28 @@ body {
 
 
 .translation-container {
-  position: fixed;
-  bottom: 0;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
   text-align: center;
-  color: #333;
   transition: all .2s;
   __MSG_@@bidi_start_edge__: 0;
 }
 
 .translation-container .title {
   font-size: 20px;
-  background-color: #ccc;
-  width: fit-content;
-  border-radius: 10px 10px 0px 0px;
+  background-color: transparent;
+  width: 100%;
   padding: 5px 15px;
   font-weight: 600;
-  z-index: 10;
+  text-align: center;
   position: relative;
 }
 
 .translation-container .body {
-  display: none;
   font-size: 15px;
   padding: 10px;
-  direction: ltr;
-  background-color: #ccc;
   border-top-__MSG_@@bidi_end_edge__-radius: 10px;
-  box-shadow: 1px 1px 4px rgb(74 74 74 / 52%);
 }
 
 .toolbar-link {

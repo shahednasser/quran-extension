@@ -97,12 +97,6 @@ $(document).ready(function(){
     }
   });
 
-  $(".translation-container").hover(function () {
-    $(this).children(".body").show('fast');
-  }, function () {
-    $(this).children(".body").hide('fast');
-  });
-
   $(".calendar-btn").click(function () {
     $(".calendar-container").addClass("show");
   });
@@ -307,7 +301,9 @@ $(document).ready(function(){
     $(".athkar-container .thikr").html(`
       <span class="thikr-arabic">${thikr.ar}</span>
       <div class="translations">
+        <span class="thikr-translation-title">Translation</span>
         <span class="thikr-english">${thikr.en}</span>
+        <span class="thikr-transliteration-title">Transliteration</span>
         <span class="thikr-ar-en">${thikr['ar-en']}</span>
       </div>
     `);
