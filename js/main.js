@@ -97,12 +97,6 @@ $(document).ready(function(){
     }
   });
 
-  // $(".translation-container").hover(function () {
-  //   $(this).children(".body").show('fast');
-  // }, function () {
-  //   $(this).children(".body").hide('fast');
-  // });
-
   $(".calendar-btn").click(function () {
     $(".calendar-container").addClass("show");
   });
