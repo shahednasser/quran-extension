@@ -377,5 +377,11 @@
     },
     "coffee": {
         "message": "Buy me a Coffee"
+    },
+    "show_search_bar": {
+        "message": "Show Google's Search Bar"
+    },
+    "favorites": {
+        "message": "Favorites"
     }
 }

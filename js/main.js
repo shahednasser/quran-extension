@@ -11,7 +11,8 @@ $(document).ready(function(){
       currentHijriMonths = [],
       extensionURL = encodeURI("https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"),
       prayerTimeFormat = 24,
-      shouldRefresh = false;
+      shouldRefresh = false,
+      currentVerse = null;
   const messageRegex = /__MSG_(\w+)__/g,
         months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
           'October', 'November', 'December'],
@@ -20,9 +21,11 @@ $(document).ready(function(){
         calendarData = [],
         currentHijriDate = moment(),
         currentDate = new Date();
-  $(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-  });
+  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
+  initializeToasts();
   $("html").attr('lang', chrome.i18n.getUILanguage());
   localizeHtmlPage($("body"));
   load(false, true);
@@ -105,6 +108,75 @@ $(document).ready(function(){
     $(".calendar-container").removeClass("show");
   });
 
+  $("body").on("click", ".top-sites-container a .remove", function (e) {
+    e.stopPropagation();
+    e.preventDefault();
+    const parent = $(this).parent("a"),
+          removeUrl = parent.attr('href');
+    Swal.fire({
+      title: chrome.i18n.getMessage('remove_top_site_title'),
+      html: chrome.i18n.getMessage('remove_top_site_content'),
+      showConfirmButton: true,
+      confirmButtonText: chrome.i18n.getMessage('remove'),
+      showCloseButton: true,
+      showCancelButton: true,
+      cancelButtonText: chrome.i18n.getMessage('cancel'),
+      icon: 'warning',
+      showLoaderOnConfirm: true,
+      preConfirm: function () {
+        chrome.storage.sync.get(['removed_top_sites'], function (storageSync) {
+          removedTopSites = storageSync.hasOwnProperty('removed_top_sites') ? storageSync.removed_top_sites : [];
+          if (removedTopSites.indexOf(removeUrl) == -1) {
+            removedTopSites.push(removeUrl);
+            chrome.storage.sync.set({removed_top_sites: removedTopSites}, function () {
+              parent.slideUp();
+              setTimeout(function () {
+                parent.remove();
+              }, 2000);
+              Swal.hideLoading();
+              Swal.close();
+            });
+          }
+        })
+      }
+    });
+  });
+
+  $("body").on('click', '#updateExtension', function () {
+    chrome.runtime.reload();
+  });
+
+  $(".favorite-button").on('click', function (e) {
+    e.preventDefault();
+    if (currentVerse) {
+      toggleFavorite(currentVerse);
+    }
+  });
+
+  $("body").on('click', ".favorite-button-list", function (e) {
+    e.preventDefault();
+    const parent = $(this).parents(".verse");
+    const index = parent.attr('id').split("_")[1];
+    chrome.storage.sync.get(['favorite_verses'], function (result) {
+      const favorites = result.favorite_verses;
+      const verse = favorites[index];
+      favorites.splice(index, 1);
+      if (currentVerse.surah.number === verse.surah.number && currentVerse.numberInSurah === verse.numberInSurah) {
+        $(".favorite-button").find("img").attr('src', '/assets/heart.svg');
+      }
+      chrome.storage.sync.set({favorite_verses: favorites}, function () {
+        refreshFavorites();
+      })
+    })
+  });
+
+  $("body").on('click', "[data-bs-dismiss]", function () {
+    const selector = $(this).attr('data-bs-dismiss');
+    $(selector).each((_, elm) => {
+      $(elm).removeClass('show');
+    });
+  });
+
   function load(reload, withTopSites){
     audio = null;
     $(".reload img").hide();
@@ -115,7 +187,8 @@ $(document).ready(function(){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
                                   'translation_identifier', 'show_top_sites', 'show_athkar', 
                                   'calendar_start_day', 'removed_top_sites', 'show_prayer_times',
-                                  'prayer_times_format', 'should_refresh', 'last_update'], function(syncResult){
+                                  'prayer_times_format', 'should_refresh', 'last_update', 'show_search',
+                                  'favorite_verses'], function(syncResult){
         if (syncResult.should_refresh) {
           shouldRefresh = true;
         }
@@ -230,6 +303,11 @@ $(document).ready(function(){
           setVerse(getDefaultVerse());
           $(".audio-player").remove();
         }
+
+        if (!syncResult.hasOwnProperty('show_search') || syncResult.show_search) {
+          showSearchBar();
+        }
+
         if(withTopSites && (!syncResult.hasOwnProperty('show_top_sites') || syncResult.show_top_sites)){
           chrome.topSites.get((topSites) => {
             if (syncResult.hasOwnProperty('removed_top_sites')) {
@@ -251,50 +329,16 @@ $(document).ready(function(){
           $(".athkar-container").remove();
           showRandomThikr();
         }
+
+        if (syncResult.hasOwnProperty('favorite_verses')) {
+          showFavoriteVerses(syncResult.favorite_verses)
+        }
         
       });
     });
     
     
   }
-
-  $("body").on("click", ".top-sites-container a .remove", function (e) {
-    e.stopPropagation();
-    e.preventDefault();
-    const parent = $(this).parent("a"),
-          removeUrl = parent.attr('href');
-    Swal.fire({
-      title: chrome.i18n.getMessage('remove_top_site_title'),
-      html: chrome.i18n.getMessage('remove_top_site_content'),
-      showConfirmButton: true,
-      confirmButtonText: chrome.i18n.getMessage('remove'),
-      showCloseButton: true,
-      showCancelButton: true,
-      cancelButtonText: chrome.i18n.getMessage('cancel'),
-      icon: 'warning',
-      showLoaderOnConfirm: true,
-      preConfirm: function () {
-        chrome.storage.sync.get(['removed_top_sites'], function (storageSync) {
-          removedTopSites = storageSync.hasOwnProperty('removed_top_sites') ? storageSync.removed_top_sites : [];
-          if (removedTopSites.indexOf(removeUrl) == -1) {
-            removedTopSites.push(removeUrl);
-            chrome.storage.sync.set({removed_top_sites: removedTopSites}, function () {
-              parent.slideUp();
-              setTimeout(function () {
-                parent.remove();
-              }, 2000);
-              Swal.hideLoading();
-              Swal.close();
-            });
-          }
-        })
-      }
-    });
-  });
-
-  $("body").on('click', '#updateExtension', function () {
-    chrome.runtime.reload();
-  });
 
   function showRandomThikr(){
     let thikr = getRandomThikr();
@@ -323,6 +367,7 @@ $(document).ready(function(){
   }
 
   function setVerse(data){
+    currentVerse = data;
     $(".verse-text").text(data.text);
     $(".verse-details").text(data.surah.name + " - " + data.numberInSurah);
     $(".verse").animate({opacity: 1}, 500);
@@ -350,6 +395,17 @@ $(document).ready(function(){
     if (telegramElm.length) {
       telegramElm.attr('href', 'https://t.me/share/url?url=' + extensionURL + '&text=' + text);
     }
+
+    //check if in favorites
+    chrome.storage.sync.get(['favorite_verses'], (result) => {
+      const favorites = result.hasOwnProperty('favorite_verses') ? result.favorite_verses : [];
+      const exists = favorites.some((verse) => verse.surah.number === data.surah.number && verse.numberInSurah === data.numberInSurah);
+      if (exists) {
+        $(".favorite-button").find("img").attr('src', '/assets/heart-filled.svg');
+      } else {
+        $(".favorite-button").find("img").attr('src', '/assets/heart.svg');
+      }
+    })
   }
 
   function calculateTimeout(){
@@ -389,6 +445,14 @@ $(document).ready(function(){
   function setTranslation(translation){
     $(".translation-container .body").text(translation.text);
     $(".translation-container").show();
+  }
+
+  function showSearchBar () {
+    $(".content-container").append(`
+      <form action="https://google.com/search" method="GET">
+        <input type="search" name="q" placeholder="Search Google..." class="search-bar" />
+      </form>
+    `);
   }
 
   function addTopSites(topSites){
@@ -646,22 +710,79 @@ $(document).ready(function(){
 
   function showUpdateToast () {
     $("body").append(`
-      <div class="toast bg-white text-dark" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-body">
-          <p class="fw-bold">A new update is available. You can update now or wait until your browser reloads</p>
-          <div class="mt-2 pt-2 border-top">
-            <button type="button" class="btn btn-success btn-sm" id="updateExtension">Update now</button>
-            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="toast">Close</button>
+      <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+        <div class="toast fade show text-dark" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-body">
+            <p class="fw-bold">A new update is available. You can update now or wait until your browser reloads</p>
+            <div class="mt-2 pt-2 border-top">
+              <button type="button" class="btn btn-success btn-sm" id="updateExtension">Update now</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss=".toast">Close</button>
+            </div>
           </div>
         </div>
       </div>
     `)
+  }
 
-    var toastElList = [].slice.call(document.querySelectorAll('.toast:not(.hide)'))
-    toastElList.map(function (toastEl) {
-      return new bootstrap.Toast(toastEl, {
-        autohide: false
-      }).show()
+  function showFavoriteVerses (favorites) {
+    const container = $(".favorite-verses .favorite-content");
+    container.children().remove();
+    favorites.forEach((verse, index) => {
+      container.append(
+        `
+          <div class="verse" id="verse_${index}">
+            <p class="verse-text">${verse.text}</p>
+            <p class="verse-details">${verse.surah.name + " - " + verse.numberInSurah}</p>
+            <p class="verse-actions">
+              <button class="btn btn-link favorite-button-list text-dark">Remove</button>
+            </p>
+          </div>
+        `
+      )
+    })
+  }
+
+  function refreshFavorites () {
+    chrome.storage.sync.get(['favorite_verses'], function (result) {
+      const favorites = result.hasOwnProperty('favorite_verses') ? result.favorite_verses : [];
+      showFavoriteVerses(favorites);
+    })
+  }
+
+  function toggleFavorite (item) {
+    chrome.storage.sync.get(['favorite_verses'], function (result) {
+      const favorites = result.hasOwnProperty('favorite_verses') ? result.favorite_verses : [];
+      //check if current verse is in array or not
+      const verseIndex = favorites.findIndex((verse) => verse.surah.number === item.surah.number && verse.numberInSurah === item.numberInSurah);
+      let action = "added";
+      if (verseIndex === -1) {
+        //current verse should be added to favorites
+        favorites.push(item);
+      } else {
+        //current verse should be removed from favorites
+        favorites.splice(verseIndex, 1);
+        action = "removed";
+      }
+
+      chrome.storage.sync.set({favorite_verses: favorites}, function () {
+        refreshFavorites();
+        if (action === 'added') {
+          $(".favorite-button").find("img").attr('src', '/assets/heart-filled.svg');
+        } else {
+          $(".favorite-button").find("img").attr('src', '/assets/heart.svg');
+        }
+        //show toast
+        $("body").append(`
+          <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
+            <div class="toast fade text-dark show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
+              <div class="toast-body d-flex justify-content-between">
+                <p class="fw-bold mb-0">Ayah ${action} ${action === 'added' ? 'to' : 'from'} favorites!</p>
+                <button type="button" class="btn-close text-dark" data-bs-dismiss=".toast" aria-label="Close"></button>
+              </div>
+            </div>
+          </div>
+        `)
+      });
     })
   }
 
@@ -758,5 +879,15 @@ $(document).ready(function(){
 
   function getTimeFormat () {
     return prayerTimeFormat == 12 ? "hh:mm A" : 'HH:mm';
+  }
+
+  function initializeToasts () {
+    var toastElList = [].slice.call(document.querySelectorAll('.toast:not(.hide)'))
+    console.log(toastElList);
+    toastElList.map(function (toastEl) {
+      const toast = new bootstrap.Toast(toastEl, {
+        animation: true
+      });
+    });
   }
 });

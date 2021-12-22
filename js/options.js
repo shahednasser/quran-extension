@@ -16,7 +16,8 @@ $(document).ready(function(){
       showPrayerTimesElement = $("#show_prayer_times"),
       prayerTimesMethodElement = $("#prayer_times_method"),
       prayerTimesFormatElement = $("#prayer_times_format"),
-      shouldRefreshElement = $("#should_refresh");
+      shouldRefreshElement = $("#should_refresh"),
+      showSearchElement = $("#show_search");
   chrome.storage.sync.get([
     "translation_language", 
     "show_translation", 
@@ -29,7 +30,8 @@ $(document).ready(function(){
     "show_prayer_times",
     "prayer_times_method",
     "prayer_times_format",
-    "should_refresh"], function(result){
+    "should_refresh",
+    "show_search"], function(result){
     if(result.hasOwnProperty('show_translation') && result.show_translation){
       showTranslationElement.prop('checked', true);
       translationLanguagesElement.prop('disabled', false);
@@ -69,6 +71,7 @@ $(document).ready(function(){
     }
 
     shouldRefreshElement.prop('checked', !result.hasOwnProperty('should_refresh') || result.should_refresh);
+    showSearchElement.prop('checked', !result.hasOwnProperty('show_search') || result.show_search);
   });
 
   $("#save").click(function(){
@@ -85,7 +88,8 @@ $(document).ready(function(){
         show_prayer_times = showPrayerTimesElement.is(":checked"),
         prayer_times_method = prayerTimesMethodElement.val(),
         prayer_times_format = prayerTimesFormatElement.val(),
-        should_refresh = shouldRefreshElement.is(":checked");
+        should_refresh = shouldRefreshElement.is(":checked"),
+        show_search = showSearchElement.is(":checked");
 
     if(translation_identifier === null){
       $(".alerts").html('<div class="alert alert-danger">' + chrome.i18n.getMessage('error') + '</div>')
@@ -95,7 +99,7 @@ $(document).ready(function(){
                               show_top_sites: show_top_sites, show_athkar: show_athkar, show_date: show_date,
                               calendar_start_day: calendar_start_day, send_fasting_notification: send_fasting_notification,
                               show_prayer_times: show_prayer_times, prayer_times_method: prayer_times_method,
-                              prayer_times_format: prayer_times_format, should_refresh: should_refresh}, function(){
+                              prayer_times_format: prayer_times_format, should_refresh: should_refresh, show_search}, function(){
                                 chrome.storage.local.set({image: null, verse: null, prayerTimesCalendar: null}, function(){
                                   $(".alerts").html('<div class="alert alert-success mt-3">' + chrome.i18n.getMessage('saved') + '</div>');
 

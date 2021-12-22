@@ -47,6 +47,23 @@ body {
   word-spacing: 10px;
 }
 
+.search-bar {
+  width: 100%;
+  border-radius: 10px;
+  padding: 7px;
+  color: #fff;
+  border: 0;
+}
+
+.search-bar::placeholder {
+  color: #fff;
+  opacity: .5;
+}
+
+.search-bar:focus {
+  outline: none;
+}
+
 .athkar-container {
   width: 70%;
   text-align: center;
@@ -56,7 +73,7 @@ body {
   margin: 30px auto 60px;
 }
 @supports (-webkit-backdrop-filter: none) or (backdrop-filter: none) {
-  .athkar-container {
+  .athkar-container, .search-bar {
     -webkit-backdrop-filter: blur(1.2rem);
     backdrop-filter: blur(1.2rem);
     background-color: rgba(255, 255, 255, 0.2);  
@@ -150,7 +167,8 @@ body {
   height: 30px;
 }
 
-.rate-link img {
+.rate-link img,
+.favorites-btn img {
   height: 30px;
 }
 
@@ -169,6 +187,10 @@ body {
 
 .rate-link {
   __MSG_@@bidi_end_edge__: 100px;
+}
+
+.favorites-btn {
+  __MSG_@@bidi_end_edge__: 145px;
 }
 
 .reload {
@@ -266,7 +288,7 @@ body {
   margin-bottom: 2px;
 }
 
-.btn-close {
+.calendar-container .btn-close {
   float: __MSG_@@bidi_end_edge__ !important;
   height: 1px;
   width: 1px;
@@ -499,6 +521,16 @@ body {
   border-radius: 10px;
 }
 
+.favorite-verses .verse {
+  opacity: 1;
+  text-align: right;
+  font-size: 20px;
+}
+
+.favorite-verses .verse:not(:last-child) {
+  border-bottom: 1px solid #ccc;
+}
+
 @media screen and (min-width: 992px) {
   .calendar {
     width: 70%;
@@ -547,7 +579,7 @@ body {
     color: #fff;
   }
 
-  .btn-close {
+  .calendar-container .btn-close {
     filter: invert(1) grayscale(100%) brightness(200%);
   }
 }

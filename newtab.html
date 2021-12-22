@@ -10,23 +10,25 @@
   </head>
   <body>
     <img src='' class="background-image" />
-    <div class="reload toolbar-link" data-toggle="tooltip" title="__MSG_reload__">
+    <div class="reload toolbar-link" data-bs-toggle="tooltip" title="__MSG_reload__">
       <img src="assets/reload.svg" alt="Reload"  />
       <div class="loader"></div>
     </div>
     <div class="prayer-times-container d-none">
       <h6 class="text-center mb-3">
         __MSG_prayer_times__
-        <img src="assets/info.svg" alt="Info" class="prayer-times-icon" data-toggle="tooltip" title="__MSG_prayer_times_hint__" />
+        <img src="assets/info.svg" alt="Info" class="prayer-times-icon" data-bs-toggle="tooltip" title="__MSG_prayer_times_hint__" />
       </h6>
       <div class="prayer-times-wrapper"></div>
     </div>
+    <img src="assets/heart.svg" alt="Favorites" class="favorites-btn toolbar-link" 
+      data-bs-toggle="offcanvas" data-bs-target="#favoriteVerses" aria-controls="favoriteVerses" />
     <a href="https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"
-      data-toggle="tooltip" title="__MSG_rate_extension__" class="rate-link toolbar-link">
+      data-bs-toggle="tooltip" title="__MSG_rate_extension__" class="rate-link toolbar-link">
       <img src="assets/star.svg" alt="Rate This Extension" />
     </a>
-    <img src="assets/calendar.svg" alt="Calendar" class="calendar-btn toolbar-link" data-toggle="tooltip" title="__MSG_calendar__"  />
-    <img src="assets/settings.svg" alt="Settings" class="settings-link toolbar-link" data-toggle="tooltip" title="__MSG_settings__"  />
+    <img src="assets/calendar.svg" alt="Calendar" class="calendar-btn toolbar-link" data-bs-toggle="tooltip" title="__MSG_calendar__"  />
+    <img src="assets/settings.svg" alt="Settings" class="settings-link toolbar-link" data-bs-toggle="tooltip" title="__MSG_settings__"  />
     <div class="date-container">
       <div class="gregorian-date">
       </div>
@@ -45,7 +47,7 @@
           <div class="verse-text"></div>
           <div class="verse-details"></div>
         </div>
-        <div class='translation-container' style="">
+        <div class='translation-container'>
           <div class="title">
             __MSG_quran_translation__
           </div>
@@ -59,6 +61,9 @@
           <div class="loader"></div>
         </div>
         <div class="verse-social-links">
+          <a class="favorite-button me-1" href="#">
+            <img class="social-icon" src="assets/heart.svg" alt="Add to Favorites" />
+          </a>
           <a class="twitter-share-button" href="https://twitter.com/intent/tweet" target="_blank">
             <img class="social-icon" src="assets/twitter.svg" alt="Share on Twitter" />
           </a>
@@ -101,6 +106,14 @@
             </div>
           </div> 
         </div>
+      </div>
+    </div>
+    <div class="offcanvas offcanvas-end favorite-verses text-dark" tabindex="-1" id="favoriteVerses" aria-labelledby="offcanvasLabel">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasLabel">__MSG_favorites__</h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body favorite-content">
       </div>
     </div>
     <script src="/js/jquery.js"></script>
