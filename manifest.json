@@ -13,14 +13,13 @@
   "chrome_url_overrides" : {
     "newtab": "newtab.html"
   },
-  "manifest_version": 2,
+  "manifest_version": 3,
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
   },
   "background": {
-    "scripts": ["js/background.js"],
-    "persistent": false
+    "service_worker": "background.js"
   },
   "icons": {
     "16": "/assets/icon-16.png",

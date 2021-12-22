@@ -1,15 +1,6 @@
 //add moment and moment-hijri scripts
-const momentScript = document.createElement('script');
-momentScript.src = '/js/moment.js';
-document.body.prepend(momentScript);
-setTimeout(function() {
-  const hijriDateScript = document.createElement('script');
-  hijriDateScript.src = '/js/moment-hijri.js';
-  document.body.prepend(hijriDateScript);
-}, 500);
-const jqueryScript = document.createElement('script');
-jqueryScript.src = '/js/jquery.js';
-document.body.prepend(jqueryScript);
+importScripts('/js/moment.js');
+importScripts('/js/moment-hijri.js');
 
 const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
@@ -75,10 +66,11 @@ function getNewCalendar () {
           "day": hijriDate.iDate()
         }
       });
-      $.get('http://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear(),
-          function (data) {
-            hijriHolidays.splice(this.i, 0, data.data.hijri.holidays);
-          }.bind({i, nbDays}))
+      fetch('http://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear())
+      .then((response) => response.json())
+        .then(function (data) {
+          hijriHolidays.splice(this.i, 0, data.data.hijri.holidays);
+        }.bind({i, nbDays}))
     }
 }
 
@@ -124,7 +116,9 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.sync.get(['last_update'], (result) => {
     if (!result.hasOwnProperty('last_update') || result.last_update.version != manifest.version) {
       //send request to server to get message
-      $.get('https://quran-extension-api.alwaysdata.net/updates/' + manifest.version, (data) => {
+      fetch('https://quran-extension-api.alwaysdata.net/updates/' + manifest.version)
+      .then((response) => response.json())
+      .then((data) => {
         let message;
         if (data.success) {
           message = data.message;
