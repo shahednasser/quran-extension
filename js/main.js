@@ -223,7 +223,7 @@ $(document).ready(function(){
           }
           else {
             let verseNumber = Math.floor(Math.random() * 6236) + 1;
-            let url = 'http://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani-min,';
+            let url = 'https://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani-min,';
             if(syncResult.hasOwnProperty('recitation')){
               url += syncResult.recitation;
             } else {
@@ -304,7 +304,7 @@ $(document).ready(function(){
           $(".audio-player").remove();
         }
 
-        if (!syncResult.hasOwnProperty('show_search') || syncResult.show_search) {
+        if ((!syncResult.hasOwnProperty('show_search') || syncResult.show_search) && !reload) {
           showSearchBar();
         }
 
@@ -690,7 +690,7 @@ $(document).ready(function(){
       if (!currentHijriMonths.includes(hijriMonths[hijriDate.iMonth()])) {
         currentHijriMonths.push(hijriMonths[hijriDate.iMonth()]);
       }
-      $.get('http://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear(),
+      $.get('https://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear(),
           function (data) {
             hijriHolidays.splice(this.i, 0, data.data.hijri.holidays);
             if(currentHijriDate.iDate() == data.data.hijri.day && data.data.hijri.holidays.length){
@@ -790,7 +790,7 @@ $(document).ready(function(){
     navigator.geolocation.getCurrentPosition((position) => {
       const date = new Date();
       chrome.storage.sync.get(['prayer_times_method'], function (result) {
-        $.get('http://api.aladhan.com/v1/calendar?longitude=' + position.coords.longitude + '&latitude=' + position.coords.latitude + 
+        $.get('https://api.aladhan.com/v1/calendar?longitude=' + position.coords.longitude + '&latitude=' + position.coords.latitude + 
         '&month=' + (date.getMonth() + 1) + '&year=' + date.getFullYear() + '&method=' + (result.hasOwnProperty('prayer_times_method') ? result.prayer_times_method : 0), 
           function (data) {
           //store it in storage for the entire month
