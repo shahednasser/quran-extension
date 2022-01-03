@@ -240,10 +240,14 @@ $(document).ready(function(){
                 for(let i = 0; i < data.data.length; i++){
                   if(data.data[i].hasOwnProperty('audio')){
                     verse.audio = data.data[i].audio;
-                  } else if(data.data[i].edition.language === "ar"){
+                  } else if(data.data[i].edition.language === "ar" && data.data[i].edition.identifier !== "ar.muyassar"){
                     setVerse(data.data[i]);
                     verse.data = data.data[i];
-                  } else {
+                  } else if(data.data[i].edition.language === "ar" && data.data[i].edition.identifier === "ar.muyassar"){
+                    verse.translation = data.data[i];
+                    setTranslation(data.data[i]);
+                  } 
+                  else {
                     verse.translation = data.data[i];
                     setTranslation(data.data[i]);
                   }
