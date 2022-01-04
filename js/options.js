@@ -20,7 +20,7 @@ $(document).ready(function(){
       showSearchElement = $("#show_search");
   chrome.storage.sync.get([
     "translation_language", 
-    "show_translation", 
+    "show_translation",
     "recitation", 
     "show_top_sites", 
     "show_athkar", 
@@ -139,6 +139,7 @@ $(document).ready(function(){
     let identifiers = {
       en: 'en.ahmedali',
       none: '',
+      ar: 'ar.muyassar',
       az: 'az.mammadaliyev',
       bn: 'bn.bengali',
       cs: 'cs.hrbek',

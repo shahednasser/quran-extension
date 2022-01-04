@@ -240,12 +240,13 @@ $(document).ready(function(){
                 for(let i = 0; i < data.data.length; i++){
                   if(data.data[i].hasOwnProperty('audio')){
                     verse.audio = data.data[i].audio;
-                  } else if(data.data[i].edition.language === "ar"){
+                  } else if(data.data[i].edition.type === "quran"){
                     setVerse(data.data[i]);
                     verse.data = data.data[i];
                   } else {
                     verse.translation = data.data[i];
-                    setTranslation(data.data[i]);
+                    let language = data.data[i].edition.language;
+                    setTranslation(data.data[i], language);
                   }
                 }
                 let timeout = calculateTimeout();
@@ -442,7 +443,10 @@ $(document).ready(function(){
     };
   }
 
-  function setTranslation(translation){
+  function setTranslation(translation, language){
+    if(language === "ar") {
+      $(".translation-body").addClass('ar-translation');
+    }
     $(".translation-container .body").text(translation.text);
     $(".translation-container").show();
   }
