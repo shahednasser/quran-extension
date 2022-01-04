@@ -152,10 +152,15 @@ body {
   position: relative;
 }
 
-.translation-container .body {
+.translation-body {
   font-size: 15px;
   padding: 10px;
   border-top-__MSG_@@bidi_end_edge__-radius: 10px;
+}
+
+.ar-translation {
+  font-size: 17px;
+  direction: rtl;
 }
 
 .toolbar-link {
