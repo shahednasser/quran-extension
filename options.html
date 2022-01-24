@@ -279,6 +279,33 @@
           </select>
           <small class="text-secondary">__MSG_prayer_times_method_description__</small>
         </div>
+        <hr />
+        <h2 class="mb-4">__MSG_background_image__</h2>
+        <div class="form-group mb-4">
+          <h4 class="mb-2">__MSG_image_source__</h4>
+          <label class="d-block">
+            <input type="radio" name="background_image_type" value="default" />
+            __MSG_default__
+          </label>
+          <label class="d-block">
+            <input type="radio" name="background_image_type" value="unsplash_collection" />
+            __MSG_unsplash_collection__
+            <small class="text-secondary d-block">__MSG_unsplash_collection_description__</small>
+          </label>
+          <label class="d-block">
+            <input type="radio" name="background_image_type" value="single_image" />
+            __MSG_single_image__
+            <small class="text-secondary d-block">__MSG_single_image_description__</small>
+          </label>
+        </div>
+        <div class="form-group mb-4 d-none background-image-input" id="unsplashCollectionInput">
+          <label for="collection_id">__MSG_collection_id__</label>
+          <input type="text" name="collection_id" id="collection_id" class="form-control" />
+        </div>
+        <div class="form-group mb-4 d-none background-image-input" id="singleImageInput">
+          <label for="single_image_file">__MSG_single_image_file__</label>
+          <input type="file" name="single_image_file" id="single_image_file" class="form-control" />
+        </div>
         <button type="button" class="btn btn-dark" id="save">
           __MSG_save__
         </button>

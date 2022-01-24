@@ -389,5 +389,38 @@
     },
     "favorites": {
         "message": "Favorites"
+    },
+    "background_image": {
+        "message": "Background Image"
+    },
+    "image_source": {
+        "message": "Image Source"
+    },
+    "default": {
+        "message": "Default"
+    },
+    "unsplash_collection": {
+        "message": "Custom Unsplash Collection"
+    },
+    "unsplash_collection_description": {
+        "message": "Enter a collection ID for an Unsplash collection to see its images"
+    },
+    "single_image": {
+        "message": "Single Image"
+    },
+    "single_image_description": {
+        "message": "Upload an image of your choice"
+    },
+    "collection_id": {
+        "message": "Collection ID"
+    },
+    "single_image_file": {
+        "message": "Choose Image"
+    },
+    "unsplash_error": {
+        "message": "Please enter a collection ID"
+    },
+    "file_error": {
+        "message": "Please choose a file"
     }
 }

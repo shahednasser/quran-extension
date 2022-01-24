@@ -17,7 +17,12 @@ $(document).ready(function(){
       prayerTimesMethodElement = $("#prayer_times_method"),
       prayerTimesFormatElement = $("#prayer_times_format"),
       shouldRefreshElement = $("#should_refresh"),
-      showSearchElement = $("#show_search");
+      showSearchElement = $("#show_search"),
+      backgroundImageTypeElement = $("input[name=background_image_type]"),
+      unsplashCollectionElement = $("#collection_id"),
+      singleImageElement = $("#single_image_file"),
+      imageFile = null;
+
   chrome.storage.sync.get([
     "translation_language", 
     "show_translation",
@@ -31,7 +36,9 @@ $(document).ready(function(){
     "prayer_times_method",
     "prayer_times_format",
     "should_refresh",
-    "show_search"], function(result){
+    "show_search",
+    'background_image_type',
+    'background_image_type_options'], function(result){
     if(result.hasOwnProperty('show_translation') && result.show_translation){
       showTranslationElement.prop('checked', true);
       translationLanguagesElement.prop('disabled', false);
@@ -72,6 +79,26 @@ $(document).ready(function(){
 
     shouldRefreshElement.prop('checked', !result.hasOwnProperty('should_refresh') || result.should_refresh);
     showSearchElement.prop('checked', !result.hasOwnProperty('show_search') || result.show_search);
+
+    if (result.background_image_type) {
+      backgroundImageTypeElement.filter('[value=' + result.background_image_type + ']').prop('checked', true)
+
+      console.log(result.background_image_type_options, result.background_image_type)
+      if (result.background_image_type_options) {
+        switch(result.background_image_type) {
+          case 'unsplash_collection':
+            unsplashCollectionElement.parent().removeClass('d-none');
+            unsplashCollectionElement.val(result.background_image_type_options);
+            break;
+          case 'single_image':
+            singleImageElement.parent().removeClass('d-none');
+            setImage(result.background_image_type_options)
+            break;
+        }
+      }
+    } else {
+      backgroundImageTypeElement.filter('[value=default]').prop('checked', true)
+    }
   });
 
   $("#save").click(function(){
@@ -89,24 +116,44 @@ $(document).ready(function(){
         prayer_times_method = prayerTimesMethodElement.val(),
         prayer_times_format = prayerTimesFormatElement.val(),
         should_refresh = shouldRefreshElement.is(":checked"),
-        show_search = showSearchElement.is(":checked");
+        show_search = showSearchElement.is(":checked"),
+        background_image_type = backgroundImageTypeElement.filter(":checked").val(),
+        background_image_type_options = '';
 
     if(translation_identifier === null){
-      $(".alerts").html('<div class="alert alert-danger">' + chrome.i18n.getMessage('error') + '</div>')
+      $(".alerts").html('<div class="alert alert-danger">' + chrome.i18n.getMessage('error') + '</div>');
+      return;
     }
+
+    switch(background_image_type) {
+      case 'unsplash_collection':
+        background_image_type_options = unsplashCollectionElement.val() ? unsplashCollectionElement.val().trim() : null;
+        if (!background_image_type_options) {
+          $(".alerts").html('<div class="alert alert-danger">' + chrome.i18n.getMessage('unsplash_error') + '</div>');
+          return;
+        }
+        break;
+      case 'single_image':
+        background_image_type_options = imageFile;
+        if (!background_image_type_options) {
+          $(".alerts").html('<div class="alert alert-danger">' + chrome.i18n.getMessage('file_error') + '</div>');
+          return;
+        }
+    }
+
     chrome.storage.sync.set({translation_language: translation_language, show_translation: show_translation,
                               recitation: recitation, translation_identifier: translation_identifier,
                               show_top_sites: show_top_sites, show_athkar: show_athkar, show_date: show_date,
                               calendar_start_day: calendar_start_day, send_fasting_notification: send_fasting_notification,
                               show_prayer_times: show_prayer_times, prayer_times_method: prayer_times_method,
-                              prayer_times_format: prayer_times_format, should_refresh: should_refresh, show_search}, function(){
+                              prayer_times_format: prayer_times_format, should_refresh: should_refresh, show_search,
+                              background_image_type, background_image_type_options}, function(){
                                 chrome.storage.local.set({image: null, verse: null, prayerTimesCalendar: null}, function(){
                                   $(".alerts").html('<div class="alert alert-success mt-3">' + chrome.i18n.getMessage('saved') + '</div>');
 
                                   if (send_fasting_notification) {
                                     //check whether it exists or not
                                     chrome.alarms.get('fastingNotification', function (alarm) {
-                                      console.log(alarm);
                                       if (!alarm || alarm.name != "fastingNotification") {
                                         //create an alarm
                                         chrome.alarms.create('fastingNotification', {
@@ -134,6 +181,29 @@ $(document).ready(function(){
     prayerTimesMethodElement.prop('disabled', !$(this).is(":checked"));
     prayerTimesFormatElement.prop('disabled', !$(this).is(":checked"));
   })
+
+  backgroundImageTypeElement.change(function () {
+    $(".background-image-input").addClass('d-none')
+    switch($(this).val()) {
+      case 'unsplash_collection':
+        unsplashCollectionElement.parent().removeClass('d-none');
+        return;
+      case 'single_image':
+        singleImageElement.parent().removeClass('d-none');
+        return;
+    }
+  })
+
+  singleImageElement.change(function () {
+    //get base64
+    imageFile = URL.createObjectURL(this.files[0])
+    setImage(imageFile)
+  })
+
+  function setImage (url) {
+    singleImageElement.next('img').remove()
+    singleImageElement.after('<img src="' + url + '" class="img-fluid" style="width: 400px; height: 400px;" />')
+  }
 
   function getTranslationLanguageIdentifier(code){
     let identifiers = {

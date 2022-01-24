@@ -21,8 +21,8 @@ $(document).ready(function(){
         calendarData = [],
         currentHijriDate = moment(),
         currentDate = new Date();
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
   initializeToasts();
@@ -188,7 +188,7 @@ $(document).ready(function(){
                                   'translation_identifier', 'show_top_sites', 'show_athkar', 
                                   'calendar_start_day', 'removed_top_sites', 'show_prayer_times',
                                   'prayer_times_format', 'should_refresh', 'last_update', 'show_search',
-                                  'favorite_verses'], function(syncResult){
+                                  'favorite_verses', 'background_image_type', 'background_image_type_options'], function(syncResult){
         if (syncResult.should_refresh) {
           shouldRefresh = true;
         }
@@ -207,9 +207,8 @@ $(document).ready(function(){
           let now = (new Date()).getTime();
           if(result.hasOwnProperty('image') && result.image && !shouldRefresh && now <= result.image.timeout && !reload){
             setBackgroundImage(result.image.src);
-          }
-          else {
-            setNewImage(reload);
+          } else {
+            setNewImage(reload, syncResult.background_image_type, syncResult.background_image_type_options);
           }
 
           if(result.hasOwnProperty('verse') && result.verse && !shouldRefresh && now <= result.verse.timeout && !reload){
@@ -493,35 +492,50 @@ $(document).ready(function(){
     $(".hijri-date").text(hijriData.iDate() + " " + chrome.i18n.getMessage(hijriMonths[hijriData.iMonth()]) + " " + hijriData.iYear());
   }
 
-  function setNewImage(reload) {
-    let xhr = new XMLHttpRequest();
-    //get height and width of screen
-    const width = $(window).width(),
-          height = $(window).height();
-    $.ajax({
-      method: 'GET',
-      url: 'https://source.unsplash.com/collection/4331244/' + width + 'x' + height,
-      headers: {
-        'Access-Control-Expose-Headers': 'ETag'
-      },
-      xhr: function() {
-       return xhr;
-      },
-      success: function(data){
-        setBackgroundImage(xhr.responseURL);
+  function setNewImage(reload, background_image_type, background_image_type_options) {
+    let defaultCollection = 4331244
+    switch(background_image_type) {
+      case 'single_image':
+        setBackgroundImage(background_image_type_options)
         let timeout = calculateTimeout();
-        chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
-      },
-      error: function(){
-        setBackgroundImage('/assets/offline-image.jpg');
-      },
-      complete: function(){
+        chrome.storage.local.set({image: {src: background_image_type_options, timeout}});
         if(reload){
           $(".reload img").show();
           $(".reload .loader").hide();
         }
-      }
-    });
+        break;
+      case 'unsplash_collection':
+        defaultCollection = background_image_type_options;
+      default:
+        let xhr = new XMLHttpRequest();
+        //get height and width of screen
+        const width = $(window).width(),
+              height = $(window).height();
+        $.ajax({
+          method: 'GET',
+          url: 'https://source.unsplash.com/collection/' + defaultCollection + '/' + width + 'x' + height,
+          headers: {
+            'Access-Control-Expose-Headers': 'ETag'
+          },
+          xhr: function() {
+          return xhr;
+          },
+          success: function(data){
+            setBackgroundImage(xhr.responseURL);
+            let timeout = calculateTimeout();
+            chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
+          },
+          error: function(){
+            setBackgroundImage('/assets/offline-image.jpg');
+          },
+          complete: function(){
+            if(reload){
+              $(".reload img").show();
+              $(".reload .loader").hide();
+            }
+          }
+        });
+    }
   }
 
   function getNewCalendar () {
