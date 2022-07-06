@@ -640,7 +640,7 @@ $(document).ready(function(){
   }
 
   function isFastingDay (day, dayOfWeek, holidays, dayBeforeHolidays, dayAfterHolidays, monthName) {
-    return day == 13 || day == 14 || day == 15 || dayOfWeek == "Monday" || dayOfWeek == "Thursday" || 
+    return (day == 13 && monthName !== 'Dhu_al_Hijjah') || day == 14 || day == 15 || dayOfWeek == "Monday" || dayOfWeek == "Thursday" || 
       holidays.includes("Ashura") || holidays.includes("Arafa") || dayBeforeHolidays.includes("Ashura") || 
       dayAfterHolidays.includes("Ashura") || monthName === 'Ramadan';
   }
@@ -879,7 +879,6 @@ $(document).ready(function(){
           return false;
         });
 
-        console.log(nextPrayerTime, nextPrayerName);
         if (nextPrayerTime) {
           $(".next-prayer").text(nextPrayerName + " " + nextPrayerTime);
         }
@@ -901,7 +900,6 @@ $(document).ready(function(){
 
   function initializeToasts () {
     var toastElList = [].slice.call(document.querySelectorAll('.toast:not(.hide)'))
-    console.log(toastElList);
     toastElList.map(function (toastEl) {
       const toast = new bootstrap.Toast(toastEl, {
         animation: true
