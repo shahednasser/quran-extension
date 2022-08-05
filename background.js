@@ -113,6 +113,8 @@ function isFastingDay (day, dayOfWeek, holidays, dayBeforeHolidays, dayAfterHoli
 
 chrome.runtime.onInstalled.addListener(() => {
   const manifest = chrome.runtime.getManifest();
+  //reset the current saved local data
+  chrome.storage.local.remove(['image', 'verse', 'calendar', 'prayerTimesCalendar']);
   chrome.storage.sync.get(['last_update'], (result) => {
     if (!result.hasOwnProperty('last_update') || result.last_update.version != manifest.version) {
       //send request to server to get message

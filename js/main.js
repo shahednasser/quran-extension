@@ -7,7 +7,6 @@ $(document).ready(function(){
       athkar = [],
       originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
       weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      hijriHolidays = [],
       currentHijriMonths = [],
       extensionURL = encodeURI("https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"),
       prayerTimeFormat = 24,
@@ -265,8 +264,7 @@ $(document).ready(function(){
             }
           }
 
-          if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays && 
-            result.calendar.data && result.calendar.data.length == result.calendar.hijriHolidays.length &&
+          if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.data && 
             result.calendar.hijriMonths) {
             const calendarDate = new Date(result.calendar.date);
             if (calendarDate.getMonth() !== (new Date()).getMonth()) {
@@ -540,8 +538,8 @@ $(document).ready(function(){
 
   function getNewCalendar () {
     setCalendar(calendarData);
-    chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData, 
-      hijriHolidays: hijriHolidays, hijriMonths: currentHijriMonths}});
+    chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData,
+      hijriMonths: currentHijriMonths}});
   }
 
   function setCalendar (data) {
@@ -617,15 +615,15 @@ $(document).ready(function(){
       }
       let dayStr = '<div class="calendar__day day ' + additionalClasses + '">' + (i > totalDays || i <= 0 ? "" : i + '<small class="calendar-hijri-date">' + calendarData[i - 1].hijri.day + '</small>');
       if (i <= totalDays && i > 0) {
-        if (hijriHolidays[i - 1].length) {
-          for (let j = 0; j < hijriHolidays[i - 1].length; j++) {
-            dayStr += '<span class="badge bg-success calendar-note">' + hijriHolidays[i - 1][j] + '</span>';
-            hasAshura = hijriHolidays[i - 1][j] == "Ashura";
+        if (calendarData[i - 1].hijri.holidays.length) {
+          for (let j = 0; j < calendarData[i - 1].hijri.holidays.length; j++) {
+            dayStr += '<span class="badge bg-success calendar-note">' + calendarData[i - 1].hijri.holidays[j] + '</span>';
+            hasAshura = calendarData[i - 1].hijri.holidays[j] == "Ashura";
           }
         }
 
-        if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], hijriHolidays, 
-              i > 1 ? hijriHolidays[i - 2] : [], i < totalDays && hijriHolidays.length > i ? hijriHolidays[i] : [],
+        if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], calendarData[i - 1].hijri.holidays, 
+              i > 1 ? calendarData[i - 2].hijri.holidays : [], i < totalDays && calendarData[i].hijri.holidays.length > i ? calendarData[i].hijri.holidays : [],
               calendarData[i - 1].hijri.month.en)) {
           dayStr += '<span class="badge bg-danger calendar-note">' + chrome.i18n.getMessage('Fasting') + '</span>';
         }
@@ -674,20 +672,15 @@ $(document).ready(function(){
     return nbDays;
   }
 
-  function assembleCalendarData () {
+  async function assembleCalendarData () {
     const currentYear = currentDate.getFullYear(),
           currentMonth = currentDate.getMonth();
     const nbDays = getMonthDays(currentYear, currentMonth);
-    hijriHolidays.splice = function (){
-      const result = Array.prototype.splice.apply(this,arguments);
-      if (this.length == nbDays) {
-        getNewCalendar();
-      }
-      return result;
-    }
     for (let i = 0; i < nbDays; i++) {
       const gregorianDate = new Date(currentYear, currentMonth, i + 1),
             hijriDate = moment(currentYear + '-' + (currentMonth + 1) + '-' + (i+1), 'YYYY-M-D');
+      const rawResponse = await fetch('https://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear());
+      const response = await rawResponse.json();
       calendarData.push({
         "gregorian": {
           "weekday": {
@@ -702,27 +695,15 @@ $(document).ready(function(){
           "month": {
             "en": hijriMonths[hijriDate.iMonth()]
           },
-          "day": hijriDate.iDate()
+          "day": hijriDate.iDate(),
+          "holidays": response.data.hijri.holidays
         }
       });
       if (!currentHijriMonths.includes(hijriMonths[hijriDate.iMonth()])) {
         currentHijriMonths.push(hijriMonths[hijriDate.iMonth()]);
       }
-      $.get('https://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear(),
-          function (data) {
-            hijriHolidays.splice(this.i, 0, data.data.hijri.holidays);
-            if(currentHijriDate.iDate() == data.data.hijri.day && data.data.hijri.holidays.length){
-              let text = "";
-              for(let i = 0; i < data.data.hijri.holidays.length; i++){
-                if(i !== 0){
-                  text += "<br>"
-                }
-                text += data.data.hijri.holidays[i];
-              }
-              $(".holidays").html(text);
-            }
-          }.bind({i, nbDays}))
     }
+    getNewCalendar();
   }
 
 
