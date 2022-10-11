@@ -1,0 +1,336 @@
+{
+    "Monday": {
+        "message": "پیر"
+    },
+    "Tuesday": {
+        "message": "منگل"
+    },
+    "Wednesday": {
+        "message": "بدھ"
+    },
+    "Thursday": {
+        "message": "جمعرات"
+    },
+    "Friday": {
+        "message": "جمعہ"
+    },
+    "Saturday": {
+        "message": "ہفتہ"
+    },
+    "Sunday": {
+        "message": "اتوار"
+    },
+    "January": {
+        "message": "جنوری"
+    },
+    "February": {
+        "message": "فروری"
+    },
+    "March": {
+        "message": "مارچ"
+    },
+    "April": {
+        "message": "اپریل"
+    },
+    "May": {
+        "message": "مئی"
+    },
+    "June": {
+        "message": "جون"
+    },
+    "July": {
+        "message": "جولائی"
+    },
+    "August": {
+        "message": "اگست"
+    },
+    "September": {
+        "message": "ستمبر"
+    },
+    "October": {
+        "message": "اکتوبر"
+    },
+    "November": {
+        "message": "نومبر"
+    },
+    "December": {
+        "message": "دسمبر"
+    },
+    "Muharram": {
+        "message": "محرم ۔۔۔"
+    },
+    "Safar": {
+        "message": "صفر"
+    },
+    "Rabi__al_awwal": {
+        "message": "ربیع الاول"
+    },
+    "Rabi__al_thani": {
+        "message": "ربیع الثانی"
+    },
+    "Jumada_al_ula": {
+        "message": "جمادی الاول"
+    },
+    "Jumada_al_akhirah": {
+        "message": "جمادی الثانی"
+    },
+    "Rajab": {
+        "message": "رجب"
+    },
+    "Sha_ban": {
+        "message": "شعبان"
+    },
+    "Ramadan": {
+        "message": "رمضان"
+    },
+    "Shawwal": {
+        "message": "شوال"
+    },
+    "Dhu_al_Qa_dah": {
+        "message": "ذوالقعدۃ"
+    },
+    "Dhu_al_Hijjah": {
+        "message": "ذوالحجۃ"
+    },
+    "fasting_notification": {
+        "message": "کل سنت روزہ ہے۔",
+        "description": "Text of the notification that will be sent before a fasting day."
+    },
+    "feedback_window_title": {
+        "message": "ہمیں اپنی رائے دیں۔"
+    },
+    "feedback_window_content": {
+        "message": "<p class='lead'>ہماری ایکسٹینشن استعمال کرنے کا شکریہ۔ ہم آپ کے لیے اس ایکسٹینشن کو بہتر اور بہتر بنانا چاہتے ہیں <br> براہ کرم ہمیں صرف چند سوالات کے جوابات دے کر اپنی رائے دیں <b><a href=\"https://shahednasser.typeform.com/to/Maf5wATU\" target=\" _blank\">یہاں</a></b></p>"
+    },
+    "reporting_window_title": {
+        "message": "اب آپ تصاویر کی اطلاع دے سکتے ہیں!"
+    },
+    "reporting_window_content": {
+        "message": "اگر کوئی ایسی تصویریں ہیں جو آپ کو پسند نہیں آتی ہیں یا آپ کو نامناسب لگتا ہے، تو ان تصاویر کی اطلاع دینے کے لیے اوپر بائیں جانب <b>رپورٹ</b> آئیکن کو دبائیں اور انہیں دوبارہ کبھی نہ دکھائیں!"
+    },
+    "new_features_title": {
+        "message": "نئی خصوصیات!"
+    },
+    "new_features_calendar_content": {
+        "message": "ہم نے درج ذیل نئی خصوصیات شامل کی ہیں:<ul><li><b>کیلنڈر:</b> اب آپ اوپر دائیں جانب کیلنڈر کے آئیکن پر کلک کرکے ہر گریگورین مہینے کا کیلنڈر ہجری تاریخوں کے ساتھ دیکھ سکتے ہیں</li>< li><b>روزے کے دن اور تعطیلات:</b> کیلنڈر میں آپ دیکھ سکتے ہیں کہ کن دنوں میں تعطیلات ہیں اور/یا سنت روزے کے دن ہیں</li><li><b>سنت روزوں کے دنوں کی اطلاعات:</b> > آپ اسے <a href=\"#\" class=\"notifications-reminder\">ترتیبات میں</a></li></ul><b>آنے والا فعال کر کے ایک سنت روزے سے ایک دن پہلے ایک اطلاع موصول کر سکتے ہیں خصوصیات:</b><ul><li>ہم اس ایکسٹینشن کو مختلف زبانوں بشمول عربی، فرانسیسی، انڈونیشیائی اور دیگر زبانوں میں ترجمہ کرنے پر کام کر رہے ہیں۔ اگر آپ مدد کرنا چاہتے ہیں تو براہ کرم <a href=\"https://crowdin.com/project/quran-in-new-tab-extension\">یہاں</a> جائیں۔</li><li>یاد دہانیاں/اطلاعات نماز کے اوقات کے لیے</li></ul>اگر آپ کے پاس کوئی اور آئیڈیا ہے تو آپ <a href=\"https://shahednasser.typeform.com/to/Maf5wATU\">انہیں ہمارے سروے میں جمع کرانا چاہیں گے۔ a><b/>نئے ٹیب ایکسٹینشن میں قرآن استعمال کرنے کے لیے آپ کا شکریہ!"
+    },
+    "report_image_window_title": {
+        "message": "تصویر کی اطلاع دیں۔"
+    },
+    "report_image_window_content": {
+        "message": "اگر آپ کو لگتا ہے کہ تصویر نامناسب ہے یا آپ کو یہ پسند نہیں ہے، تو براہ کرم تصویر کی اطلاع دیں اور آپ اسے مزید نہیں دیکھیں گے۔."
+    },
+    "fasting": {
+        "message": "روزہ"
+    },
+    "error": {
+        "message": "ایک خرابی پیش آگئی، براہ کرم بعد میں دوبارہ کوشش کریں۔."
+    },
+    "saved": {
+        "message": "سیٹنگز کو کامیابی کے ساتھ محفوظ کر لیا گیا ہے۔"
+    },
+    "enable_notification_notice": {
+        "message": "ایک دن پہلے اطلاع موصول کرنے کے لیے سنت روزے کے دنوں کے لیے اطلاعات کو فعال کرنا یقینی بنائیں!"
+    },
+    "calendar": {
+        "message": "کیلنڈر"
+    },
+    "quran_translation": {
+        "message": "ترجمة القرآن"
+    },
+    "athkar": {
+        "message": "اٹھو"
+    },
+    "settings": {
+        "message": "ترتیبات"
+    },
+    "rate_extension": {
+        "message": "اس ایکسٹینشن کی درجہ بندی کریں۔"
+    },
+    "report_image": {
+        "message": "تصویر کی اطلاع دیں۔"
+    },
+    "reload": {
+        "message": "دوبارہ لوڈ کریں۔"
+    },
+    "general": {
+        "message": "عام"
+    },
+    "show_top_sites": {
+        "message": "ٹاپ سائٹس دکھائیں"
+    },
+    "show_top_sites_description": {
+        "message": "اگر آپ کے پاس سرفہرست سائٹس نہیں ہیں تو کوئی بھی نہیں دکھائے گی."
+    },
+    "show_hijri_date": {
+        "message": "ہجری تاریخ دکھائیں"
+    },
+    "show_hijri_date_description": {
+        "message": "اسے چیک کرنے سے ہجری کی تاریخ گریگورین تاریخ اور تعطیلات کے ساتھ دکھائی دے گی (اگر اس دن کوئی ہو)."
+    },
+    "quran": {
+        "message": "قرآن"
+    },
+    "show_translation": {
+        "message": "ترجمہ دکھائیں۔"
+    },
+    "translation_language": {
+        "message": "ترجمہ کی زبان"
+    },
+    "none": {
+        "message": "کوئی نہیں"
+    },
+    "en": {
+        "message": "انگریزی"
+    },
+    "az": {
+        "message": "آذربائیجانی"
+    },
+    "bn": {
+        "message": "بنگالی"
+    },
+    "cs": {
+        "message": "چیک"
+    },
+    "de": {
+        "message": "جرمن"
+    },
+    "dv": {
+        "message": "ڈیویہی"
+    },
+    "es": {
+        "message": "ہسپانوی"
+    },
+    "fa": {
+        "message": "فارسی"
+    },
+    "fr": {
+        "message": "فرانسیسی"
+    },
+    "ha": {
+        "message": "ہاؤسا"
+    },
+    "hi": {
+        "message": "ہندی"
+    },
+    "id": {
+        "message": "انڈونیشین"
+    },
+    "it": {
+        "message": "اطالوی"
+    },
+    "ja": {
+        "message": "جاپانی"
+    },
+    "ko": {
+        "message": "کورین"
+    },
+    "ku": {
+        "message": "کرد"
+    },
+    "ml": {
+        "message": "ملیالم"
+    },
+    "nl": {
+        "message": "ڈچ"
+    },
+    "no": {
+        "message": "ناروے"
+    },
+    "pl": {
+        "message": "پولش"
+    },
+    "pt": {
+        "message": "پرتگالی"
+    },
+    "ro": {
+        "message": "رومانیہ"
+    },
+    "ru": {
+        "message": "روسی"
+    },
+    "sd": {
+        "message": "سندھی"
+    },
+    "so": {
+        "message": "صومالی"
+    },
+    "sq": {
+        "message": "البانوی"
+    },
+    "sv": {
+        "message": "سویڈش"
+    },
+    "sw": {
+        "message": "سواحلی"
+    },
+    "ta": {
+        "message": "تامل"
+    },
+    "tg": {
+        "message": "تاجک"
+    },
+    "th": {
+        "message": "پیتل"
+    },
+    "tr": {
+        "message": "ترکی"
+    },
+    "tt": {
+        "message": "تاتار"
+    },
+    "ug": {
+        "message": "ایغور"
+    },
+    "ur": {
+        "message": "اردو"
+    },
+    "uz": {
+        "message": "تلاوت"
+    },
+    "recitation": {
+        "message": "تلاوت"
+    },
+    "show_random_athkar": {
+        "message": "بے ترتیب اتکر دکھائیں۔"
+    },
+    "week_start_date": {
+        "message": "ہفتے کے آغاز کا دن"
+    },
+    "notification_setting": {
+        "message": "سنت روزہ سے ایک دن پہلے اطلاع بھیجیں۔"
+    },
+    "save": {
+        "message": "محفوظ کریں"
+    },
+    "feedback": {
+        "message": "اپنا مشورہ دیں"
+    },
+    "translation_link": {
+        "message": "اس توسیع کا ترجمہ کرنے میں مدد کریں"
+    },
+    "remove_top_site_title": {
+        "message": "ٹاپ ویب سائٹ کو ہٹا دیں"
+    },
+    "remove_top_site_content": {
+        "message": "کیا آپ واقعی ویب سائٹ کو ہٹانا چاہتے ہیں؟"
+    },
+    "remove": {
+        "message": "دور"
+    },
+    "cancel": {
+        "message": "منسوخ کریں"
+    },
+    "new_feature_top_sites": {
+        "message": "اب آپ ویب سائٹس کو \"ٹاپ ویب سائٹس\" کی فہرست سے ہٹا سکتے ہیں! صرف ویب سائٹ پر اور پھر ظاہر ہونے والے \"X\" آئیکن پر کلک کریں۔. "
+    },
+    "fasting_reminder_title": {
+        "message": "روزہ کی یاد دہانی"
+    },
+    "report_bug": {
+        "message": "بگ کی اطلاع دیں۔"
+    },
+    "contact_developer": {
+        "message": "ڈویلپر سے رابطہ کریں۔"
+    }
+}
