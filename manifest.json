@@ -3,11 +3,11 @@
   "version": "2.2.2",
   "description": "View Quran verses on the new tab page.",
   "permissions": [
-          "storage",
-          "topSites",
-          "alarms",
-          "notifications",
-          "geolocation"
+    "storage",
+    "topSites",
+    "alarms",
+    "notifications",
+    "geolocation"
   ],
   "default_locale": "en",
   "chrome_url_overrides" : {
