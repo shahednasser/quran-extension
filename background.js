@@ -11,9 +11,9 @@ const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Satur
 let hijriHolidays = [],
     calendarData = [];
 
-chrome.alarms.onAlarm.addListener(function (alarm) {
+chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name == "fastingNotification") {
-        chrome.storage.local.get(['calendar'], function (result) {
+        chrome.storage.local.get(['calendar'], (result) => {
             if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.hijriHolidays && 
             result.calendar.data && result.calendar.data.length == result.calendar.hijriHolidays.length) {
                 const calendarDate = new Date(result.calendar.date);
@@ -38,7 +38,7 @@ function getNewCalendar () {
     const currentYear = currentDate.getFullYear(),
           currentMonth = currentDate.getMonth(),
           nbDays = getMonthDays(currentYear, currentMonth);
-    hijriHolidays.splice = function (){
+    hijriHolidays.splice = () => {
         const result = Array.prototype.splice.apply(this,arguments);
         if (this.length == nbDays) {
           chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData, hijriHolidays: hijriHolidays}});

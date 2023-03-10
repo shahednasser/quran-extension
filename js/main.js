@@ -1,34 +1,42 @@
 //
-// Copyright (c) 2021 by Shahed Nasser. All Rights Reserved.
+// Copyright (c) 2023 by Shahed Nasser. All Rights Reserved.
 //
 
-$(document).ready(function(){
+document.addEventListener("DOMContentLoaded", loadPage());
+
+function loadPage() {
+  //initialize variables
   let audio,
-      athkar = [],
-      originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      currentHijriMonths = [],
-      extensionURL = encodeURI("https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"),
-      prayerTimeFormat = 24,
-      shouldRefresh = false,
-      currentVerse = null;
+    athkar = [],
+    originalWeekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+    currentHijriMonths = [],
+    extensionURL = encodeURI("https://chrome.google.com/webstore/detail/quran-in-new-tab/hggkcijghhpkdjeokpfgbhnpecliiijg"),
+    prayerTimeFormat = 24,
+    shouldRefresh = false,
+    calendarData = [],
+    currentVerse = null;
   const messageRegex = /__MSG_(\w+)__/g,
-        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
-          'October', 'November', 'December'],
-        hijriMonths = ['Muharram', 'Safar', 'Rabi__al_awwal', 'Rabi__al_thani', 'Jumada_al_ula', 'Jumada_al_akhirah',
-          'Rajab', 'Sha_ban', 'Ramadan', 'Shawwal', 'Dhu_al_Qa_dah', 'Dhu_al_Hijjah'],
-        calendarData = [],
-        currentHijriDate = moment(),
-        currentDate = new Date();
+      months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 
+        'October', 'November', 'December'],
+      hijriMonths = ['Muharram', 'Safar', 'Rabi__al_awwal', 'Rabi__al_thani', 'Jumada_al_ula', 'Jumada_al_akhirah',
+        'Rajab', 'Sha_ban', 'Ramadan', 'Shawwal', 'Dhu_al_Qa_dah', 'Dhu_al_Hijjah'],
+      currentHijriDate = moment(),
+      currentDate = new Date();
+  //initialize bootstrap tooltip
   const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   tooltipTriggerList.map(function (tooltipTriggerEl) {
     return new bootstrap.Tooltip(tooltipTriggerEl)
   })
+  //initialize toast
   initializeToasts();
-  $("html").attr('lang', chrome.i18n.getUILanguage());
-  localizeHtmlPage($("body"));
+  //initialize localization
+  document.querySelector("html").setAttribute('lang', chrome.i18n.getUILanguage());
+  localizeHtmlPage(document.body);
+  //load page's content
   load(false, true);
 
+  //set current date
   chrome.storage.sync.get(["show_date"], function(result){
     if(!result.hasOwnProperty("show_date") || result.show_date){
       const date = new Date();
@@ -37,84 +45,112 @@ $(document).ready(function(){
   });
 
   //check if a new update is available
-  chrome.runtime.onUpdateAvailable.addListener(function (details) {
+  chrome.runtime.onUpdateAvailable.addListener(function () {
     showUpdateToast();
   });
 
-  $(".reload").click(function(){
+  //reload everything when reload button is clicked.
+  document.querySelector(".reload").addEventListener('click', function(){
     load(true, false);
   });
 
-  $(".audio-player").click(function(){
-    $(".audio-player .error").hide();
+  //audio player events
+  document.querySelector(".audio-player").addEventListener('click', function () {
+    const errorElm = document.querySelector(".audio-player .error"),
+      imgElm = document.querySelector(".audio-player img"),
+      loaderElm = document.querySelector(".audio-player .loader");
+    hideElement(errorElm);
     if(!audio){
       chrome.storage.local.get(["verse"], function(result){
         if(result.hasOwnProperty("verse") && result.verse.hasOwnProperty("audio")){
           audio = new Audio(result.verse.audio);
-          $(audio).on('loadstart', function(){
-            $(".audio-player .error").hide();
-            $(".audio-player img").hide();
-            $(".audio-player .loader").show();
-          });
-          $(audio).on('ended', function(){
-            $(".audio-player img").attr('src', 'assets/play.svg');
-          })
+          audio.onloadstart = function(){
+            hideElement(errorElm);
+            hideElement(imgElm);
+            showElement(loaderElm);
+          }
+          audio.onended = function () {
+            imgElm.setAttribute('src', 'assets/play.svg');
+          }
+
           audio.play().then(function(){
-            $(".audio-player .error").hide();
-            $(".audio-player img").attr('src', 'assets/pause.svg');
-            $(".audio-player img").show();
-            $(".audio-player .loader").hide();
+            hideElement(errorElm);
+            imgElm.setAttribute('src', 'assets/pause.svg');
+            showElement(imgElm);
+            hideElement(loaderElm);
           }).catch(function(){
-            $(".audio-player img").attr('src', 'assets/alert-triangle.svg');
-            $(".audio-player .error").text("Can't connect.");
-            $(".audio-player .error").show();
-            $(".audio-player img").show();
-            $(".audio-player .loader").hide();
+            imgElm.setAttribute('src', 'assets/alert-triangle.svg');
+            errorElm.textContent = "Can't connect.";
+            showElement(errorElm);
+            showElement(imgElm);
+            hideElement(loaderElm);
           });
         }
       });
     } else {
-      if(audio.paused){
-        audio.play().then(function(){
-          $(".audio-player img").attr('src', 'assets/pause.svg');
-        }).catch(function(){
-          $(".audio-player img").attr('src', 'assets/alert-triangle.svg');
-          $(".audio-player .error").text("Can't connect.");
-          $(".audio-player .error").show();
-          $(".audio-player img").show();
-          $(".audio-player .loader").hide();
+      if (audio.paused) {
+        audio.play().then(function () {
+          imgElm.setAttribute('src', 'assets/pause.svg');
+        }).catch(function () {
+          imgElm.setAttribute('src', 'assets/alert-triangle.svg');
+          errorElm.textContent = "Can't connect.";
+          showElement(errorElm);
+          showElement(imgElm);
+          hideElement(loaderElm);
         });
       } else {
         audio.pause();
-        $(".audio-player img").attr('src', 'assets/play.svg');
+        imgElm.setAttribute('src', 'assets/play.svg');
       }
     }
   });
 
-  $("body").on('click', '.settings-link, .notifications-reminder', function(){
+  //add event listener to elements that might be dynamically created
+  document.body.addEventListener('click', function (e) {
+    if (!e.target) {
+      return;
+    }
+
+    switch (true) {
+      case e.target.classList.contains('settings-link') || e.target.classList.contains('notifications-reminder'):
+        openOptionPage();
+        break;
+      case e.target.classList.contains('remove') && e.target.parentNode.tagName.toLowerCase() === "a" && 
+          e.target.parentNode.parentNode.classList.contains('top-sites-container'):
+        removeTopSites(e);
+        break;
+      case e.target.classList.contains('favorite-button-list'):
+        removeFavorite(e);
+        break;
+      case e.target.id === 'updateExtension':
+        chrome.runtime.reload();
+        break;
+      case e.target.hasAttribute('data-bs-dismiss'):
+        handleDismiss(e);
+        break;
+    }
+  });
+
+  //used to open the option page
+  function openOptionPage () {
     if (chrome.runtime.openOptionsPage) {
       chrome.runtime.openOptionsPage();
     } else {
       window.open(chrome.runtime.getURL('options.html'));
     }
-  });
+  }
 
-  $(".calendar-btn").click(function () {
-    $(".calendar-container").addClass("show");
-  });
-
-  $(".close-calendar").click(function () {
-    $(".calendar-container").removeClass("show");
-  });
-
-  $("body").on("click", ".top-sites-container a .remove", function (e) {
+  //used to remove top sites
+  function removeTopSites (e) {
     e.stopPropagation();
     e.preventDefault();
-    const parent = $(this).parent("a"),
-          removeUrl = parent.attr('href');
+
+    const parent = e.target.parentNode,
+          removeUrl = parent.getAttribute('href');
+          
     Swal.fire({
       title: chrome.i18n.getMessage('remove_top_site_title'),
-      html: chrome.i18n.getMessage('remove_top_site_content'),
+      html: `<div class="text-center">${chrome.i18n.getMessage('remove_top_site_content')}</div>`,
       showConfirmButton: true,
       confirmButtonText: chrome.i18n.getMessage('remove'),
       showCloseButton: true,
@@ -128,10 +164,7 @@ $(document).ready(function(){
           if (removedTopSites.indexOf(removeUrl) == -1) {
             removedTopSites.push(removeUrl);
             chrome.storage.sync.set({removed_top_sites: removedTopSites}, function () {
-              parent.slideUp();
-              setTimeout(function () {
-                parent.remove();
-              }, 2000);
+              parent.remove();
               Swal.hideLoading();
               Swal.close();
             });
@@ -139,58 +172,81 @@ $(document).ready(function(){
         })
       }
     });
+  }
+
+  function getParentByClass(elm, className) {
+    if (!elm.parentElement) {
+      return null;
+    }
+
+    if (elm.parentNode.classList.contains(className)) {
+      return elm.parentNode;
+    }
+
+    return getParentByClass(elm.parentNode, className);
+  }
+
+  //used to remove an item from favorites
+  function removeFavorite (e) {
+    e.preventDefault();
+    const parent = getParentByClass(e.target, 'verse');
+    const index = parent.id.split("_")[1];
+    chrome.storage.sync.get(['favorite_verses'], function (result) {
+      const favorites = result.favorite_verses;
+      const verse = favorites[index];
+      favorites.splice(index, 1);
+      if (currentVerse.surah.number === verse.surah.number && currentVerse.numberInSurah === verse.numberInSurah) {
+        document.querySelector(".favorite-button img").setAttribute('src', '/assets/heart.svg');
+      }
+      chrome.storage.sync.set({favorite_verses: favorites}, function () {
+        refreshFavorites();
+      })
+    })
+  }
+
+  //handle dismiss related to bootstrap
+  function handleDismiss(e) {
+    const selector = e.target.getAttribute('data-bs-dismiss');
+    const items = document.querySelectorAll(selector);
+    items.forEach((item) => {
+      item.classList.remove('show');
+    });
+  }
+
+  //add event listener to show calendar
+  document.querySelector(".calendar-btn").addEventListener('click', function () {
+    document.querySelector(".calendar-container").classList.add('show');
   });
 
-  $("body").on('click', '#updateExtension', function () {
-    chrome.runtime.reload();
+  //add event listener to hide calendar
+  document.querySelector(".close-calendar").addEventListener('click', function () {
+    document.querySelector(".calendar-container").classList.remove('show');
   });
 
-  $(".favorite-button").on('click', function (e) {
+  document.querySelector('.favorite-button').addEventListener('click', function (e) {
     e.preventDefault();
     if (currentVerse) {
       toggleFavorite(currentVerse);
     }
   });
 
-  $("body").on('click', ".favorite-button-list", function (e) {
-    e.preventDefault();
-    const parent = $(this).parents(".verse");
-    const index = parent.attr('id').split("_")[1];
-    chrome.storage.sync.get(['favorite_verses'], function (result) {
-      const favorites = result.favorite_verses;
-      const verse = favorites[index];
-      favorites.splice(index, 1);
-      if (currentVerse.surah.number === verse.surah.number && currentVerse.numberInSurah === verse.numberInSurah) {
-        $(".favorite-button").find("img").attr('src', '/assets/heart.svg');
-      }
-      chrome.storage.sync.set({favorite_verses: favorites}, function () {
-        refreshFavorites();
-      })
-    })
-  });
-
-  $("body").on('click', "[data-bs-dismiss]", function () {
-    const selector = $(this).attr('data-bs-dismiss');
-    $(selector).each((_, elm) => {
-      $(elm).removeClass('show');
-    });
-  });
-
   function load(reload, withTopSites){
     audio = null;
-    $(".reload img").hide();
-    $(".reload .loader").show();
-    $(".calendar-inner-container").hide();
-    $(".calendar-table .loader").show();
+    hideElement(document.querySelector(".reload img"));
+    showElement(document.querySelector(".reload .loader"));
+    hideElement(document.querySelector(".calendar-inner-container"));
+    showElement(document.querySelector(".calendar-table .loader"));
     chrome.storage.local.get(['image', 'verse', 'calendar', 'prayerTimesCalendar'], function(result){
       chrome.storage.sync.get(['show_translation', 'translation_language', 'recitation',
-                                  'translation_identifier', 'show_top_sites', 'show_athkar', 
-                                  'calendar_start_day', 'removed_top_sites', 'show_prayer_times',
-                                  'prayer_times_format', 'should_refresh', 'last_update', 'show_search',
-                                  'favorite_verses', 'background_image_type', 'background_image_type_options'], function(syncResult){
+        'translation_identifier', 'show_top_sites', 'show_athkar', 
+        'calendar_start_day', 'removed_top_sites', 'show_prayer_times',
+        'prayer_times_format', 'should_refresh', 'last_update', 'show_search',
+        'favorite_verses', 'background_image_type', 'background_image_type_options'], function(syncResult){
+        //check if refresh is enabled on every new tab
         if (syncResult.should_refresh) {
           shouldRefresh = true;
         }
+        //show a message if there's a new update
         if (syncResult.last_update && !syncResult.last_update.shown) {
           Swal.fire({
             html: syncResult.last_update.message
@@ -199,17 +255,20 @@ $(document).ready(function(){
           chrome.storage.sync.set({last_update: syncResult.last_update});
         }
         if(navigator.onLine){
+          //check whether translation is enabled or not
           if(!syncResult.hasOwnProperty('show_translation') || !syncResult.hasOwnProperty('translation_language') ||
-              !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
-                $(".translation-container").remove();
-              }
+            !syncResult.show_translation || !syncResult.translation_language || !syncResult.translation_identifier){
+              document.querySelector('.translation-container')?.remove();
+          }
           let now = (new Date()).getTime();
+          //check whether a new image should be loaded or the same image can be used.
           if(result.hasOwnProperty('image') && result.image && !shouldRefresh && now <= result.image.timeout && !reload){
             setBackgroundImage(result.image.src);
           } else {
-            setNewImage(reload, syncResult.background_image_type, syncResult.background_image_type_options);
+            setNewImage(syncResult.background_image_type, syncResult.background_image_type_options);
           }
 
+          //check whether a new verse should be loaded or not
           if(result.hasOwnProperty('verse') && result.verse && !shouldRefresh && now <= result.verse.timeout && !reload){
             setVerse(result.verse.data);
             audio = new Audio(result.verse.audio);
@@ -220,8 +279,9 @@ $(document).ready(function(){
             }
           }
           else {
+            //get random verse number
             let verseNumber = Math.floor(Math.random() * 6236) + 1;
-            let url = 'https://api.alquran.cloud/v1/ayah/' + verseNumber + '/editions/quran-uthmani-min,';
+            let url = `https://api.alquran.cloud/v1/ayah/${verseNumber}/editions/quran-uthmani-min,`;
             if(syncResult.hasOwnProperty('recitation')){
               url += syncResult.recitation;
             } else {
@@ -232,38 +292,43 @@ $(document).ready(function(){
               syncResult.translation_identifier){
               url += "," + syncResult.translation_identifier;
             }
-            $.get(url, function(data){
-              if(data.data){
+            fetch(url)
+            .then((response) => response.json())
+            .then(({data}) => {
+              if(data){
                 let verse = {};
-                for(let i = 0; i < data.data.length; i++){
-                  if(data.data[i].hasOwnProperty('audio')){
-                    verse.audio = data.data[i].audio;
-                  } else if(data.data[i].edition.type === "quran"){
-                    setVerse(data.data[i]);
-                    verse.data = data.data[i];
+                for(let i = 0; i < data.length; i++){
+                  if(data[i].hasOwnProperty('audio')){
+                    verse.audio = data[i].audio;
+                  } else if(data[i].edition.type === "quran"){
+                    setVerse(data[i]);
+                    verse.data = data[i];
                   } else {
-                    verse.translation = data.data[i];
-                    let language = data.data[i].edition.language;
-                    setTranslation(data.data[i], language);
+                    verse.translation = data[i];
+                    let language = data[i].edition.language;
+                    setTranslation(data[i], language);
                   }
                 }
                 let timeout = calculateTimeout();
                 verse.timeout = timeout;
                 chrome.storage.local.set({verse});
               }
-            }).fail(function(){
-              $(".translation-container").remove();
+            })
+            .catch(() => {
+              document.removeChild(".translation-container");
               setVerse(getDefaultVerse());
-              $(".audio-player").remove();
-            });
+              document.removeChild(".audio-player");
+            })
           }
 
+          //check which day of the week is the start day
           if (syncResult.hasOwnProperty('calendar_start_day')) {
             if (syncResult.calendar_start_day === "Sunday") {
               weekdays.unshift(...weekdays.splice(6));
             }
           }
 
+          //retrieve calendar
           if (result.hasOwnProperty('calendar') && result.calendar && result.calendar.data && 
             result.calendar.hijriMonths) {
             const calendarDate = new Date(result.calendar.date);
@@ -272,15 +337,15 @@ $(document).ready(function(){
               assembleCalendarData();
             } else {
               //print old calendar
-              hijriHolidays = result.calendar.hijriHolidays;
               currentHijriMonths = result.calendar.hijriMonths
               setCalendar(result.calendar.data);
-           }
+            }
           } else {
             //get new calendar
             assembleCalendarData();
           }
 
+          //whether to show prayer times or not
           if (!syncResult.hasOwnProperty('show_prayer_times') || syncResult.show_prayer_times) {
             if (syncResult.prayer_times_format) {
               prayerTimeFormat = syncResult.prayer_times_format;
@@ -292,20 +357,23 @@ $(document).ready(function(){
               getPrayerTimes();
             }
           } else {
-            $(".next-prayer").remove();
+            document.querySelector(".next-prayer").remove();
           }
         }
-        else{
-          $(".translation-container").remove();
+        else {
+          //show default data when offline
+          document.querySelector(".translation-container").remove();
           setBackgroundImage('assets/offline-image.jpg');
           setVerse(getDefaultVerse());
-          $(".audio-player").remove();
+          document.querySelector(".audio-player").remove();
         }
 
+        //whether to show search bar or not
         if ((!syncResult.hasOwnProperty('show_search') || syncResult.show_search) && !reload) {
           showSearchBar();
         }
 
+        //whether to show top sites or not
         if(withTopSites && (!syncResult.hasOwnProperty('show_top_sites') || syncResult.show_top_sites)){
           chrome.topSites.get((topSites) => {
             if (syncResult.hasOwnProperty('removed_top_sites')) {
@@ -314,9 +382,13 @@ $(document).ready(function(){
             addTopSites(topSites);
           });
         }
+
+        //whether to show athkar or not
         if(!syncResult.hasOwnProperty('show_athkar') || syncResult.show_athkar){
           if(athkar.length == 0){
-            $.getJSON('/js/json/athkar.json', function(json, textStatus) {
+            fetch('/js/json/athkar.json')
+            .then((response) => response.json())
+            .then((json) => {
               athkar = json.athkar;
               showRandomThikr();
             });
@@ -324,23 +396,25 @@ $(document).ready(function(){
             showRandomThikr();
           }
         } else {
-          $(".athkar-container").remove();
+          document.querySelector(".athkar-container").remove();
           showRandomThikr();
         }
 
+        //show favorite verses
         if (syncResult.hasOwnProperty('favorite_verses')) {
           showFavoriteVerses(syncResult.favorite_verses)
         }
         
       });
-    });
-    
-    
+  });
+
+
   }
 
+  //show a random thikr
   function showRandomThikr(){
     let thikr = getRandomThikr();
-    $(".athkar-container .thikr").html(`
+    document.querySelector(".athkar-container .thikr").innerHTML = `
       <span class="thikr-arabic">${thikr.ar}</span>
       <div class="translations">
         <span class="thikr-translation-title">Translation</span>
@@ -348,68 +422,82 @@ $(document).ready(function(){
         <span class="thikr-transliteration-title">Transliteration</span>
         <span class="thikr-ar-en">${thikr['ar-en']}</span>
       </div>
-    `);
-    $(".athkar-container").show();
+    `;
+    showElement(document.querySelector(".athkar-container"));
   }
 
+  //set the background image
   function setBackgroundImage(url){
-    $(".background-image").attr('src', url).on('load', function(){
-      $(this).animate({opacity: 1}, 500);
-      $(".reload img").show();
-      $(".reload .loader").hide();
-    }).on('error', function(){
-      $(this).attr('src', 'assets/offline-image.jpg').animate({opacity: 1}, 500);
-      $(".reload img").show();
-      $(".reload .loader").hide();
-    });
+    const backgroundImageElm = document.querySelector(".background-image");
+    backgroundImageElm.addEventListener("load", handleImageLoad);
+    backgroundImageElm.addEventListener("error", handleImageError);
+
+    backgroundImageElm.setAttribute('src', url);
+
+    function handleImageLoad () {
+      backgroundImageElm.classList.add('show');
+      showElement(document.querySelector(".reload img"));
+      hideElement(document.querySelector(".reload .loader"));
+    }
+
+    function handleImageError () {
+      backgroundImageElm.setAttribute('src', 'assets/offline-image.jpg');
+    }
   }
 
+  //set the verse
   function setVerse(data){
     currentVerse = data;
-    $(".verse-text").text(data.text);
-    $(".verse-details").text(data.surah.name + " - " + data.numberInSurah);
-    $(".verse").animate({opacity: 1}, 500);
+    const verseTextElm = document.querySelector(".verse-text");
+    const verseDetailsElm = document.querySelector(".verse-details");
+    const verseElm = document.querySelector(".verse");
+
+    verseTextElm.textContent = data.text;
+    verseDetailsElm.textContent = `${data.surah.name}-${data.numberInSurah}`;
+    verseElm.classList.add('show');
 
     //add social links
     const text = encodeURI(data.text + '\n\n' + data.surah.name + ' - ' + data.numberInSurah);
     //twitter
-    let twitterElm = $(".twitter-share-button");
-    if (twitterElm.length) {
-      twitterElm.attr('href', 'https://twitter.com/intent/tweet?text=' + text + '&url=' +
-        extensionURL);
+    let twitterElm = document.querySelector(".twitter-share-button");
+    if (twitterElm) {
+      twitterElm.setAttribute('href', `https://twitter.com/intent/tweet?text=${text}&url=${extensionURL}`);
     }
     //facebook
-    let facebookElm = $(".facebook-share-button");
-    if (facebookElm.length) {
-      facebookElm.attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + extensionURL + '&quote=' + text)
+    let facebookElm = document.querySelector(".facebook-share-button");
+    if (facebookElm) {
+      facebookElm.setAttribute('href', `https://www.facebook.com/sharer/sharer.php?u=${extensionURL}&quote=${text}`)
     }
     //whatsapp
-    let whatsappElm = $(".whatsapp-share-button");
-    if (whatsappElm.length) {
-      whatsappElm.attr('href', 'https://wa.me/?text=' + text + encodeURI("\n") + extensionURL);
+    let whatsappElm = document.querySelector(".whatsapp-share-button");
+    if (whatsappElm) {
+      whatsappElm.setAttribute('href', `https://wa.me/?text=${text + encodeURI("\n") + extensionURL}`);
     }
     //telegram
-    let telegramElm = $(".telegram-share-button");
+    let telegramElm = document.querySelector(".telegram-share-button");
     if (telegramElm.length) {
-      telegramElm.attr('href', 'https://t.me/share/url?url=' + extensionURL + '&text=' + text);
+      telegramElm.setAttribute('href', `https://t.me/share/url?url=${extensionURL}&text=${text}`);
     }
 
     //check if in favorites
     chrome.storage.sync.get(['favorite_verses'], (result) => {
       const favorites = result.hasOwnProperty('favorite_verses') ? result.favorite_verses : [];
       const exists = favorites.some((verse) => verse.surah.number === data.surah.number && verse.numberInSurah === data.numberInSurah);
+      const favoriteElm = document.querySelector(".favorite-button img");
       if (exists) {
-        $(".favorite-button").find("img").attr('src', '/assets/heart-filled.svg');
+        favoriteElm.setAttribute('src', '/assets/heart-filled.svg');
       } else {
-        $(".favorite-button").find("img").attr('src', '/assets/heart.svg');
+        favoriteElm.setAttribute('src', '/assets/heart.svg');
       }
     })
   }
 
+  //calculate timeout of data
   function calculateTimeout(){
     return timeout = (new Date()).getTime() + 3600000;
   }
 
+  //get default verse data
   function getDefaultVerse(){
     return {
       edition: {
@@ -440,114 +528,126 @@ $(document).ready(function(){
     };
   }
 
+  //set verse translation
   function setTranslation(translation, language){
+    const translationBodyElm = document.querySelector(".translation-body");
+    const translationContainerBody = document.querySelector(".translation-container .body");
     if(language === "ar") {
-      $(".translation-body").addClass('ar-translation');
+      translationBodyElm.classList.add('ar-translation');
     }
-    $(".translation-container .body").text(translation.text);
-    $(".translation-container").show();
+    translationContainerBody.textContent = translation.text;
+    showElement(document.querySelector(".translation-container"));
   }
 
+  //show google search bar
   function showSearchBar () {
-    $(".content-container").append(`
-      <form action="https://google.com/search" method="GET">
-        <input type="search" name="q" placeholder="Search Google..." class="search-bar" />
-      </form>
-    `);
+    const formElm = document.createElement('form');
+    formElm.setAttribute('action', 'https://google.com/search');
+    formElm.setAttribute('method', 'GET');
+    formElm.innerHTML = '<input type="search" name="q" placeholder="Search Google..." class="search-bar" />';
+    document.querySelector(".content-container").append(formElm);
   }
 
+  //show top sites
   function addTopSites(topSites){
     userTopSites = topSites;
-    
+
     if(topSites.length){
-      let $container = $('<div class="content top-sites-container">');
-      $container.appendTo('.content-container');
-      for(let i = 0; i < topSites.length; i++){
-        $container.append('<a href="' + topSites[i].url + '" class="shadow"><img src="https://plus.google.com/_/favicon?domain_url=' + topSites[i].url + '" />' +
-                          topSites[i].title + '<span class="remove">x</span></a>')
-      }
+      let container = document.createElement("div");
+      container.classList.add("content", "top-sites-container");
+      document.querySelector('.content-container').appendChild(container);
+      topSites.forEach((topSite) => {
+        const linkElm = document.createElement('a');
+        linkElm.setAttribute('href', topSite.url);
+        linkElm.classList.add('shadow');
+        linkElm.innerHTML = `
+          <img src="https://plus.google.com/_/favicon?domain_url=${topSite.url}" />
+            ${topSite.title}
+          <span class="remove">x</span>
+        `;
+        container.append(linkElm);
+      })
     }
   }
 
+  //filter top sites
   function filterTopSites (topSites, removedTopSites) {
-    for (let i = 0; i < removedTopSites.length; i++) {
+    removedTopSites.forEach((topSite) => {
       let ind = topSites.findIndex((site) => {
-        return site.url == removedTopSites[i];
+        return site.url == topSite;
       });
       if (ind !== -1) {
         topSites.splice(ind, 1);
       }
-    }
+    })
     return topSites;
   }
 
+  //function to get a random thikr
   function getRandomThikr(){
     return athkar[Math.floor(Math.random() * athkar.length)];
   }
 
+  //set today's date
   function setDates(dateObj, hijriData){
-    $(".gregorian-date").text(dateObj.getDate() + "/" + (dateObj.getMonth() + 1) + "/" + dateObj.getFullYear());
-    $(".hijri-date").text(hijriData.iDate() + " " + chrome.i18n.getMessage(hijriMonths[hijriData.iMonth()]) + " " + hijriData.iYear());
+    document.querySelector(".gregorian-date").textContent = `${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`;
+    document.querySelector(".hijri-date").textContent = `${hijriData.iDate()} ${chrome.i18n.getMessage(hijriMonths[hijriData.iMonth()])} ${hijriData.iYear()}`;
   }
 
-  function setNewImage(reload, background_image_type, background_image_type_options) {
+  //get a new background image
+  function setNewImage(background_image_type, background_image_type_options) {
     let defaultCollection = 4331244
     switch(background_image_type) {
       case 'single_image':
-        setBackgroundImage(background_image_type_options)
+        setBackgroundImage(background_image_type_options);
+        //calculate when a new image should be fetched
         let timeout = calculateTimeout();
         chrome.storage.local.set({image: {src: background_image_type_options, timeout}});
-        if(reload){
-          $(".reload img").show();
-          $(".reload .loader").hide();
-        }
         break;
       case 'unsplash_collection':
         defaultCollection = background_image_type_options;
       default:
-        let xhr = new XMLHttpRequest();
         //get height and width of screen
-        const width = $(window).width(),
-              height = $(window).height();
-        $.ajax({
-          method: 'GET',
-          url: 'https://source.unsplash.com/collection/' + defaultCollection + '/' + width + 'x' + height,
+        const width = window.innerWidth,
+          height = window.innerHeight;
+
+        fetch(`https://source.unsplash.com/collection/${defaultCollection}/${width}x${height}`, {
           headers: {
             'Access-Control-Expose-Headers': 'ETag'
-          },
-          xhr: function() {
-          return xhr;
-          },
-          success: function(data){
-            setBackgroundImage(xhr.responseURL);
-            let timeout = calculateTimeout();
-            chrome.storage.local.set({image: {src: xhr.responseURL, timeout}});
-          },
-          error: function(){
-            setBackgroundImage('/assets/offline-image.jpg');
-          },
-          complete: function(){
-            if(reload){
-              $(".reload img").show();
-              $(".reload .loader").hide();
-            }
           }
-        });
+        })
+        .then((response) => {
+          return response.url
+        })
+        .then((url) => {
+          setBackgroundImage(url);
+          //calculate when a new image should be fetched
+          let timeout = calculateTimeout();
+          chrome.storage.local.set({image: {src: url, timeout}});
+        })
+        .catch(() => {
+          setBackgroundImage('/assets/offline-image.jpg');
+        })
     }
   }
 
+  //set a new calendar and add it in the local storage
   function getNewCalendar () {
     setCalendar(calendarData);
     chrome.storage.local.set({calendar: {date: currentDate.toString(), data: calendarData,
       hijriMonths: currentHijriMonths}});
   }
 
+  //set calendar element
   function setCalendar (data) {
-    $(".calendar__header").nextAll().remove();
+    const calendarHeaderElm = document.querySelector(".calendar__header");
+    const siblings = getSiblings(calendarHeaderElm)
+    siblings.forEach((elm) => elm.remove());
     //set headings
-    $(".calendar__header").children().each(function (index) {
-      $(this).text(chrome.i18n.getMessage(weekdays[index]));
-    });
+    for (let i = 0; i < calendarHeaderElm.children.length; i++) {
+      const child = calendarHeaderElm.children.item(i);
+      child.textContent = chrome.i18n.getMessage(weekdays[i]);
+    }
     const nbDates = data.length;
     let startedDay = -1;
     let today = new Date();
@@ -558,21 +658,25 @@ $(document).ready(function(){
     html = '';
     while (i < nbDates) {
       for (let z = 0; z < weekdays.length; z++) {
+        //if the current day is not the same weekday, skip
         if (data[i].gregorian.weekday.en != weekdays[z]) {
           continue;
         }
+        //if startedDay is not set, check if it's the current day by checking if it's the same weekday
         if (startedDay == -1) {
           if (data[i].gregorian.weekday.en == weekdays[z]) {
             startedDay = i;
           }
         }
   
+        //check if the current day is the last day to set endedWeekday
         if (i == nbDates - 1) {
           if (data[i].gregorian.weekday.en !== weekdays[6]) {
             endedWeekday = weekdays.indexOf(data[i].gregorian.weekday.en);
           }
         }
   
+        //if today is still not set and it's the current date, set it by index
         if (todayDate == null && today.getDate() == data[i].gregorian.day) {
           todayDate = i + 1;
         }
@@ -587,8 +691,11 @@ $(document).ready(function(){
       lastValue = i;
     }
 
-    $(".calendar__header").after(html);
-    $("#gregorianMonth").text(chrome.i18n.getMessage(data[0].gregorian.month.en));
+    const calendarBodyElm = document.createElement("div");
+    calendarHeaderElm.after(calendarBodyElm);
+    calendarBodyElm.innerHTML = html;
+    const gregorianMonthElm = document.getElementById("gregorianMonth");
+    gregorianMonthElm.textContent = chrome.i18n.getMessage(data[0].gregorian.month.en);
     //assemble hijri months
     let hijriMonthsStr = "";
     for (let j = 0; j < currentHijriMonths.length; j++) {
@@ -597,12 +704,14 @@ $(document).ready(function(){
       }
       hijriMonthsStr += chrome.i18n.getMessage(currentHijriMonths[j]);
     }
-    $("#hijriMonth").text(hijriMonthsStr);
-    $(".calendar-table .loader").hide();
-    $(".calendar-inner-container").show();
+    const hijriMonthElm = document.getElementById("hijriMonth");
+    hijriMonthElm.textContent = hijriMonthsStr;
+    hideElement(document.querySelector(".calendar-table .loader"));
+    showElement(document.querySelector(".calendar-inner-container"));
   }
 
-  function addWeek (fromDay, totalDays, todayDate, calendarData) {
+  //add week to the calendar element
+  function addWeek (fromDay, totalDays, todayDateIndex, calendarData) {
     str = '<div class="calendar__week">';
     let i = fromDay;
     for (let j = 0; j < 7; j++) {
@@ -610,22 +719,21 @@ $(document).ready(function(){
       let additionalClasses = '';
       if (i <= 0 || i > totalDays) {
         additionalClasses = 'not-month-day';
-      } else if (todayDate !== null && todayDate == i) {
+      } else if (todayDateIndex !== null && todayDateIndex == i) {
         additionalClasses = 'today';
       }
-      let dayStr = '<div class="calendar__day day ' + additionalClasses + '">' + (i > totalDays || i <= 0 ? "" : i + '<small class="calendar-hijri-date">' + calendarData[i - 1].hijri.day + '</small>');
+      let dayStr = `<div class="calendar__day day ${additionalClasses}">${(i > totalDays || i <= 0 ? "" : `${i}<small class="calendar-hijri-date">${calendarData[i - 1].hijri.day}</small>`)}`;
       if (i <= totalDays && i > 0) {
         if (calendarData[i - 1].hijri.holidays.length) {
-          for (let j = 0; j < calendarData[i - 1].hijri.holidays.length; j++) {
-            dayStr += '<span class="badge bg-success calendar-note">' + calendarData[i - 1].hijri.holidays[j] + '</span>';
-            hasAshura = calendarData[i - 1].hijri.holidays[j] == "Ashura";
-          }
+          calendarData[i - 1].hijri.holidays.forEach((holiday) => {
+            dayStr += `<span class="badge bg-success calendar-note">${holiday}</span>`;
+          })
         }
 
-        if (isFastingDay(parseInt(calendarData[i- 1].hijri.day), originalWeekdays[j], calendarData[i - 1].hijri.holidays, 
-              i > 1 ? calendarData[i - 2].hijri.holidays : [], i < totalDays && calendarData[i].hijri.holidays.length > i ? calendarData[i].hijri.holidays : [],
+        if (isFastingDay(parseInt(calendarData[i - 1].hijri.day), originalWeekdays[j], calendarData[i - 1].hijri.holidays, 
+              i > 1 ? calendarData[i - 2].hijri.holidays : [], i < totalDays ? calendarData[i].hijri.holidays : [],
               calendarData[i - 1].hijri.month.en)) {
-          dayStr += '<span class="badge bg-danger calendar-note">' + chrome.i18n.getMessage('Fasting') + '</span>';
+          dayStr += `<span class="badge bg-danger calendar-note">${chrome.i18n.getMessage('Fasting')}</span>`;
         }
       }
 
@@ -637,110 +745,128 @@ $(document).ready(function(){
     return str;
   }
 
-  function isFastingDay (day, dayOfWeek, holidays, dayBeforeHolidays, dayAfterHolidays, monthName) {
-    return (day == 13 && monthName !== 'Dhu_al_Hijjah') || day == 14 || day == 15 || dayOfWeek == "Monday" || dayOfWeek == "Thursday" || 
+  //check whether a day is a fasting day or not
+  function isFastingDay (dayIndex, dayOfWeekName, holidays, dayBeforeHolidays, dayAfterHolidays, monthName) {
+    return (dayIndex == 13 && monthName !== 'Dhu_al_Hijjah') || dayIndex == 14 || dayIndex == 15 || dayOfWeekName == "Monday" || dayOfWeekName == "Thursday" || 
       holidays.includes("Ashura") || holidays.includes("Arafa") || dayBeforeHolidays.includes("Ashura") || 
       dayAfterHolidays.includes("Ashura") || monthName === 'Ramadan';
   }
 
-  function localizeHtmlPage($elm)
+  //localize the strings in an HTML page
+  function localizeHtmlPage(elm)
   {
+    for (let i = 0; i < elm.children.length; i++) {
+      const child = elm.children.item(i);
       //Localize by replacing __MSG_***__ meta tags
-      $elm.children().each(function () {
-        localizeHtmlPage($(this));
-        $.each(this.attributes, function () {
-          this.name = this.name.replace(messageRegex, localizeString);
-
-          this.value = this.value.replace(messageRegex, localizeString);
-        });
-        $(this).html($(this).html().replace(messageRegex, localizeString));
-      });
+      localizeHtmlPage(child);
+      //localize values in element's attributes
+      for (let j = 0; j < child.attributes.length; j++) {
+        const attr = child.attributes.item(j);
+        attr.value= attr.value.replace(messageRegex, localizeString);
+      }
+      //localize the content of the element
+      child.innerHTML = child.innerHTML.replace(messageRegex, localizeString);
+    }
   }
 
+  //localize a single string
   function localizeString(_, str) {
     return str ? chrome.i18n.getMessage(str) : "";
   }
 
-  function getMonthDays(year, monthIndex) {
-    //const monthIndex = month - 1; // 0..11 instead of 1..12
-    const date = new Date(year, monthIndex, 1);
-    let nbDays = 0;
-    while (date.getMonth() == monthIndex) {
-      nbDays++;
-      date.setDate(date.getDate() + 1);
-    }
-    return nbDays;
-  }
-
-  async function assembleCalendarData () {
+  //assemble new calendar data
+  function assembleCalendarData () {
     const currentYear = currentDate.getFullYear(),
-          currentMonth = currentDate.getMonth();
-    const nbDays = getMonthDays(currentYear, currentMonth);
-    for (let i = 0; i < nbDays; i++) {
-      const gregorianDate = new Date(currentYear, currentMonth, i + 1),
-            hijriDate = moment(currentYear + '-' + (currentMonth + 1) + '-' + (i+1), 'YYYY-M-D');
-      const rawResponse = await fetch('https://api.aladhan.com/v1/hToG?date=' + hijriDate.iDate() + "-" + (hijriDate.iMonth() + 1) + "-" + hijriDate.iYear());
-      const response = await rawResponse.json();
-      calendarData.push({
-        "gregorian": {
-          "weekday": {
-            "en": gregorianDate.getDay() === 0 ? originalWeekdays[6] : originalWeekdays[gregorianDate.getDay() - 1]
-          },
-          "day": gregorianDate.getDate(),
-          "month": {
-            "en": months[gregorianDate.getMonth()]
-          }
-        },
-        "hijri": {
-          "month": {
-            "en": hijriMonths[hijriDate.iMonth()]
-          },
-          "day": hijriDate.iDate(),
-          "holidays": response.data.hijri.holidays
+          currentMonth = currentDate.getMonth() + 1;
+
+    fetch(`http://api.aladhan.com/v1/gToHCalendar/${currentMonth}/${currentYear}`)
+    .then((response) => response.json())
+    .then(({ data }) => {
+      calendarData = data;
+      data.forEach((date) => {
+        if (currentHijriMonths.indexOf(hijriMonths[date.hijri.month.number - 1]) === -1) {
+          currentHijriMonths.push(hijriMonths[date.hijri.month.number - 1]);
         }
-      });
-      if (!currentHijriMonths.includes(hijriMonths[hijriDate.iMonth()])) {
-        currentHijriMonths.push(hijriMonths[hijriDate.iMonth()]);
-      }
-    }
-    getNewCalendar();
+      })
+      getNewCalendar();
+    });
   }
 
-
+  //show a toast when a new update is available
   function showUpdateToast () {
-    $("body").append(`
-      <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
-        <div class="toast fade show text-dark" role="alert" aria-live="assertive" aria-atomic="true">
-          <div class="toast-body">
-            <p class="fw-bold">A new update is available. You can update now or wait until your browser reloads</p>
-            <div class="mt-2 pt-2 border-top">
-              <button type="button" class="btn btn-success btn-sm" id="updateExtension">Update now</button>
-              <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss=".toast">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    `)
+    const toastContainerElm = document.createElement('div');
+    toastContainerElm.classList.add('position-fixed', 'bottom-0', 'end-0', 'p-3');
+    toastContainerElm.style.zIndex = 11;
+
+    const toastElm = document.createElement('div');
+    toastElm.classList.add('toast', 'fade', 'show', 'text-dark');
+    toastElm.setAttribute('role', 'alert');
+    toastElm.setAttribute('aria-live', 'assertive');
+    toastElm.setAttribute('aria-atomic', 'true');
+    toastContainerElm.append(toastElm);
+
+    const toastBodyElm = document.createElement('div');
+    toastBodyElm.classList.add('toast-body');
+    toastElm.append(toastBodyElm);
+
+    const toastBodyContentElm = document.createElement('p');
+    toastBodyContentElm.classList.add('fw-bold');
+    toastBodyContentElm.textContent = 'A new update is available. You can update now or wait until your browser reloads';
+    toastBodyElm.append(toastBodyContentElm);
+
+    const toastActionsElm = document.createElement('div');
+    toastActionsElm.classList.add('mt-2', 'pt-2', 'border-top');
+    toastBodyElm.append(toastActionsElm);
+
+    const updateButtonElm = document.createElement('button');
+    updateButtonElm.setAttribute('type', 'button');
+    updateButtonElm.classList.add('btn', 'btn-success', 'btn-sm', 'me-2');
+    updateButtonElm.id = 'updateExtension';
+    updateButtonElm.textContent = 'Update now';
+    toastActionsElm.append(updateButtonElm);
+
+    const closeButtonElm = document.createElement('button');
+    closeButtonElm.setAttribute('type', 'button');
+    closeButtonElm.classList.add('btn', 'btn-secondary', 'btn-sm');
+    closeButtonElm.setAttribute('data-bs-dismiss', '.toast');
+    closeButtonElm.textContent = 'Close';
+    toastActionsElm.append(closeButtonElm);
+    
+    document.body.append(toastContainerElm);
   }
 
+  //show favorite verses list
   function showFavoriteVerses (favorites) {
-    const container = $(".favorite-verses .favorite-content");
-    container.children().remove();
+    const container = document.querySelector(".favorite-verses .favorite-content");
+    container.innerHTML = '';
     favorites.forEach((verse, index) => {
-      container.append(
-        `
-          <div class="verse" id="verse_${index}">
-            <p class="verse-text">${verse.text}</p>
-            <p class="verse-details">${verse.surah.name + " - " + verse.numberInSurah}</p>
-            <p class="verse-actions">
-              <button class="btn btn-link favorite-button-list text-dark">Remove</button>
-            </p>
-          </div>
-        `
-      )
-    })
+      const verseElm = document.createElement('div');
+      verseElm.classList.add('verse');
+      verseElm.id = `verse_${index}`;
+
+      const verseTextElm = document.createElement('p');
+      verseTextElm.classList.add('verse-text');
+      verseTextElm.textContent = verse.text;
+      verseElm.append(verseTextElm);
+
+      const verseDetailsElm = document.createElement('p');
+      verseDetailsElm.classList.add('verse-details');
+      verseDetailsElm.textContent = `${verse.surah.name + " - " + verse.numberInSurah}`;
+      verseElm.append(verseDetailsElm);
+
+      const verseActionsElm = document.createElement('p');
+      verseActionsElm.classList.add('verse-actions');
+      const favoriteButtonElm = document.createElement('button');
+      favoriteButtonElm.classList.add('btn', 'btn-link', 'favorite-button-list', 'text-dark');
+      favoriteButtonElm.textContent = 'Remove';
+      verseActionsElm.append(favoriteButtonElm);
+      verseElm.append(verseActionsElm);
+
+      container.append(verseElm);
+    });
   }
 
+  //refresh a favorite list
   function refreshFavorites () {
     chrome.storage.sync.get(['favorite_verses'], function (result) {
       const favorites = result.hasOwnProperty('favorite_verses') ? result.favorite_verses : [];
@@ -765,53 +891,76 @@ $(document).ready(function(){
 
       chrome.storage.sync.set({favorite_verses: favorites}, function () {
         refreshFavorites();
+        const favoriteImgElm = document.querySelector('.favorite-button img');
         if (action === 'added') {
-          $(".favorite-button").find("img").attr('src', '/assets/heart-filled.svg');
+          favoriteImgElm.setAttribute('src', '/assets/heart-filled.svg');
         } else {
-          $(".favorite-button").find("img").attr('src', '/assets/heart.svg');
+          favoriteImgElm.setAttribute('src', '/assets/heart.svg');
         }
-        //show toast
-        $("body").append(`
-          <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11;">
-            <div class="toast fade text-dark show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true">
-              <div class="toast-body d-flex justify-content-between">
-                <p class="fw-bold mb-0">Ayah ${action} ${action === 'added' ? 'to' : 'from'} favorites!</p>
-                <button type="button" class="btn-close text-dark" data-bs-dismiss=".toast" aria-label="Close"></button>
-              </div>
-            </div>
-          </div>
-        `)
+
+        const toastContainerElm = document.createElement('div');
+        toastContainerElm.classList.add('position-fixed', 'bottom-0', 'end-0', 'p-3');
+        toastContainerElm.style.zIndex = 11;
+
+        const toastElm = document.createElement('div');
+        toastElm.classList.add('toast', 'fade', 'text-dark', 'show');
+        toastElm.setAttribute('role', 'alert');
+        toastElm.setAttribute('aria-live', 'assertive');
+        toastElm.setAttribute('aria-atomic', 'true');
+        toastElm.setAttribute('data-bs-autohide', true);
+        toastContainerElm.append(toastElm);
+
+        const toastBodyElm = document.createElement('div');
+        toastBodyElm.classList.add('toast-body', 'd-flex', 'justify-content-between');
+        toastElm.append(toastBodyElm);
+
+        const toastBodyTextElm = document.createElement('p');
+        toastBodyTextElm.classList.add('fw-bold', 'mb-0');
+        toastBodyTextElm.textContent = `Ayah ${action} ${action === 'added' ? 'to' : 'from'} favorites!`;
+        toastBodyElm.append(toastBodyTextElm);
+
+        const toastActionElm = document.createElement('button');
+        toastActionElm.setAttribute('type', 'button');
+        toastActionElm.classList.add('btn-close', 'text-dark');
+        toastActionElm.setAttribute('data-bs-dismiss', '.toast');
+        toastActionElm.setAttribute('aria-label', 'Close');
+        toastBodyElm.append(toastActionElm);
+
+        document.body.append(toastContainerElm);
       });
     })
   }
 
+  //get new prayer times calendar
   function getPrayerTimesCalendar () {
     navigator.geolocation.getCurrentPosition((position) => {
       const date = new Date();
       chrome.storage.sync.get(['prayer_times_method'], function (result) {
-        $.get('https://api.aladhan.com/v1/calendar?longitude=' + position.coords.longitude + '&latitude=' + position.coords.latitude + 
-        '&month=' + (date.getMonth() + 1) + '&year=' + date.getFullYear() + '&method=' + (result.hasOwnProperty('prayer_times_method') ? result.prayer_times_method : 0), 
-          function (data) {
+        fetch(`https://api.aladhan.com/v1/calendar?longitude=${position.coords.longitude}&latitude=${position.coords.latitude}&month=${date.getMonth() + 1}&year=${date.getFullYear()}&method=${result.hasOwnProperty('prayer_times_method') ? result.prayer_times_method : 0}`)
+        .then((response) => response.json())
+        .then(({data}) => {
           //store it in storage for the entire month
-          chrome.storage.local.set({prayerTimesCalendar: {month: date.getMonth(), calendar: data.data}}, function () {
+          chrome.storage.local.set({prayerTimesCalendar: {month: date.getMonth(), calendar: data}}, function () {
             getPrayerTimes();
           });
-        });
+        })
       })
     });
   }
 
+  //add prayer times elements
   function getPrayerTimes() {
     chrome.storage.local.get(['prayerTimesCalendar'], function(result) {
       if (result.hasOwnProperty('prayerTimesCalendar') && result.prayerTimesCalendar.hasOwnProperty('calendar')) {
         //get today's prayer times
         const today = new Date(),
           todayMoment = moment();
-        const prayerTimesContainer = $(".prayer-times-container"),
-              prayerTimesWrapper = prayerTimesContainer.find(".prayer-times-wrapper");
-        prayerTimesContainer.addClass('d-none');
-        prayerTimesWrapper.empty();
-        let nextPrayerTime = 0, nextPrayerName = "";
+        const prayerTimesContainer = document.querySelector(".prayer-times-container"),
+              prayerTimesWrapper = document.querySelector(".prayer-times-container .prayer-times-wrapper");
+        prayerTimesContainer.classList.add('d-none');
+        prayerTimesWrapper.innerHTML = '';
+        prayerTimesWrapper.textContent = '';
+        let nextPrayerTime = 0, nextPrayerName = '';
         result.prayerTimesCalendar.calendar.some((dateData) => {
           if (parseInt(dateData.date.gregorian.day) == today.getDate()) {
             const fajr = formatTime(dateData.timings.Fajr),
@@ -849,19 +998,21 @@ $(document).ready(function(){
             }
 
             //show prayer times
-            prayerTimesWrapper.append(`<div class="prayer-time fajr">${fajr}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time dhuhr">${dhuhr}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time asr">${asr}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time maghrib">${maghrib}</div>`);
-            prayerTimesWrapper.append(`<div class="prayer-time isha">${isha}</div>`);
-            prayerTimesContainer.removeClass('d-none');
+            prayerTimesWrapper.innerHTML += `
+              <div class="prayer-time fajr">${fajr}</div>
+              <div class="prayer-time dhuhr">${dhuhr}</div>
+              <div class="prayer-time asr">${asr}</div>
+              <div class="prayer-time maghrib">${maghrib}</div>
+              <div class="prayer-time isha">${isha}</div>
+            `
+            prayerTimesContainer.classList.remove('d-none');
             return true; //break the loop
           }
           return false;
         });
 
         if (nextPrayerTime) {
-          $(".next-prayer").text(nextPrayerName + " " + nextPrayerTime);
+          document.querySelector(".next-prayer").textContent = nextPrayerName + " " + nextPrayerTime;
         }
       }
     })
@@ -879,12 +1030,47 @@ $(document).ready(function(){
     return prayerTimeFormat == 12 ? "hh:mm A" : 'HH:mm';
   }
 
+  //initialize toasts in the page
   function initializeToasts () {
-    var toastElList = [].slice.call(document.querySelectorAll('.toast:not(.hide)'))
+    const toastElList = [].slice.call(document.querySelectorAll('.toast:not(.hide)'))
     toastElList.map(function (toastEl) {
-      const toast = new bootstrap.Toast(toastEl, {
+      new bootstrap.Toast(toastEl, {
         animation: true
       });
     });
   }
-});
+
+  //hide element using the hide class
+  function hideElement (elm) {
+    elm.classList.add("hide");
+  }
+
+  //show elements by removing the hide class
+  function showElement (elm) {
+    elm.classList.remove("hide");
+  }
+
+  //get all siblings of an element
+  function getSiblings (elm) {
+    // create an empty array
+    let siblings = [];
+
+    // if no parent, return empty list
+    if (!elm.parentNode) {
+        return siblings;
+    }
+
+    // first child of the parent node
+    let sibling = elm.parentNode.firstElementChild;
+
+    // loop through next siblings until `null`
+    do {
+        // push sibling to array
+        if (sibling != elm) {
+            siblings.push(sibling);
+        }
+    } while (sibling = sibling.nextElementSibling);
+		
+    return siblings;
+  }
+}

@@ -33,6 +33,12 @@ body {
   opacity: 0;
   z-index: -2;
   filter: brightness(50%);
+  transition: opacity .5s;
+}
+
+.background-image.show,
+.verse.show {
+  opacity: 1;
 }
 
 .verse, .bismillah, .athkar-container, .prayer-times-container, .next-prayer {
@@ -107,6 +113,7 @@ body {
 .verse {
   opacity: 0;
   margin: 10px auto;
+  transition: opacity .5s;
 }
 
 .verse-details, .bismillah {
@@ -336,9 +343,14 @@ body {
   opacity: 0;
 }
 
+.calendar-container:not(.show) {
+  z-index: -100;
+}
+
 .calendar-container.show {
   top: 0;
   opacity: 1;
+  z-index: 100;
 }
 
 .close-calendar {
@@ -534,6 +546,10 @@ body {
 
 .favorite-verses .verse:not(:last-child) {
   border-bottom: 1px solid #ccc;
+}
+
+.hide {
+  display: none !important;
 }
 
 @media screen and (min-width: 992px) {

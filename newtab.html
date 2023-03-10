@@ -12,7 +12,7 @@
     <img src='' class="background-image" />
     <div class="reload toolbar-link" data-bs-toggle="tooltip" title="__MSG_reload__">
       <img src="assets/reload.svg" alt="Reload"  />
-      <div class="loader"></div>
+      <div class="loader hide"></div>
     </div>
     <div class="prayer-times-container d-none">
       <h6 class="text-center mb-3">
@@ -58,7 +58,7 @@
           <img src="assets/play.svg" alt="Play" />
           <div class="error">
           </div>
-          <div class="loader"></div>
+          <div class="loader hide"></div>
         </div>
         <div class="verse-social-links">
           <a class="favorite-button me-1" href="#">
@@ -79,7 +79,7 @@
         </div>
       </div>
     </div>
-    <div class="athkar-container" style="display: none;">
+    <div class="athkar-container hide">
       <h4 class="title">__MSG_athkar__</h4>
       <div class="thikr">
       </div>
@@ -88,7 +88,7 @@
       <button type="button" class="btn-close close-calendar me-2 mt-2" aria-label="Close"></button>
       <div class="container mt-5 calendar-table">
         <h1 class="text-center">__MSG_calendar__</h1>
-        <div class="loader mt-5 text-dark"></div>
+        <div class="loader mt-5 text-dark hide"></div>
         <div class="calendar-inner-container text-center">
           <h2><span id="gregorianMonth"></span> - <span id="hijriMonth"></span></h2>
           <a class="notifications-reminder" href="/options.html">__MSG_enable_notification_notice__</a>
@@ -116,7 +116,6 @@
       <div class="offcanvas-body favorite-content">
       </div>
     </div>
-    <script src="/js/jquery.js"></script>
     <script src="/js/popper.min.js"></script>
     <script src="/js/bootstrap.min.js"></script>
     <script src="/js/sweetalert2.all.min.js"></script>
