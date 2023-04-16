@@ -2,7 +2,7 @@
 // Copyright (c) 2023 by Shahed Nasser. All Rights Reserved.
 //
 
-document.addEventListener("DOMContentLoaded", loadPage());
+document.addEventListener("DOMContentLoaded", loadPage);
 
 function loadPage() {
   //initialize variables
@@ -23,11 +23,6 @@ function loadPage() {
         'Rajab', 'Sha_ban', 'Ramadan', 'Shawwal', 'Dhu_al_Qa_dah', 'Dhu_al_Hijjah'],
       currentHijriDate = moment(),
       currentDate = new Date();
-  //initialize bootstrap tooltip
-  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
   //initialize toast
   initializeToasts();
   //initialize localization
@@ -1073,4 +1068,9 @@ function loadPage() {
 		
     return siblings;
   }
+  //initialize bootstrap tooltip
+  const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+  tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+  })
 }
